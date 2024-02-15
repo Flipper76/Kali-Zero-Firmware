@@ -1,0 +1,23 @@
+nom : Demande de fonctionnalité
+description : Pour les demandes de fonctionnalités concernant le firmware.
+étiquettes : ["demande de fonctionnalité"]
+corps:
+   - tapez : démarque
+     les attributs:
+       valeur : |
+         Merci d'avoir pris le temps de remplir un problème, ce modèle est destiné à toute suggestion de fonctionnalités.
+   - tapez : zone de texte
+     identifiant : proposition
+     les attributs:
+       label: "Description de la fonctionnalité que vous proposez."
+       descriptif : |
+         Veuillez décrire votre demande de fonctionnalité avec autant de détails que possible.
+           - Décrivez ce qu'il doit faire.
+           - Notez s'il s'agit d'étendre des fonctionnalités existantes ou d'introduire de nouvelles fonctionnalités.
+     validations :
+       obligatoire : vrai
+   - tapez : zone de texte
+     identifiant : autre chose
+     les attributs:
+       étiquette : Autre chose ?
+       description : Faites-nous savoir si vous avez autre chose à partager.
