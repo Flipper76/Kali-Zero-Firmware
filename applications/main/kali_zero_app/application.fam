@@ -1,0 +1,11 @@
+App(
+    appid="kali_zero_app",
+    name="Kali Zero",
+    apptype=FlipperAppType.MENUEXTERNAL,
+    entry_point="kali_zero_app",
+    stack_size=2 * 1024,
+    icon="A_KaliZero_14",
+    order=90,
+    fap_icon="icon.png",
+    fap_category="assets",
+)

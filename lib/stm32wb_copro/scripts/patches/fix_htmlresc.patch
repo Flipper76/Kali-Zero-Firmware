@@ -1,0 +1,27 @@
+diff --git a/Projects/STM32WB_Copro_Wireless_Binaries/STM32WB5x/Release_Notes.html b/Projects/STM32WB_Copro_Wireless_Binaries/STM32WB5x/Release_Notes.html
+index 08a5aadfb..4ced7c322 100644
+--- a/Projects/STM32WB_Copro_Wireless_Binaries/STM32WB5x/Release_Notes.html
++++ b/Projects/STM32WB_Copro_Wireless_Binaries/STM32WB5x/Release_Notes.html
+@@ -11,11 +11,11 @@
+       span.underline{text-decoration: underline;}
+       div.column{display: inline-block; vertical-align: top; width: 50%;}
+   </style>
+-  <link rel="stylesheet" href="../../../_htmresc/mini-st_2020.css" />
++  <link rel="stylesheet" href="htmresc/mini-st_2020.css" />
+   <!--[if lt IE 9]>
+     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+   <![endif]-->
+-  <link rel="icon" type="image/x-icon" href="../../../_htmresc/favicon.png" />
++  <link rel="icon" type="image/x-icon" href="htmresc/favicon.png" />
+ </head>
+ <body>
+ <div class="row">
+@@ -25,7 +25,7 @@
+ <h1 id="stm32wb-copro-wireless-binaries"><mark>STM32WB Copro Wireless Binaries</mark></h1>
+ <p>Copyright © 2020 STMicroelectronics<br />
+ </p>
+-<a href="https://www.st.com" class="logo"><img src="../../../_htmresc/st_logo_2020.png" alt="ST logo" /></a>
++<a href="https://www.st.com" class="logo"><img src="htmresc/st_logo_2020.png" alt="ST logo" /></a>
+ </center>
+ <h1 id="known-limitations">Known Limitations</h1>
+ <p><strong>If Anti-Rollback needs to be activated</strong>, please make sure to activate it only after installing the latest FUS version (&gt;= V1.2.0) and after successfully installing a wireless stack (without deleting it). <strong>Otherwise, further wireless stack installation will be blocked.</strong></p>

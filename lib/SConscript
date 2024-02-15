@@ -1,0 +1,51 @@
+Import("env")
+
+
+env.Append(
+    CPPPATH=[
+        "#/",
+        "#/lib",  # TODO FL-3553: remove!
+        # Ugly hack
+        Dir("../assets/compiled"),
+        Dir("../../icons"),
+    ],
+)
+
+
+libs = env.BuildModules(
+    [
+        "mlib",
+        "stm32wb",
+        "freertos",
+        "print",
+        "microtar",
+        "mbedtls",
+        "toolbox",
+        "libusb_stm32",
+        "drivers",
+        "fatfs",
+        "flipper_format",
+        "one_wire",
+        "ibutton",
+        "infrared",
+        "littlefs",
+        "subghz",
+        "nfc",
+        "digital_signal",
+        "pulse_reader",
+        "signal_reader",
+        "appframe",
+        "u8g2",
+        "lfrfid",
+        "flipper_application",
+        "music_worker",
+        "mjs",
+        "nanopb",
+        "update_util",
+        "xtreme",
+        "heatshrink",
+        "bit_lib",
+    ],
+)
+
+Return("libs")

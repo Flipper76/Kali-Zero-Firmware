@@ -1,0 +1,12 @@
+{
+    "patches": [
+        "patches/tl_mbox_fmt.patch",
+        "patches/wpan_dbg_trace.patch",
+        "patches/fix_htmlresc.patch"
+    ],
+    "paths": {
+        "wpan": "Middlewares/ST/STM32_WPAN",
+        "firmware": "Projects/STM32WB_Copro_Wireless_Binaries/STM32WB5x",
+        "firmware/htmresc": "_htmresc"
+    }
+}

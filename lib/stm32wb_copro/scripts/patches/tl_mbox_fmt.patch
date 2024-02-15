@@ -1,0 +1,33 @@
+diff --git a/Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl/tl_mbox.c b/Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl/tl_mbox.c
+index 4112429dc..65bd3e188 100644
+--- a/Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl/tl_mbox.c
++++ b/Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl/tl_mbox.c
+@@ -681,24 +681,24 @@ static void OutputDbgTrace(TL_MB_PacketType_t packet_type, uint8_t* buffer)
+         case TL_BLEEVT_CS_OPCODE:
+           TL_MM_DBG_MSG("mm evt released: 0x%02X", p_evt_packet->evtserial.evt.evtcode);
+           TL_MM_DBG_MSG(" cmd opcode: 0x%04X", ((TL_CsEvt_t*)(p_evt_packet->evtserial.evt.payload))->cmdcode);
+-          TL_MM_DBG_MSG(" buffer addr: 0x%08X", p_evt_packet);
++          TL_MM_DBG_MSG(" buffer addr: %p", p_evt_packet);
+           break;
+ 
+         case TL_BLEEVT_CC_OPCODE:
+           TL_MM_DBG_MSG("mm evt released: 0x%02X", p_evt_packet->evtserial.evt.evtcode);
+           TL_MM_DBG_MSG(" cmd opcode: 0x%04X", ((TL_CcEvt_t*)(p_evt_packet->evtserial.evt.payload))->cmdcode);
+-          TL_MM_DBG_MSG(" buffer addr: 0x%08X", p_evt_packet);
++          TL_MM_DBG_MSG(" buffer addr: %p", p_evt_packet);
+           break;
+ 
+         case TL_BLEEVT_VS_OPCODE:
+           TL_MM_DBG_MSG("mm evt released: 0x%02X", p_evt_packet->evtserial.evt.evtcode);
+           TL_MM_DBG_MSG(" subevtcode: 0x%04X", ((TL_AsynchEvt_t*)(p_evt_packet->evtserial.evt.payload))->subevtcode);
+-          TL_MM_DBG_MSG(" buffer addr: 0x%08X", p_evt_packet);
++          TL_MM_DBG_MSG(" buffer addr: %p", p_evt_packet);
+           break;
+ 
+         default:
+           TL_MM_DBG_MSG("mm evt released: 0x%02X", p_evt_packet->evtserial.evt.evtcode);
+-          TL_MM_DBG_MSG(" buffer addr: 0x%08X", p_evt_packet);
++          TL_MM_DBG_MSG(" buffer addr: %p", p_evt_packet);
+           break;
+       }
+ 

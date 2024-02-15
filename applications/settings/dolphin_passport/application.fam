@@ -1,0 +1,15 @@
+App(
+    appid="passport",
+    name="Passeport",
+    apptype=FlipperAppType.SETTINGS,
+    entry_point="passport_app",
+    cdefines=["APP_PASSPORT"],
+    requires=[
+        "gui",
+        "dolphin",
+    ],
+    flags=["InsomniaSafe"],
+    stack_size=1 * 1024,
+    order=60,
+    fap_category="assets",
+)

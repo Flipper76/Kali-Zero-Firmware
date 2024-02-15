@@ -1,0 +1,36 @@
+# Structure
+
+- `FreeRTOS-Kernel`     - FreeRTOS kernel source code
+- `FreeRTOS-glue`       - Extra glue to hold together FreeRTOS kernel and flipper firmware
+- `app-scened-template` - C++ app library
+- `bit_lib`             - library for working with bits/bytes directly
+- `callback-connector`  - Callback connector library
+- `cmsis_core`          - CMSIS Core package, contain cortex-m core headers
+- `cxxheaderparser`     - C++ headers parser, used by SDK bundler
+- `digital_signal`      - Digital signal library: used by NFC for software implemented protocols
+- `drivers`             - Various flipper drivers
+- `fatfs`               - FatFS file system driver
+- `flipper_application` - Flipper application library, used for FAPs
+- `flipper_format`      - Flipper File Format library
+- `heatshrink`          - Heatshrink compression library
+- `ibutton`             - ibutton library, used by iButton application
+- `infrared`            - Infrared library, used by Infrared application
+- `lfrfid`              - LF-RFID library, used by LF RFID application
+- `libusb_stm32`        - LibUSB for STM32 series MCU
+- `littlefs`            - LittleFS file system driver, used by internal storage
+- `mbedtls`             - MbedTLS cryptography library
+- `microtar`            - MicroTAR library
+- `mlib`                - M-Lib C containers library
+- `nanopb`              - NanoPB library, protobuf implementation for MCU
+- `nfc`                 - NFC library, used by NFC application
+- `one_wire`            - OneWire library, used by iButton application
+- `print`               - Tiny printf implementation
+- `digital_signal`      - Digital Signal library used by NFC for software implemented protocols
+- `pulse_reader`        - Pulse Reader library used by NFC for software implemented protocols
+- `stm32wb_cmsis`       - STM32WB series CMSIS headers, extends CMSIS Core
+- `stm32wb_copro`       - STM32WB Copro library: contains WPAN and radio co-processor firmware
+- `stm32wb_hal`         - STM32WB HAL library, extends STM32WB CMSIS and provides HAL
+- `subghz`              - Subghz library, used by SubGhz application
+- `toolbox`             - Toolbox library, contains various things that is used by Flipper firmware
+- `u8g2`                - u8g2 graphics library, used by GUI subsystem
+- `update_util`         - update utilities library, used by updater

@@ -1,0 +1,11 @@
+App(
+    appid="storage_settings",
+    name="Stockage",
+    apptype=FlipperAppType.SETTINGS,
+    entry_point="storage_settings_app",
+    requires=["storage"],
+    flags=["InsomniaSafe"],
+    stack_size=2 * 1024,
+    order=30,
+    fap_category="assets",
+)
