@@ -302,7 +302,7 @@ void view_dispatcher_handle_input(ViewDispatcher* view_dispatcher, InputEvent* e
     } else if(view_dispatcher->ongoing_input_view && event->type == InputTypeRelease) {
         FURI_LOG_D(
             TAG,
-            "Vue changé quand vous appuyez sur la touche %p -> %p. Sending key: %s, type: %s, sequence: %p to previous view port",
+            "Vue changé quand vous appuyez sur la touche %p -> %p. Envoi clé: %s, type: %s, sequence: %p to previous view port",
             view_dispatcher->ongoing_input_view,
             view_dispatcher->current_view,
             input_get_key_name(event->key),

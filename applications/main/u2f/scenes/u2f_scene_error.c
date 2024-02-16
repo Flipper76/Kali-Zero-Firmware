@@ -22,7 +22,7 @@ void u2f_scene_error_on_enter(void* context) {
             AlignCenter,
             AlignTop,
             FontSecondary,
-			"Aucune SD ou\ndonn""\xE9""es app trouv""\xE9""es.\nCette app ne fonctionne \npas sans fichiers requis");
+			"SD/donn""\xE9""es \napp introuvables.\nL'app ne fonctionne \npas sans!");
         widget_add_button_element(
             app->widget, GuiButtonTypeLeft, "Retour", u2f_scene_error_event_callback, app);
     }

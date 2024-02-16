@@ -21,7 +21,7 @@ void infrared_scene_start_on_enter(void* context) {
 
     submenu_add_item(
         submenu,
-        "telecomande universelle",
+        "T""\xE9""l""\xE9""comande universelle",
         SubmenuIndexUniversalRemotes,
         infrared_scene_start_submenu_callback,
         infrared);
@@ -33,7 +33,7 @@ void infrared_scene_start_on_enter(void* context) {
         infrared);
     submenu_add_item(
         submenu,
-        "telecomande enregistr""\xE9""es",
+        "T""\xE9""l""\xE9""comande enregistr""\xE9""es",
         SubmenuIndexSavedRemotes,
         infrared_scene_start_submenu_callback,
         infrared);
@@ -46,7 +46,7 @@ void infrared_scene_start_on_enter(void* context) {
 
     submenu_add_lockable_item(
         submenu,
-        "Apprendre telecomande. RAW",
+        "Apprendre t""\xE9""l""\xE9""comande. RAW",
         SubmenuIndexLearnNewRemoteRaw,
         infrared_scene_start_submenu_callback,
         infrared,

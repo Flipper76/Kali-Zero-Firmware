@@ -72,7 +72,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
             canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "Branche-moi");
             canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "dans, Papa");
         } else {
-            canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "Connect""\xE9"" ""\xE0");
+            canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "Connecter");
             canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "un dispositif");
         }
     } else if(state == BadKbStateWillRun) {

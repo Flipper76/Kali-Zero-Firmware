@@ -18,7 +18,7 @@ void lfrfid_scene_read_key_menu_on_enter(void* context) {
     Submenu* submenu = app->submenu;
 
     submenu_add_item(
-        submenu, "Save", SubmenuIndexSave, lfrfid_scene_read_key_menu_submenu_callback, app);
+        submenu, "Enregistrer", SubmenuIndexSave, lfrfid_scene_read_key_menu_submenu_callback, app);
     submenu_add_item(
         submenu, "Emuler", SubmenuIndexEmulate, lfrfid_scene_read_key_menu_submenu_callback, app);
     submenu_add_item(

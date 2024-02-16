@@ -322,7 +322,7 @@ static void gui_input(Gui* gui, InputEvent* input_event) {
     } else if(!(gui->ongoing_input & key_bit)) {
         FURI_LOG_D(
             TAG,
-            "non-complementary input, suppression: %s type: %s, séquence: %p",
+            "non complémentaire, suppression: %s type: %s, séquence: %p",
             input_get_key_name(input_event->key),
             input_get_type_name(input_event->type),
             (void*)input_event->sequence);

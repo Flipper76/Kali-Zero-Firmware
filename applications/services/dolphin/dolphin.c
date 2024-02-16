@@ -198,7 +198,7 @@ int32_t dolphin_srv(void* p) {
         }
     }
 
-    furi_crash("That was unexpected");
+    furi_crash("Inattendu");
 
     return 0;
 }

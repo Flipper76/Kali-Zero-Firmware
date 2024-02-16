@@ -24,7 +24,7 @@ void power_settings_scene_reboot_on_enter(void* context) {
         app);
     submenu_add_item(
         submenu,
-        "Flipper OS",
+        "Kali Zero",
         PowerSettingsRebootSubmenuIndexOs,
         power_settings_scene_reboot_submenu_callback,
         app);
