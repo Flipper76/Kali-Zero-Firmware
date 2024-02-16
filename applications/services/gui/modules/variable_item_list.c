@@ -597,7 +597,7 @@ void variable_item_set_locked(VariableItem* item, bool locked, const char* locke
     if(locked_message) {
         furi_string_set(item->locked_message, locked_message);
     } else if(locked && furi_string_empty(item->locked_message)) {
-        furi_string_set(item->locked_message, "Locked!");
+        furi_string_set(item->locked_message, "Verrouill""\xE9""!");
     }
 }
 

@@ -169,9 +169,9 @@ void desktop_lock_menu_draw_callback(Canvas* canvas, void* model) {
     if(m->show_lock_menu) {
         canvas_set_font(canvas, FontSecondary);
         elements_bold_rounded_frame(canvas, 24, 4, 80, 56);
-        canvas_draw_str_aligned(canvas, 64, 16, AlignCenter, AlignCenter, "Keypad Lock");
-        canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignCenter, "PIN Code Lock");
-        canvas_draw_str_aligned(canvas, 64, 48, AlignCenter, AlignCenter, "PIN Lock + OFF");
+        canvas_draw_str_aligned(canvas, 64, 16, AlignCenter, AlignCenter, "Verrou. clavier");
+        canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignCenter, "Verrou. code PIN");
+        canvas_draw_str_aligned(canvas, 64, 48, AlignCenter, AlignCenter, "Verrou. PIN+OFF");
         elements_frame(canvas, 28, 8 + m->pin_lock * 16, 72, 15);
     }
 }

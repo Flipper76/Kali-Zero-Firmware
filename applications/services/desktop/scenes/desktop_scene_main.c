@@ -42,7 +42,7 @@ static void
     furi_assert(flipper_app->name);
 
     if(furi_thread_get_state(desktop->scene_thread) != FuriThreadStateStopped) {
-        FURI_LOG_E("Desktop", "Thread is already running");
+        FURI_LOG_E("Bureau", "fil en cours");
         return;
     }
 

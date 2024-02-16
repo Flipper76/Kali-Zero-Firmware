@@ -138,7 +138,7 @@ static void view_holder_input_callback(InputEvent* event, void* context) {
     } else if(!(view_holder->ongoing_input & key_bit)) {
         FURI_LOG_W(
             TAG,
-            "non-complementary input, discarding key: %s, type: %s",
+            "input non complémentaire, suppression: %s, type: %s",
             input_get_key_name(event->key),
             input_get_type_name(event->type));
         return;

@@ -39,7 +39,7 @@ bool DESKTOP_KEYBINDS_LOAD(Keybinds* x, size_t size) {
         memset(x, 0, size);
         strcpy((*x)[KeybindTypePress][KeybindKeyUp].data, "Lock Menu");
         strcpy((*x)[KeybindTypePress][KeybindKeyDown].data, "Archive");
-        strcpy((*x)[KeybindTypePress][KeybindKeyRight].data, "Passport");
+        strcpy((*x)[KeybindTypePress][KeybindKeyRight].data, "Passeport");
         strcpy((*x)[KeybindTypePress][KeybindKeyLeft].data, "Clock");
         strcpy((*x)[KeybindTypeHold][KeybindKeyUp].data, "");
         strcpy((*x)[KeybindTypeHold][KeybindKeyDown].data, "");

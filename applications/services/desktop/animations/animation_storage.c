@@ -32,9 +32,9 @@ void animation_handler_select_manifest() {
         furi_string_printf(manifest, "%s/manifest.txt", furi_string_get_cstr(anim_dir));
         Storage* storage = furi_record_open(RECORD_STORAGE);
         if(storage_common_stat(storage, furi_string_get_cstr(manifest), NULL) == FSE_OK) {
-            FURI_LOG_I(TAG, "Custom manifest selected");
+            FURI_LOG_I(TAG, "Manifeste personnalisé choisi");
         } else {
-            FURI_LOG_E(TAG, "Custom manifest does not exist!");
+            FURI_LOG_E(TAG, "manifeste personnalisé introuvable!");
             use_asset_pack = false;
         }
         furi_record_close(RECORD_STORAGE);
@@ -42,7 +42,7 @@ void animation_handler_select_manifest() {
     if(!use_asset_pack) {
         furi_string_set(anim_dir, BASE_ANIMATION_DIR);
         furi_string_printf(manifest, "%s/manifest.txt", furi_string_get_cstr(anim_dir));
-        FURI_LOG_I(TAG, "Base manifest selected");
+        FURI_LOG_I(TAG, "Manifeste de base choisie");
     }
     strlcpy(ANIMATION_DIR, furi_string_get_cstr(anim_dir), sizeof(ANIMATION_DIR));
     strlcpy(
@@ -334,7 +334,7 @@ static bool animation_storage_load_frames(
         if(file_info.size > max_filesize) {
             FURI_LOG_E(
                 TAG,
-                "Filesize %llu, max: %zu (width %u, height %u)",
+                "Taille %llu, max: %zu (largeur %u, hauteur %u)",
                 file_info.size,
                 max_filesize,
                 width,
@@ -343,13 +343,13 @@ static bool animation_storage_load_frames(
         }
         if(!storage_file_open(
                file, furi_string_get_cstr(filename), FSAM_READ, FSOM_OPEN_EXISTING)) {
-            FURI_LOG_E(TAG, "Can't open file \'%s\'", furi_string_get_cstr(filename));
+            FURI_LOG_E(TAG, "Impossible d'ouvrir le fichier \'%s\'", furi_string_get_cstr(filename));
             break;
         }
 
         FURI_CONST_ASSIGN_PTR(icon->frames[i], malloc(file_info.size));
         if(storage_file_read(file, (void*)icon->frames[i], file_info.size) != file_info.size) {
-            FURI_LOG_E(TAG, "Read failed: \'%s\'", furi_string_get_cstr(filename));
+            FURI_LOG_E(TAG, "Echec de lecture: \'%s\'", furi_string_get_cstr(filename));
             break;
         }
         storage_file_close(file);
@@ -359,7 +359,7 @@ static bool animation_storage_load_frames(
     if(!frames_ok) {
         FURI_LOG_E(
             TAG,
-            "Load \'%s\' failed, %ux%u, size: %llu",
+            "Echec du chargement \'%s\', %ux%u, taille: %llu",
             furi_string_get_cstr(filename),
             width,
             height,
@@ -449,7 +449,7 @@ static bool animation_storage_load_bubbles(BubbleAnimation* animation, FlipperFo
 
     if(!success) {
         if(animation->frame_bubble_sequences) {
-            FURI_LOG_E(TAG, "Failed to load animation bubbles");
+            FURI_LOG_E(TAG, "Echec du chargement des bulles d'animation");
             animation_storage_free_bubbles(animation);
         }
     }
@@ -496,7 +496,7 @@ static BubbleAnimation* animation_storage_load_animation(const char* name) {
         uint32_t count = 0;
         if(!flipper_format_get_value_count(ff, "Frames order", &count)) break;
         if(count != frames) {
-            FURI_LOG_E(TAG, "Error loading animation: frames order");
+            FURI_LOG_E(TAG, "Erreur de chargement de l'animation : ordre des images");
             break;
         }
         u32array = malloc(sizeof(uint32_t) * frames);

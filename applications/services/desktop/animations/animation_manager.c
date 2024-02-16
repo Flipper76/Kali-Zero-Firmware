@@ -271,7 +271,7 @@ static void animation_manager_replace_current_animation(
     const BubbleAnimation* animation = animation_storage_get_bubble_animation(storage_animation);
     bubble_animation_view_set_animation(animation_manager->animation_view, animation);
     const char* new_name = animation_storage_get_meta(storage_animation)->name;
-    FURI_LOG_I(TAG, "Select \'%s\' animation", new_name);
+    FURI_LOG_I(TAG, "Animation choisie \'%s\'", new_name);
     animation_manager->current_animation = storage_animation;
 
     if(previous_animation) {
@@ -461,11 +461,11 @@ static StorageAnimation*
 
     /* cache animation, if failed - choose reliable animation */
     if(selected == NULL) {
-        FURI_LOG_E(TAG, "Can't find valid animation in manifest");
+        FURI_LOG_E(TAG, "Impossible de trouver une animation valide dans le manifeste");
         selected = animation_storage_find_animation(HARDCODED_ANIMATION_NAME);
     } else if(!animation_storage_get_bubble_animation(selected)) {
         const char* name = animation_storage_get_meta(selected)->name;
-        FURI_LOG_E(TAG, "Can't upload animation described in manifest: \'%s\'", name);
+        FURI_LOG_E(TAG, "Impossible de télécharger l'animation décrite dans le manifeste: \'%s\'", name);
         animation_storage_free_storage_animation(&selected);
         selected = animation_storage_find_animation(HARDCODED_ANIMATION_NAME);
     }
@@ -504,7 +504,7 @@ void animation_manager_unload_and_stall_animation(AnimationManager* animation_ma
 
     FURI_LOG_I(
         TAG,
-        "Unload animation \'%s\'",
+        "Décharger l'animation \'%s\'",
         animation_storage_get_meta(animation_manager->current_animation)->name);
 
     StorageAnimationManifestInfo* meta =
@@ -572,7 +572,7 @@ void animation_manager_load_and_continue_animation(AnimationManager* animation_m
             } else {
                 FURI_LOG_E(
                     TAG,
-                    "Failed to restore \'%s\'",
+                    "Echec de la restauration \'%s\'",
                     furi_string_get_cstr(animation_manager->freezed_animation_name));
             }
         }
@@ -587,7 +587,7 @@ void animation_manager_load_and_continue_animation(AnimationManager* animation_m
     }
     FURI_LOG_I(
         TAG,
-        "Load animation \'%s\'",
+        "Charger l'animation \'%s\'",
         animation_storage_get_meta(animation_manager->current_animation)->name);
 
     bubble_animation_unfreeze(animation_manager->animation_view);

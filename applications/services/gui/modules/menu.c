@@ -202,7 +202,7 @@ static void menu_draw_callback(Canvas* canvas, void* _model) {
                 canvas, 1, 1, AlignLeft, AlignTop, furi_hal_version_get_name_ptr());
             char str[10];
             Dolphin* dolphin = furi_record_open(RECORD_DOLPHIN);
-            snprintf(str, 10, "Level %i", dolphin_get_level(dolphin->state->data.icounter));
+            snprintf(str, 11, "Niveau %i", dolphin_get_level(dolphin->state->data.icounter));
             furi_record_close(RECORD_DOLPHIN);
             canvas_draw_str_aligned(canvas, 127, 1, AlignRight, AlignTop, str);
             for(int8_t i = -1; i <= 4; i++) {
@@ -281,7 +281,7 @@ static void menu_draw_callback(Canvas* canvas, void* _model) {
                 canvas, 64, 0, AlignCenter, AlignTop, "* FLIPPADORE 64 BASIC *");
 
             char memstr[29];
-            snprintf(memstr, sizeof(memstr), "%d BASIC BYTES FREE", memmgr_get_free_heap());
+            snprintf(memstr, sizeof(memstr), "%d BASIC BYTES LIBRE", memmgr_get_free_heap());
             canvas_draw_str_aligned(canvas, 64, 9, AlignCenter, AlignTop, memstr);
 
             canvas_set_font(canvas, FontKeyboard);
@@ -395,7 +395,7 @@ static void menu_draw_callback(Canvas* canvas, void* _model) {
 
         furi_string_free(name);
     } else {
-        canvas_draw_str(canvas, 2, 32, "Empty");
+        canvas_draw_str(canvas, 2, 32, "Vide");
         elements_scrollbar(canvas, 0, 0);
     }
 }

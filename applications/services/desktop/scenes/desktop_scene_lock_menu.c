@@ -92,11 +92,11 @@ bool desktop_scene_lock_menu_on_event(void* context, SceneManagerEvent event) {
                 desktop_lock(desktop, true);
             } else {
                 LoaderStatus status = loader_start(
-                    desktop->loader, "Desktop", DESKTOP_SETTINGS_RUN_PIN_SETUP_ARG, NULL);
+                    desktop->loader, "Bureau", DESKTOP_SETTINGS_RUN_PIN_SETUP_ARG, NULL);
                 if(status == LoaderStatusOk) {
                     scene_manager_set_scene_state(desktop->scene_manager, DesktopSceneLockMenu, 1);
                 } else {
-                    FURI_LOG_E(TAG, "Unable to start desktop settings");
+                    FURI_LOG_E(TAG, "Impossible de démarrer les réglages bureau");
                 }
             }
             consumed = true;
@@ -111,18 +111,18 @@ bool desktop_scene_lock_menu_on_event(void* context, SceneManagerEvent event) {
                 furi_record_close(RECORD_POWER);
             } else {
                 LoaderStatus status = loader_start(
-                    desktop->loader, "Desktop", DESKTOP_SETTINGS_RUN_PIN_SETUP_ARG, NULL);
+                    desktop->loader, "Bureau", DESKTOP_SETTINGS_RUN_PIN_SETUP_ARG, NULL);
                 if(status == LoaderStatusOk) {
                     scene_manager_set_scene_state(desktop->scene_manager, DesktopSceneLockMenu, 2);
                 } else {
-                    FURI_LOG_E(TAG, "Unable to start desktop settings");
+                    FURI_LOG_E(TAG, "Impossible de démarrer les réglages bureau");
                 }
             }
             consumed = true;
             break;
         case DesktopLockMenuEventXtreme:
             desktop_scene_lock_menu_save_settings(desktop);
-            loader_start_detached_with_gui_error(desktop->loader, "Xtreme", NULL);
+            loader_start_detached_with_gui_error(desktop->loader, "Kali Zero", NULL);
             consumed = true;
             break;
         case DesktopLockMenuEventStealthModeOn:

@@ -23,12 +23,12 @@ void desktop_scene_hw_mismatch_on_enter(void* context) {
     snprintf(
         text_buffer,
         256,
-        "HW target: %d\nFW target: %d",
+        "HW cible: %d\nFW cible: %d",
         furi_hal_version_get_hw_target(),
         version_get_target(NULL));
     popup_set_context(popup, desktop);
     popup_set_header(
-        popup, "!!!! HW Mismatch !!!!", 60, 14 + STATUS_BAR_Y_SHIFT, AlignCenter, AlignCenter);
+        popup, "!!!! HW Incompatible !!!!", 60, 14 + STATUS_BAR_Y_SHIFT, AlignCenter, AlignCenter);
     popup_set_text(popup, text_buffer, 60, 37 + STATUS_BAR_Y_SHIFT, AlignCenter, AlignCenter);
     popup_set_callback(popup, desktop_scene_hw_mismatch_callback);
     view_dispatcher_switch_to_view(desktop->view_dispatcher, DesktopViewIdHwMismatch);

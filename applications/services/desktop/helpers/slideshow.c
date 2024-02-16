@@ -17,12 +17,12 @@ typedef struct {
     uint8_t height;
     uint8_t frame_count;
 } SlideshowFileHeader;
-_Static_assert(sizeof(SlideshowFileHeader) == 8, "Incorrect SlideshowFileHeader size");
+_Static_assert(sizeof(SlideshowFileHeader) == 8, "Taille SlideshowFileHeader incorrecte");
 
 typedef struct {
     uint16_t size;
 } SlideshowFrameHeader;
-_Static_assert(sizeof(SlideshowFrameHeader) == 2, "Incorrect SlideshowFrameHeader size");
+_Static_assert(sizeof(SlideshowFrameHeader) == 2, "Taille SlideshowFrameHeader incorrecte");
 
 #pragma pack(pop)
 

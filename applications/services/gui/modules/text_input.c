@@ -54,8 +54,8 @@ static const uint8_t keyboard_count = 2;
 #define SWITCH_KEYBOARD_KEY '\t'
 
 static const TextInputKey keyboard_keys_row_1[] = {
-    {'q', 1, 8},
-    {'w', 10, 8},
+    {'a', 1, 8},
+    {'z', 10, 8},
     {'e', 19, 8},
     {'r', 28, 8},
     {'t', 37, 8},
@@ -71,7 +71,7 @@ static const TextInputKey keyboard_keys_row_1[] = {
 };
 
 static const TextInputKey keyboard_keys_row_2[] = {
-    {'a', 1, 20},
+    {'q', 1, 20},
     {'s', 10, 20},
     {'d', 19, 20},
     {'f', 28, 20},
@@ -80,7 +80,8 @@ static const TextInputKey keyboard_keys_row_2[] = {
     {'j', 55, 20},
     {'k', 64, 20},
     {'l', 73, 20},
-    {BACKSPACE_KEY, 82, 11},
+	{'m', 82, 20},
+	{'_', 92, 20},
     {'4', 102, 20},
     {'5', 111, 20},
     {'6', 120, 20},
@@ -88,14 +89,13 @@ static const TextInputKey keyboard_keys_row_2[] = {
 
 static const TextInputKey keyboard_keys_row_3[] = {
     {SWITCH_KEYBOARD_KEY, 0, 23},
-    {'z', 13, 32},
+    {'w', 13, 32},
     {'x', 21, 32},
     {'c', 29, 32},
     {'v', 37, 32},
     {'b', 45, 32},
     {'n', 53, 32},
-    {'m', 61, 32},
-    {'_', 69, 32},
+    {BACKSPACE_KEY, 60, 23},
     {ENTER_KEY, 77, 23},
     {'7', 102, 32},
     {'8', 111, 32},

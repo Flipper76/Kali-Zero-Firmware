@@ -22,7 +22,7 @@
 #include "desktop_i.h"
 #include "helpers/pin.h"
 
-#define TAG "Desktop"
+#define TAG "Bureau"
 
 static void desktop_auto_lock_arm(Desktop*);
 static void desktop_auto_lock_inhibit(Desktop*);
@@ -446,7 +446,7 @@ void desktop_run_keybind(Desktop* instance, InputType _type, InputKey _key) {
         loader_start_detached_with_gui_error(
             instance->loader, EXT_PATH("apps/Tools/nightstand.fap"), "");
     } else if(!strncmp(keybind, "Device Info", MAX_KEYBIND_LENGTH)) {
-        loader_start_detached_with_gui_error(instance->loader, "Power", "about_battery");
+        loader_start_detached_with_gui_error(instance->loader, "Alimentation", "about_battery");
     } else if(!strncmp(keybind, "Lock Menu", MAX_KEYBIND_LENGTH)) {
         view_dispatcher_send_custom_event(instance->view_dispatcher, DesktopMainEventOpenLockMenu);
     } else if(!strncmp(keybind, "Lock Keypad", MAX_KEYBIND_LENGTH)) {
@@ -454,7 +454,7 @@ void desktop_run_keybind(Desktop* instance, InputType _type, InputKey _key) {
     } else if(!strncmp(keybind, "Lock with PIN", MAX_KEYBIND_LENGTH)) {
         view_dispatcher_send_custom_event(instance->view_dispatcher, DesktopMainEventLockWithPin);
     } else if(!strncmp(keybind, "Wipe Device", MAX_KEYBIND_LENGTH)) {
-        loader_start_detached_with_gui_error(instance->loader, "Storage", "wipe");
+        loader_start_detached_with_gui_error(instance->loader, "Stockage", "wipe");
     } else {
         if(storage_common_exists(furi_record_open(RECORD_STORAGE), keybind)) {
             run_with_default_app(keybind);
@@ -469,7 +469,7 @@ int32_t desktop_srv(void* p) {
     UNUSED(p);
 
     if(!furi_hal_is_normal_boot()) {
-        FURI_LOG_W(TAG, "Skipping start in special boot mode");
+        FURI_LOG_W(TAG, "Ignorer le mode démarrage spécial");
         return 0;
     }
 
@@ -519,7 +519,7 @@ int32_t desktop_srv(void* p) {
 
     view_dispatcher_run(desktop->view_dispatcher);
 
-    furi_crash("That was unexpected");
+    furi_crash("Inattendu");
 
     return 0;
 }
