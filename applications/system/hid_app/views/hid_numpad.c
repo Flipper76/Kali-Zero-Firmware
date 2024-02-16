@@ -56,8 +56,8 @@ const HidNumpadKey hid_numpad_keyset[ROW_COUNT][COLUMN_COUNT] = {
     },
     {
         {.width = 1, .height = 1, .icon = NULL, .key = "7", .value = HID_KEYPAD_7},
-        {.width = 1, .height = 1, .icon = NULL, .key = "8", .value = HID_KEYBOARD_8},
-        {.width = 1, .height = 1, .icon = NULL, .key = "9", .value = HID_KEYBOARD_9},
+        {.width = 1, .height = 1, .icon = NULL, .key = "8", .value = HID_KEYPAD_8},
+        {.width = 1, .height = 1, .icon = NULL, .key = "9", .value = HID_KEYPAD_9},
         // {.width = 1, .height = 2, .icon = NULL, .key = "+", .value = HID_KEYPAD_PLUS},
     },
     {
@@ -72,13 +72,13 @@ const HidNumpadKey hid_numpad_keyset[ROW_COUNT][COLUMN_COUNT] = {
         // {.width = 1, .height = 2, .icon = NULL, .key = "En", .value = HID_KEYPAD_ENTER},
     },
     {
-        {.width = 2, .height = 1, .icon = NULL, .key = "0", .value = HID_KEYBOARD_0},
-        {.width = 0, .height = 0, .icon = NULL, .key = "0", .value = HID_KEYBOARD_0},
+        {.width = 2, .height = 1, .icon = NULL, .key = "0", .value = HID_KEYPAD_0},
+        {.width = 0, .height = 0, .icon = NULL, .key = "0", .value = HID_KEYPAD_0},
         {.width = 1, .height = 1, .icon = NULL, .key = ".", .value = HID_KEYPAD_DOT},
     },
     {
         {.width = 1, .height = 1, .icon = NULL, .key = "En", .value = HID_KEYPAD_ENTER},
-        {.width = 1, .height = 1, .icon = NULL, .key = "-", .value = HID_KEYPAD_MINUS},
+        {.width = 1, .height = 1, .icon = NULL, .key = "-", .value = HID_KEYBOARD_MINUS},
         {.width = 1, .height = 1, .icon = NULL, .key = "+", .value = HID_KEYPAD_PLUS},
     },
 };
