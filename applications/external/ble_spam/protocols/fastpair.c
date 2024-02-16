@@ -538,8 +538,8 @@ static const struct {
     {0x87B25F, "Animated Rickroll"},
     {0xF38C02, "Boykisser"},
     {0x1448C9, "BLM"},
-    {0xD5AB33, "Xtreme"},
-    {0x0C0B67, "Xtreme Cta"},
+    {0xD5AB33, "KaliZero"},
+    {0x0C0B67, "KaliZero Cta"},
     {0x13B39D, "Talking Sasquach"},
     {0xAA1FE1, "ClownMaster"},
     {0x7C6CDB, "Obama"},
@@ -660,7 +660,7 @@ static void extra_config(Ctx* ctx) {
     uint8_t value_index;
     uint16_t model_index;
 
-    item = variable_item_list_add(list, "Model Code", 3, model_changed, payload);
+    item = variable_item_list_add(list, "Code mod""\xE8""le", 3, model_changed, payload);
     const char* model_name = NULL;
     char model_name_buf[9];
     switch(payload->mode) {
@@ -696,7 +696,7 @@ static void extra_config(Ctx* ctx) {
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, model_name);
 
-    variable_item_list_add(list, "Requires Google services", 0, NULL, NULL);
+    variable_item_list_add(list, "Besoin: services Google", 0, NULL, NULL);
 
     variable_item_list_set_enter_callback(list, config_callback, ctx);
 }
@@ -800,7 +800,7 @@ void scene_fastpair_model_custom_on_enter(void* _ctx) {
     FastpairCfg* cfg = &payload->cfg.fastpair;
     ByteInput* byte_input = ctx->byte_input;
 
-    byte_input_set_header_text(byte_input, "Enter custom Model Code");
+    byte_input_set_header_text(byte_input, "Entrez le code modèle perso");
 
     ctx->byte_store[0] = (cfg->model >> 0x10) & 0xFF;
     ctx->byte_store[1] = (cfg->model >> 0x08) & 0xFF;

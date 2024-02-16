@@ -47,7 +47,7 @@ void scene_config_on_enter(void* _ctx) {
 
     variable_item_list_set_enter_callback(list, config_callback, ctx);
     if(!ctx->attack->protocol) {
-        variable_item_list_add(list, "None shall escape the SINK", 0, NULL, NULL);
+        variable_item_list_add(list, "Personne n'y ""\xE9""chappe", 0, NULL, NULL);
     } else if(ctx->attack->protocol->extra_config) {
         ctx->fallback_config_enter = config_callback;
         ctx->attack->protocol->extra_config(ctx);
@@ -55,7 +55,7 @@ void scene_config_on_enter(void* _ctx) {
 
     config_bool(list, "LED Indicator", &ctx->led_indicator);
 
-    variable_item_list_add(list, "Lock Keyboard", 0, NULL, NULL);
+    variable_item_list_add(list, "Lock Clavier", 0, NULL, NULL);
 
     variable_item_list_set_selected_item(
         list, scene_manager_get_scene_state(ctx->scene_manager, SceneConfig));

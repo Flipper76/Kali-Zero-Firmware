@@ -8,26 +8,26 @@ static const struct {
     uint32_t value;
     const char* name;
 } buds_models[] = {
-    {0xEE7A0C, "Fallback Buds"},
-    {0x9D1700, "Fallback Dots"},
-    {0x39EA48, "Light Purple Buds2"},
-    {0xA7C62C, "Bluish Silver Buds2"},
-    {0x850116, "Black Buds Live"},
-    {0x3D8F41, "Gray & Black Buds2"},
-    {0x3B6D02, "Bluish Chrome Buds2"},
-    {0xAE063C, "Gray Beige Buds2"},
-    {0xB8B905, "Pure White Buds"},
-    {0xEAAA17, "Pure White Buds2"},
-    {0xD30704, "Black Buds"},
-    {0x9DB006, "French Flag Buds"},
-    {0x101F1A, "Dark Purple Buds Live"},
-    {0x859608, "Dark Blue Buds"},
-    {0x8E4503, "Pink Buds"},
-    {0x2C6740, "White & Black Buds2"},
-    {0x3F6718, "Bronze Buds Live"},
-    {0x42C519, "Red Buds Live"},
-    {0xAE073A, "Black & White Buds2"},
-    {0x011716, "Sleek Black Buds2"},
+    {0xEE7A0C, "Ecouteurs alternatifs"},
+    {0x9D1700, "Points alternatifs"},
+    {0x39EA48, "Buds2 violet clair"},
+    {0xA7C62C, "Buds2 argent bleu""\xE2""tre"},
+    {0x850116, "Buds Live noirs"},
+    {0x3D8F41, "Buds2 gris et noirs"},
+    {0x3B6D02, "Buds2 chrome bleu""\xE2""tre"},
+    {0xAE063C, "Buds2 beige gris"},
+    {0xB8B905, "Buds blancs purs"},
+    {0xEAAA17, "Buds2 blancs purs"},
+    {0xD30704, "Buds noirs"},
+    {0x9DB006, "Buds drapeau fran""\xE7""ais"},
+    {0x101F1A, "Buds Live violet fonc""\xE9"},
+    {0x859608, "Buds bleus fonc""\xE9""s"},
+    {0x8E4503, "Buds roses"},
+    {0x2C6740, "Buds2 blancs et noirs"},
+    {0x3F6718, "Buds Live bronze"},
+    {0x42C519, "Buds Live rouges"},
+    {0xAE073A, "Buds2 noirs et blancs"},
+    {0x011716, "Buds2 noirs ""\xE9""l""\xE9""gants"},
 };
 static const uint8_t buds_models_count = COUNT_OF(buds_models);
 
@@ -35,42 +35,42 @@ static const struct {
     uint8_t value;
     const char* name;
 } watch_models[] = {
-    {0x1A, "Fallback Watch"},
-    {0x01, "White Watch4 Classic 44m"},
-    {0x02, "Black Watch4 Classic 40m"},
-    {0x03, "White Watch4 Classic 40m"},
-    {0x04, "Black Watch4 44mm"},
-    {0x05, "Silver Watch4 44mm"},
-    {0x06, "Green Watch4 44mm"},
-    {0x07, "Black Watch4 40mm"},
-    {0x08, "White Watch4 40mm"},
-    {0x09, "Gold Watch4 40mm"},
+    {0x1A, "Montres alternatives"},
+    {0x01, "Blanc Watch4 Classic 44m"},
+    {0x02, "Noir Watch4 Classic 40m"},
+    {0x03, "Blanc Watch4 Classic 40m"},
+    {0x04, "Noir Watch4 44mm"},
+    {0x05, "Argent Watch4 44mm"},
+    {0x06, "Vert Watch4 44mm"},
+    {0x07, "Noir Watch4 40mm"},
+    {0x08, "Blanc Watch4 40mm"},
+    {0x09, "Or Watch4 40mm"},
     {0x0A, "French Watch4"},
     {0x0B, "French Watch4 Classic"},
-    {0x0C, "Fox Watch5 44mm"},
-    {0x11, "Black Watch5 44mm"},
-    {0x12, "Sapphire Watch5 44mm"},
-    {0x13, "Purpleish Watch5 40mm"},
-    {0x14, "Gold Watch5 40mm"},
-    {0x15, "Black Watch5 Pro 45mm"},
-    {0x16, "Gray Watch5 Pro 45mm"},
-    {0x17, "White Watch5 44mm"},
-    {0x18, "White & Black Watch5"},
-    {0xE4, "Black Watch5 Golf Edition"},
-    {0xE5, "White Watch5 Gold Edition"},
-    {0x1B, "Black Watch6 Pink 40mm"},
-    {0x1C, "Gold Watch6 Gold 40mm"},
-    {0x1D, "Silver Watch6 Cyan 44mm"},
-    {0x1E, "Black Watch6 Classic 43m"},
-    {0x20, "Green Watch6 Classic 43m"},
-    {0xEC, "Black Watch6 Golf Edition"},
-    {0xEF, "Black Watch6 TB Edition"},
+    {0x0C, "Renard Watch5 44mm"},
+    {0x11, "Noir Watch5 44mm"},
+    {0x12, "Saphir Watch5 44mm"},
+    {0x13, "Violet Watch5 40mm"},
+    {0x14, "Or Watch5 40mm"},
+    {0x15, "Noir Watch5 Pro 45mm"},
+    {0x16, "Gris Watch5 Pro 45mm"},
+    {0x17, "Blanc Watch5 44mm"},
+    {0x18, "Blanc/Noir Watch5"},
+    {0xE4, "Noir Watch5 Golf Edition"},
+    {0xE5, "Blanc Watch5 Gold Edition"},
+    {0x1B, "Noir Watch6 Rose 40mm"},
+    {0x1C, "Or Watch6 Or 40mm"},
+    {0x1D, "Argent Watch6 Cyan 44mm"},
+    {0x1E, "Noir Watch6 Classic 43m"},
+    {0x20, "Vert Watch6 Classic 43m"},
+    {0xEC, "Noir Watch6 Golf Edition"},
+    {0xEF, "Noir Watch6 Edition TB"},
 };
 static const uint8_t watch_models_count = COUNT_OF(watch_models);
 
 static const char* type_names[EasysetupTypeCOUNT] = {
-    [EasysetupTypeBuds] = "EasySetup Buds",
-    [EasysetupTypeWatch] = "EasySetup Watch",
+    [EasysetupTypeBuds] = "EasySetup ""\xC9""couteurs",
+    [EasysetupTypeWatch] = "EasySetup Montre",
 };
 static const char* get_name(const Payload* payload) {
     const EasysetupCfg* cfg = &payload->cfg.easysetup;
@@ -274,7 +274,7 @@ static void extra_config(Ctx* ctx) {
     switch(cfg->type) {
     case EasysetupTypeBuds: {
         item = variable_item_list_add(
-            list, "Model Code", buds_models_count + 1, buds_model_changed, payload);
+            list, "Code mod""\xE8""le", buds_models_count + 1, buds_model_changed, payload);
         const char* model_name = NULL;
         char model_name_buf[9];
         switch(payload->mode) {
@@ -305,7 +305,7 @@ static void extra_config(Ctx* ctx) {
         variable_item_set_current_value_index(item, value_index);
         variable_item_set_current_value_text(item, model_name);
 
-        variable_item_list_add(list, "Works on Android 13 only", 0, NULL, NULL);
+        variable_item_list_add(list, "Android 13 uniquement", 0, NULL, NULL);
         break;
     }
     case EasysetupTypeWatch: {
@@ -559,7 +559,7 @@ void scene_easysetup_watch_model_custom_on_enter(void* _ctx) {
     EasysetupCfg* cfg = &payload->cfg.easysetup;
     ByteInput* byte_input = ctx->byte_input;
 
-    byte_input_set_header_text(byte_input, "Enter custom Model Code");
+    byte_input_set_header_text(byte_input, "Entrez code mod""\xE8""le perso");
 
     ctx->byte_store[0] = (cfg->data.watch.model >> 0x00) & 0xFF;
 
