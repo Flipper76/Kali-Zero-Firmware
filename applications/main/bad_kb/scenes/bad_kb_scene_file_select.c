@@ -15,7 +15,7 @@ static bool bad_kb_file_select(BadKbApp* bad_kb) {
         dialog_message_set_text(
             message,
             "Dossier badusb p""\xE9""sent!\n"
-            "XFW utilise le dossier badkb.\n"
+            "KZFW utilise le dossier badkb.\n"
             "Vous souhaitez transf""\xE9""rer les fichiers?",
             64,
             32,

@@ -13,7 +13,7 @@
 #include <toolbox/tar/tar_archive.h>
 #include <toolbox/crc32_calc.h>
 
-#define XFWFIRSTBOOT_FLAG_PATH CFG_PATH("xfwfirstboot.flag")
+#define KZFWFIRSTBOOT_FLAG_PATH CFG_PATH("xfwfirstboot.flag")
 
 #define TAG "UpdWorkerBackup"
 
@@ -205,11 +205,11 @@ static bool update_task_post_update(UpdateTask* update_task) {
             update_task_set_progress(update_task, UpdateTaskStageSplashscreenInstall, 0);
             FuriString* tmp_path;
             tmp_path = furi_string_alloc_set(update_task->update_path);
-            if(storage_common_stat(update_task->storage, XFWFIRSTBOOT_FLAG_PATH, NULL) ==
+            if(storage_common_stat(update_task->storage, KZFWFIRSTBOOT_FLAG_PATH, NULL) ==
                FSE_NOT_EXIST) {
                 File* file = storage_file_alloc(update_task->storage);
                 if(storage_file_open(
-                       file, XFWFIRSTBOOT_FLAG_PATH, FSAM_WRITE, FSOM_CREATE_ALWAYS)) {
+                       file, KZFWFIRSTBOOT_FLAG_PATH, FSAM_WRITE, FSOM_CREATE_ALWAYS)) {
                     storage_file_close(file);
                 }
                 storage_file_free(file);

@@ -19,7 +19,7 @@ DEBUG = 0
 # If OS environment has DIST_SUFFIX set, it will be used instead
 
 # How about we add the timestamp automatically. Solves some problems
-DIST_SUFFIX = f"XFW-DEV_@{subprocess.check_output(['git', 'rev-parse', '--short=7', 'HEAD']).decode().strip().upper()}"
+DIST_SUFFIX = f"KZFW-MAIN_@{subprocess.check_output(['git', 'rev-parse', '--short=7', 'HEAD']).decode().strip().upper()}"
 
 # Coprocessor firmware
 COPRO_OB_DATA = "scripts/ob.data"

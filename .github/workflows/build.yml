@@ -1,67 +1,28 @@
-name: 'Build'
-
+name: SonarCloud
 on:
   push:
     branches:
-      - dev
       - main
-    tags:
-      - '*'
   pull_request:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
-env:
-  TARGETS: f7
-  DEFAULT_TARGET: f7
-  FBT_GIT_SUBMODULE_SHALLOW: 1
-
+    types: [opened, synchronize, reopened]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build and analyze
+    runs-on: windows-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
     steps:
-
-      - name: 'Checkout code'
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: "Read version tag"
-        run: bash .github/workflow_data/commit.sh
-
-      - name: 'Build the firmware'
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install sonar-scanner and build-wrapper
+        uses: SonarSource/sonarcloud-github-c-cpp@v2
+      - name: Run build-wrapper
         run: |
-          set -e
-          for TARGET in ${TARGETS}; do
-            TARGET_HW="$(echo "${TARGET}" | sed 's/f//')"; \
-            ./fbt TARGET_HW=$TARGET_HW DIST_SUFFIX=$VERSION_TAG updater_package
-          done
-
-      - name: "Check for uncommitted changes"
-        run: |
-          git diff --exit-code
-
-      - name: 'Dist artifact'
-        uses: actions/upload-artifact@v3
-        with:
-          name: dist
-          path: |
-            dist/${{ env.DEFAULT_TARGET }}-*/
-
-      - name: "Make tgz, zip and sdk"
-        run: bash .github/workflow_data/package.sh
-
-      - name: Send devbuild webhook
-        if: "github.event_name == 'push' && github.ref_name == 'dev' && !contains(github.event.head_commit.message, '--nobuild')"
+          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }}
+      - name: Run sonar-scanner
         env:
-          NC_HOST: "https://cloud.cynthialabs.net/"
-          NC_USERAGENT: "${{ secrets.NC_USERAGENT }}"
-          NC_USER: "${{ secrets.NC_USER }}"
-          NC_PASS: "${{ secrets.NC_PASS }}"
-          BUILD_WEBHOOK: ${{ secrets.BUILD_WEBHOOK }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          python -m pip install pyncclient
-          python .github/workflow_data/devbuild.py
+          sonar-scanner --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}"
