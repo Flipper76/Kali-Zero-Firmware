@@ -101,7 +101,7 @@ $ cd Kali-Zero-Firmware/
 Pour flasher directement sur le Flipper (Doit être connecté via USB, qFlipper fermé) :
 $ ./fbt flash_usb_full
 
-Pour compiler un package TGZ 
+Pour compiler un package TGZ :
 $ ./fbt updater_package
 
 Pour créer et lancer une seule application :
