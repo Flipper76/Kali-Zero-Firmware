@@ -1,6 +1,6 @@
 <h1 align="center">KZFW - <code>Firmware Kali Zero</code> pour Flipper Zero</h1>
 
-Voici le premier firmware en Français pour Flipper Zero.
+Ce firmware est une tentative de traduction en français du firmware [Xtreme](https://github.com/Flipper-XFW/Xtreme-Firmware).
 -----
 <br>
 <h2 align="center">Paramètres KaliZero:</h2>
