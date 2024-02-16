@@ -1,6 +1,6 @@
 <h1 align="center">KZFW - <code>Firmware Kali Zero</code> pour Flipper Zero</h1>
 
-Ce firmware est une tentative de traduction en français du firmware [Xtreme](https://github.com/Flipper-XFW/Xtreme-Firmware).
+Voici le premier firmware en Français pour Flipper Zero.
 -----
 <br>
 <h2 align="center">Paramètres KaliZero:</h2>
@@ -101,7 +101,7 @@ $ cd Kali-Zero-Firmware/
 Pour flasher directement sur le Flipper (Doit être connecté via USB, qFlipper fermé) :
 $ ./fbt flash_usb_full
 
-Pour compiler un package TGZ :
+Pour compiler un package TGZ 
 $ ./fbt updater_package
 
 Pour créer et lancer une seule application :
