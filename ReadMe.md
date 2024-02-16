@@ -52,7 +52,7 @@ Il existe plusieurs méthodes pour installer Kali Zero, choisissez celle que vou
 ```bash
 Pour télécharger les outils nécessaires :
 $ git clone --recursive --jobs 8 https://github.com/Flipper76/Kali-Zero-Firmware.git
-$ cd Xtreme-Firmware/
+$ cd Kali-Zero-Firmware/
 
 Pour flasher directement sur le Flipper (Doit être connecté via USB, qFlipper fermé)
 $ ./fbt flash_usb_full
