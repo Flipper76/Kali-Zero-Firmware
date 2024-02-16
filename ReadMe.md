@@ -17,8 +17,6 @@ Nous avons écrit une application puissante mais facile à utiliser spécifiquem
 - <ins><b>Divers:</b></ins> Toutes les autres options qui ne trouvent leur place nulle part ailleurs. Changez le nom de votre Flipper, le niveau XP et configurez le <a href="https://github.com/Z3BRO/Flipper-Zero-RGB-Backlight">rétroéclairage RVB</a>.
 
 <br>
-
-<br>
 <h2 align="center">Installation:</h2>
 <br>
 Il existe plusieurs méthodes pour installer Kali Zero, choisissez celle que vous préférez :
@@ -39,8 +37,6 @@ Il existe plusieurs méthodes pour installer Kali Zero, choisissez celle que vou
 > <li>Sur le Flipper, appuyez sur le bouton <code>Flèche vers le bas</code>, cela vous amènera au menu Fichier. Recherchez simplement votre dossier de mises à jour</li>
 > <li>Dans ce dossier, sélectionnez le micrologiciel que vous venez de déplacer et exécutez le fichier simplement appelé <code>Update</code></li>
 > </ul></détails>
-
-<br>
 
 -----
 <br>
