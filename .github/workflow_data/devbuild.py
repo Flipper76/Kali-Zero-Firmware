@@ -56,6 +56,14 @@ if __name__ == "__main__":
                             "value": f"- [Download SDK for development]({dev_share.format(files=os.environ['ARTIFACT_SDK'])})\n- [Download Firmware TGZ]({dev_share.format(files=os.environ['ARTIFACT_TGZ'])})"
                         }
                     ],
+                    "author": {
+                        "name": "Build Succeeded!",
+                        "icon_url": ""
+                    },
+                    "footer": {
+                        "text": "Build go brrrr",
+                        "icon_url": ""
+                    },
                     "timestamp": dt.datetime.utcnow().isoformat()
                 }
             ],
