@@ -1,7 +1,23 @@
 <h1 align="center">KZFW - <code>Firmware Kali Zero</code> pour Flipper Zero</h1>
 
 Ce firmware est une tentative de traduction en français du firmware [Xtreme](https://github.com/Flipper-XFW/Xtreme-Firmware).
-----
+-----
+<br>
+<h2 align="center">Paramètres KaliZero:</h2>
+
+Nous avons écrit une application puissante mais facile à utiliser spécifiquement pour notre micrologiciel, qui vous donne un accès facile à toutes les fonctionnalités sophistiquées que nous avons implémentées:
+
+<img src="https://github.com/Flipper76/Kali-Zero-Firmware/assets/798505/8a96def5-b35a-48ed-be42-566d94b23e7a" align="left" height="160vh"/>
+<img align="left" height="180vh" width="10" src="https://upload.wikimedia.org/wikipedia/commons/3/3d/1_120_transparent.png">
+
+- <ins><b>Interface:</b></ins> Personnalisez chaque élément de votre Flipper, des animations du bureau aux applications du menu principal, en passant par le style de l'écran de verrouillage, etc.
+
+- <ins><b>Protocoles:</b></ins> Ici, vous pouvez basculer entre les modes USB et Bluetooth pour BadKB, et gérer les fréquences Subghz personnalisées.
+
+- <ins><b>Divers:</b></ins> Toutes les autres options qui ne trouvent leur place nulle part ailleurs. Changez le nom de votre Flipper, le niveau XP et configurez le <a href="https://github.com/Z3BRO/Flipper-Zero-RGB-Backlight">rétroéclairage RVB</a>.
+
+<br>
+
 <br>
 <h2 align="center">Paramètres KaliZero:</h2>
 
@@ -42,7 +58,7 @@ Il existe plusieurs méthodes pour installer Kali Zero, choisissez celle que vou
 
 <br>
 
-----
+-----
 <br>
 <h2 align="center">Construisez-le vous-même :</h2>
 
