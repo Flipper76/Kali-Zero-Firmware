@@ -19,7 +19,7 @@ Nous avons écrit une application puissante mais facile à utiliser spécifiquem
 -----
 <br>
 <h2 align="center">Animations / Packs de ressources :
-   <h3 align="center">Vous voulez essayer quelques packs de ressources ? Vérifiez <a href="https://flipper-xtre.me/asset-packs">ici</a>
+   <h3 align="center">Vous voulez essayer quelques packs de ressources ? Vérifiez <a href="https://flipper-xtre.me/asset-packs">ici</a> et <a href="https://lab.flipper.net/apps">ici</a>
    </h3>
 </h2>
 
