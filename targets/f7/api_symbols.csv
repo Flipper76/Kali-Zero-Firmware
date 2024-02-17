@@ -748,17 +748,17 @@ Function,-,ble_profile_hid_mouse_press,_Bool,"FuriHalBleProfileBase*, uint8_t"
 Function,-,ble_profile_hid_mouse_release,_Bool,"FuriHalBleProfileBase*, uint8_t"
 Function,-,ble_profile_hid_mouse_release_all,_Bool,FuriHalBleProfileBase*
 Function,-,ble_profile_hid_mouse_scroll,_Bool,"FuriHalBleProfileBase*, int8_t"
-Function,-,ble_profile_serial_notify_buffer_is_empty,void,FuriHalBleProfileBase*
-Function,-,ble_profile_serial_set_event_callback,void,"FuriHalBleProfileBase*, uint16_t, FuriHalBtSerialCallback, void*"
-Function,-,ble_profile_serial_set_rpc_active,void,"FuriHalBleProfileBase*, _Bool"
-Function,-,ble_profile_serial_tx,_Bool,"FuriHalBleProfileBase*, uint8_t*, uint16_t"
-Function,-,ble_svc_battery_start,BleServiceBattery*,_Bool
-Function,-,ble_svc_battery_state_update,void,"uint8_t*, _Bool*"
-Function,-,ble_svc_battery_stop,void,BleServiceBattery*
-Function,-,ble_svc_battery_update_level,_Bool,"BleServiceBattery*, uint8_t"
-Function,-,ble_svc_battery_update_power_state,_Bool,"BleServiceBattery*, _Bool"
-Function,-,ble_svc_dev_info_start,BleServiceDevInfo*,
-Function,-,ble_svc_dev_info_stop,void,BleServiceDevInfo*
+Function,+,ble_profile_serial_notify_buffer_is_empty,void,FuriHalBleProfileBase*
+Function,+,ble_profile_serial_set_event_callback,void,"FuriHalBleProfileBase*, uint16_t, FuriHalBtSerialCallback, void*"
+Function,+,ble_profile_serial_set_rpc_active,void,"FuriHalBleProfileBase*, _Bool"
+Function,+,ble_profile_serial_tx,_Bool,"FuriHalBleProfileBase*, uint8_t*, uint16_t"
+Function,+,ble_svc_battery_start,BleServiceBattery*,_Bool
+Function,+,ble_svc_battery_state_update,void,"uint8_t*, _Bool*"
+Function,+,ble_svc_battery_stop,void,BleServiceBattery*
+Function,+,ble_svc_battery_update_level,_Bool,"BleServiceBattery*, uint8_t"
+Function,+,ble_svc_battery_update_power_state,_Bool,"BleServiceBattery*, _Bool"
+Function,+,ble_svc_dev_info_start,BleServiceDevInfo*,
+Function,+,ble_svc_dev_info_stop,void,BleServiceDevInfo*
 Function,-,ble_svc_hid_start,BleServiceHid*,
 Function,-,ble_svc_hid_stop,void,BleServiceHid*
 Function,-,ble_svc_hid_update_info,_Bool,"BleServiceHid*, uint8_t*"
@@ -1005,7 +1005,7 @@ Function,+,emv_load,_Bool,"EmvData*, FlipperFormat*, uint32_t"
 Function,+,emv_poller_get_last_online_atc,EmvError,EmvPoller*
 Function,+,emv_poller_get_pin_try_counter,EmvError,EmvPoller*
 Function,+,emv_poller_get_processing_options,EmvError,EmvPoller*
-Function,+,emv_poller_read_afl,EmvError,EmvPoller*
+Function,+,emv_poller_read_afl,EmvError,"EmvPoller*, _Bool, uint16_t*"
 Function,+,emv_poller_read_log_entry,EmvError,EmvPoller*
 Function,+,emv_poller_read_sfi_record,EmvError,"EmvPoller*, uint8_t, uint8_t"
 Function,+,emv_poller_select_application,EmvError,EmvPoller*

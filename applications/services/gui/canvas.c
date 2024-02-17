@@ -182,7 +182,7 @@ void canvas_set_font(Canvas* canvas, Font font) {
     }
     switch(font) {
     case FontPrimary:
-        u8g2_SetFont(&canvas->fb, u8g2_font_chikita_tf);
+        u8g2_SetFont(&canvas->fb, u8g2_font_helvB08_tf); //u8g2_font_chikita_tf
         break;
     case FontSecondary:
 		u8g2_SetFont(&canvas->fb, u8g2_font_chikita_tf);
