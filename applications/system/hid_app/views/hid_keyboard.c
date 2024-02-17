@@ -29,7 +29,7 @@ typedef struct {
 typedef struct {
     uint8_t width;
     char key;
-	char shift_key;
+    char shift_key;
     const Icon* icon;
     const Icon* icon_toggled;
     uint8_t value;
@@ -178,9 +178,8 @@ static void hid_keyboard_draw_key(
             keyWidth,
             KEY_HEIGHT);
     }
-
     if(key.icon != NULL) {
-		const Icon* key_icon = key.icon;
+        const Icon* key_icon = key.icon;
         if((model->ctrl && key.value == HID_KEYBOARD_L_CTRL) ||
            (model->alt && key.value == HID_KEYBOARD_L_ALT) ||
            (model->shift && key.value == HID_KEYBOARD_L_SHIFT) ||
