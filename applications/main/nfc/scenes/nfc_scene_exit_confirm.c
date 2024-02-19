@@ -13,7 +13,7 @@ void nfc_scene_exit_confirm_on_enter(void* context) {
     dialog_ex_set_left_button_text(dialog_ex, "Quitter");
     dialog_ex_set_right_button_text(dialog_ex, "Rester");
     dialog_ex_set_header(dialog_ex, "Quitter le menu NFC?", 64, 0, AlignCenter, AlignTop);
-    dialog_ex_set_text(dialog_ex, "Toutes donn""\xE9""es non \nenregistr""\xE9""es seront perdues", 64, 12, AlignCenter, AlignTop);
+    dialog_ex_set_text(dialog_ex, "Toutes données non \nenregistrées seront perdues", 64, 12, AlignCenter, AlignTop);
     dialog_ex_set_context(dialog_ex, nfc);
     dialog_ex_set_result_callback(dialog_ex, nfc_scene_exit_confirm_dialog_callback);
 

@@ -20,7 +20,7 @@ void storage_settings_scene_sd_info_on_enter(void* context) {
 
     if(sd_status != FSE_OK) {
         dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);
-        dialog_ex_set_header(dialog_ex, "SD non mont""\xE9""e", 64, 3, AlignCenter, AlignTop);
+        dialog_ex_set_header(dialog_ex, "SD non montée", 64, 3, AlignCenter, AlignTop);
         dialog_ex_set_text(
             dialog_ex, "Essayez de repositionner\n""Ne pas formater \nla carte SD.", 3, 19, AlignLeft, AlignTop);
         dialog_ex_set_center_button_text(dialog_ex, "Ok");

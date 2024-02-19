@@ -15,7 +15,7 @@ void hex_viewer_scene_menu_submenu_callback(void* context, uint32_t index) {
 void hex_viewer_scene_menu_on_enter(void* context) {
     HexViewer* app = context;
 
-    submenu_set_header(app->submenu, "S""\xE9""lectionnez l'action");
+    submenu_set_header(app->submenu, "Sélectionnez l'action");
     submenu_add_item(
         app->submenu,
         "Ouvrir fichier ...",
@@ -24,7 +24,7 @@ void hex_viewer_scene_menu_on_enter(void* context) {
         app);
     submenu_add_item(
         app->submenu,
-        "D""\xE9""filer jusqu'""\xE0"" ...",
+        "Défiler jusqu'à ...",
         SubmenuIndexScroll,
         hex_viewer_scene_menu_submenu_callback,
         app);

@@ -12,7 +12,7 @@
  * - c: lfsr_digest8;
  * - u: unknown;
  * - b: battery low; flag to indicate low battery voltage
- * - t: Temperature; in °C
+ * - t: Temperature; in Â°C
  * 
  */
 

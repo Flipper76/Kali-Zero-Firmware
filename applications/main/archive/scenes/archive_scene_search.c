@@ -59,7 +59,7 @@ uint32_t archive_scene_search_dirwalk(void* context) {
             }
             if(result == DirWalkLast) {
                 if(count == 1) {
-                    archive_add_app_item(archive->browser, "/app:search/Aucun r""\xE9""sultat!");
+                    archive_add_app_item(archive->browser, "/app:search/Aucun résultat!");
                     archive_set_item_count(archive->browser, ++count);
                 }
                 break;

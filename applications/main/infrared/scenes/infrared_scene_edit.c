@@ -33,7 +33,7 @@ void infrared_scene_edit_on_enter(void* context) {
         context);
     submenu_add_item(
         submenu,
-        "D""\xE9""placer Bouton",
+        "Déplacer Bouton",
         SubmenuIndexMoveButton,
         infrared_scene_edit_submenu_callback,
         context);
@@ -45,13 +45,13 @@ void infrared_scene_edit_on_enter(void* context) {
         context);
     submenu_add_item(
         submenu,
-        "Renommer T""\xE9""l""\xE9""commande",
+        "Renommer Télécommande",
         SubmenuIndexRenameRemote,
         infrared_scene_edit_submenu_callback,
         context);
     submenu_add_item(
         submenu,
-        "Supprimer T""\xE9""l""\xE9""commande",
+        "Supprimer Télécommande",
         SubmenuIndexDeleteRemote,
         infrared_scene_edit_submenu_callback,
         context);

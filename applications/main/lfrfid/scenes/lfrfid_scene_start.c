@@ -20,7 +20,7 @@ void lfrfid_scene_start_on_enter(void* context) {
 
     submenu_add_item(submenu, "Lire", SubmenuIndexRead, lfrfid_scene_start_submenu_callback, app);
     submenu_add_item(
-        submenu, "Enregistr""\xE9", SubmenuIndexSaved, lfrfid_scene_start_submenu_callback, app);
+        submenu, "Enregistré", SubmenuIndexSaved, lfrfid_scene_start_submenu_callback, app);
     submenu_add_item(
         submenu, "Ajout manuel", SubmenuIndexAddManually, lfrfid_scene_start_submenu_callback, app);
     submenu_add_item(

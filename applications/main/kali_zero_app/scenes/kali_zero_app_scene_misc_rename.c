@@ -31,7 +31,7 @@ void kali_zero_app_scene_misc_rename_on_enter(void* context) {
     KaliZeroApp* app = context;
     TextInput* text_input = app->text_input;
 
-    text_input_set_header_text(text_input, "Laisser vide par d""\xE9""faut");
+    text_input_set_header_text(text_input, "Laisser vide par défaut");
 
     text_input_set_validator(text_input, kali_zero_app_scene_misc_rename_validator, NULL);
 

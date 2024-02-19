@@ -340,9 +340,9 @@ void subghz_view_receiver_draw(Canvas* canvas, SubGhzViewReceiverModel* model) {
                                                                         &I_Fishing_123x52);
             canvas_set_font(canvas, FontPrimary);
             if(model->repeater_state != SubGhzRepeaterStateOff) {
-                canvas_draw_str(canvas, 59, 46, "R""\xE9""p""\xE9""titeur...");
+                canvas_draw_str(canvas, 59, 46, "Répétiteur...");
             } else if(model->hopping_enabled) {
-                canvas_draw_str(canvas, 59, 46, "Analyse tr""\xE9""mie...");
+                canvas_draw_str(canvas, 59, 46, "Analyse trémie...");
             } else {
                 canvas_draw_str(canvas, 59, 46, "Analyse fixe...");
             }
@@ -362,7 +362,7 @@ void subghz_view_receiver_draw(Canvas* canvas, SubGhzViewReceiverModel* model) {
                 (model->device_type == SubGhzRadioDeviceTypeInternal) ? &I_Scanning_123x52 :
                                                                         &I_Fishing_123x52);
             canvas_set_font(canvas, FontPrimary);
-            canvas_draw_str(canvas, 63, 46, "D""\xE9""codage...");
+            canvas_draw_str(canvas, 63, 46, "Décodage...");
             canvas_set_font(canvas, FontSecondary);
         }
     }
@@ -373,7 +373,7 @@ void subghz_view_receiver_draw(Canvas* canvas, SubGhzViewReceiverModel* model) {
     switch(model->bar_show) {
     case SubGhzViewReceiverBarShowLock:
         canvas_draw_icon(canvas, 64, 55, &I_Lock_7x8);
-        canvas_draw_str(canvas, 74, 62, "Verrouill""\xE9");
+        canvas_draw_str(canvas, 74, 62, "Verrouillé");
         break;
     case SubGhzViewReceiverBarShowToUnlockPress:
         canvas_draw_str(canvas, 44, 62, furi_string_get_cstr(model->frequency_str));
@@ -411,7 +411,7 @@ void subghz_view_receiver_draw(Canvas* canvas, SubGhzViewReceiverModel* model) {
         }
         canvas_set_font(canvas, FontSecondary);
         elements_bold_rounded_frame(canvas, 14, 8, 99, 48);
-        elements_multiline_text(canvas, 65, 26, "Pour d""\xE9""verrouiller\nappuyez:");
+        elements_multiline_text(canvas, 65, 26, "Pour déverrouiller\nappuyez:");
         canvas_draw_icon(canvas, 65, 42, &I_Pin_back_arrow_10x8);
         canvas_draw_icon(canvas, 80, 42, &I_Pin_back_arrow_10x8);
         canvas_draw_icon(canvas, 95, 42, &I_Pin_back_arrow_10x8);
@@ -420,7 +420,7 @@ void subghz_view_receiver_draw(Canvas* canvas, SubGhzViewReceiverModel* model) {
         break;
     case SubGhzViewReceiverBarShowUnlock:
         canvas_draw_icon(canvas, 64, 55, &I_Unlock_7x8);
-        canvas_draw_str(canvas, 74, 62, "D""\xE9""verrouiller");
+        canvas_draw_str(canvas, 74, 62, "Déverrouiller");
         break;
     default: {
         const char* frequency_str = furi_string_get_cstr(model->frequency_str);

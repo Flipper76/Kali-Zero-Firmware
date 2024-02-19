@@ -2,7 +2,7 @@
 // http://benchmarksgame.alioth.debian.org/
 //
 // Original version Contributed by Jeremy Zerfas
-// M*LIB port contributed by Patrick Pélissier
+// M*LIB port contributed by Patrick PÃ©lissier
 #define NDEBUG
 #include <stdint.h>
 #include <stdlib.h>

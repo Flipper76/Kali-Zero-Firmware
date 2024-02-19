@@ -26,7 +26,7 @@ void nfc_scene_mf_ultralight_wrong_card_on_enter(void* context) {
         AlignLeft,
         AlignTop,
         FontSecondary,
-        "Pr""\xE9""sent""\xE9""e"" une carte similaire");
+        "Présentée"" une carte similaire");
     //"Data management\nis only possible\nwith card of same type");
     widget_add_button_element(
         widget,

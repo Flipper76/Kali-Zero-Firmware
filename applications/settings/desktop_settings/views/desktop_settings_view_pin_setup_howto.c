@@ -26,7 +26,7 @@ static void desktop_settings_view_pin_setup_howto_draw(Canvas* canvas, void* mod
     elements_multiline_text_aligned(canvas, 64, 0, AlignCenter, AlignTop, "Config. PIN");
 
     canvas_set_font(canvas, FontSecondary);
-    elements_multiline_text(canvas, 58, 24, "Utiliser fl""\xE8""ches \ncomme PIN");
+    elements_multiline_text(canvas, 58, 24, "Utiliser flèches \ncomme PIN");
 }
 
 static bool desktop_settings_view_pin_setup_howto_input(InputEvent* event, void* context) {

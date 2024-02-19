@@ -118,11 +118,11 @@ void desktop_view_locked_draw_lockscreen(Canvas* canvas, void* m) {
         canvas_set_font(canvas, FontSecondary);
         if(model->pin_locked) {
             elements_bubble_str(
-                canvas, 12, 14 + y, "Appuyer\npour d""\xE9""verrouiller!", AlignRight, AlignBottom);
+                canvas, 12, 14 + y, "Appuyer\npour déverrouiller!", AlignRight, AlignBottom);
             canvas_draw_icon(canvas, 45, 16 + y, &I_Pin_arrow_up_7x9);
         } else {
             elements_bubble_str(
-                canvas, 2, 14 + y, "Press 3x\npour d""\xE9""verrouiller!", AlignRight, AlignBottom);
+                canvas, 2, 14 + y, "Press 3x\npour déverrouiller!", AlignRight, AlignBottom);
             canvas_draw_icon(canvas, 43, 17 + y, &I_Pin_back_arrow_10x8);
         }
     }

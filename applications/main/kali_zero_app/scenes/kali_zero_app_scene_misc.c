@@ -30,7 +30,7 @@ void kali_zero_app_scene_misc_on_enter(void* context) {
     VariableItem* item;
     uint8_t value_index;
 
-    item = variable_item_list_add(var_item_list, "\xC9""cran", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "Écran", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
     item = variable_item_list_add(var_item_list, "Dauphin", 0, NULL, app);
@@ -46,7 +46,7 @@ void kali_zero_app_scene_misc_on_enter(void* context) {
     variable_item_set_current_value_text(item, cap_str);
 
 
-    variable_item_list_add(var_item_list, "Afficher Intro Kali Z\xE9ro", 0, NULL, app);
+    variable_item_list_add(var_item_list, "Afficher Intro Kali Zéro", 0, NULL, app);
 
     variable_item_list_set_enter_callback(
         var_item_list, kali_zero_app_scene_misc_var_item_list_callback, app);

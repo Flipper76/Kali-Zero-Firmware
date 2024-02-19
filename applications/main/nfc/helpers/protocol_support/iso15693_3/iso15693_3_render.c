@@ -31,14 +31,14 @@ void nfc_render_iso15693_3_brief(const Iso15693_3Data* data, FuriString* str) {
         const uint16_t block_count = iso15693_3_get_block_count(data);
         const uint8_t block_size = iso15693_3_get_block_size(data);
 
-        furi_string_cat_printf(str, "\nM""\xE9""moire: %u bytes\n", block_count * block_size);
+        furi_string_cat_printf(str, "\nMémoire: %u bytes\n", block_count * block_size);
         furi_string_cat_printf(str, "(%u blocs x %u bytes)", block_count, block_size);
     }
 }
 
 void nfc_render_iso15693_3_system_info(const Iso15693_3Data* data, FuriString* str) {
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_MEMORY) {
-        furi_string_cat(str, "\e#Donn""\xE9""es m""\xE9""moire\n\e*--------------------\n");
+        furi_string_cat(str, "\e#Données mémoire\n\e*--------------------\n");
 
         const uint16_t block_count = iso15693_3_get_block_count(data);
         const uint8_t block_size = iso15693_3_get_block_size(data);
@@ -60,7 +60,7 @@ void nfc_render_iso15693_3_system_info(const Iso15693_3Data* data, FuriString* s
         if(block_count != display_block_count) {
             furi_string_cat_printf(
                 str,
-                "(Donn""\xE9""es volumineuses. Afficher les %u premiers octets.)",
+                "(Données volumineuses. Afficher les %u premiers octets.)",
                 display_block_count * block_size);
         }
     } else {
@@ -69,7 +69,7 @@ void nfc_render_iso15693_3_system_info(const Iso15693_3Data* data, FuriString* s
 }
 
 void nfc_render_iso15693_3_extra(const Iso15693_3Data* data, FuriString* str) {
-    furi_string_cat(str, "\n::::::::::::::::[Infos g""\xE9""n""\xE9""rales]:::::::::::::::::\n");
+    furi_string_cat(str, "\n::::::::::::::::[Infos générales]:::::::::::::::::\n");
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_DSFID) {
         furi_string_cat_printf(str, "DSFID: %02X\n", data->system_info.ic_ref);
     }
@@ -79,18 +79,18 @@ void nfc_render_iso15693_3_extra(const Iso15693_3Data* data, FuriString* str) {
     }
 
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_IC_REF) {
-        furi_string_cat_printf(str, "R""\xE9""f""\xE9""rence IC: %02X\n", data->system_info.ic_ref);
+        furi_string_cat_printf(str, "Référence IC: %02X\n", data->system_info.ic_ref);
     }
 
     furi_string_cat(str, ":::::::::::::::::::[Lock bits]::::::::::::::::::::\n");
 
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_DSFID) {
         furi_string_cat_printf(
-            str, "DSFID: %s bloqu""\xE9""\n", data->settings.lock_bits.dsfid ? "" : "non");
+            str, "DSFID: %s bloqué\n", data->settings.lock_bits.dsfid ? "" : "non");
     }
 
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_AFI) {
         furi_string_cat_printf(
-            str, "AFI: %s bloqu""\xE9""\n", data->settings.lock_bits.dsfid ? "" : "non");
+            str, "AFI: %s bloqué\n", data->settings.lock_bits.dsfid ? "" : "non");
     }
 }

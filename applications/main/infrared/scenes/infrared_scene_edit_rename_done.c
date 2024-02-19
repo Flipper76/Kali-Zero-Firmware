@@ -5,7 +5,7 @@ void infrared_scene_edit_rename_done_on_enter(void* context) {
     Popup* popup = infrared->popup;
 
     popup_set_icon(popup, 36, 5, &I_DolphinSaved_92x58);
-    popup_set_header(popup, "Enregistr""\xE9""", 15, 19, AlignLeft, AlignBottom);
+    popup_set_header(popup, "Enregistré", 15, 19, AlignLeft, AlignBottom);
     popup_set_callback(popup, infrared_popup_closed_callback);
     popup_set_context(popup, context);
     popup_set_timeout(popup, 1500);

@@ -13,7 +13,7 @@ void ibutton_scene_read_on_enter(void* context) {
     iButtonWorker* worker = ibutton->worker;
 
     popup_set_header(popup, "iButton", 95, 4, AlignCenter, AlignTop);
-    popup_set_text(popup, "Appliquer la \ncl""\xE9"" sur\nle dos de \n Flipper", 95, 14, AlignCenter, AlignTop);
+    popup_set_text(popup, "Appliquer la \nclé sur\nle dos de \n Flipper", 95, 14, AlignCenter, AlignTop);
     popup_set_icon(popup, 0, 5, &I_DolphinWait_61x59);
 
     view_dispatcher_switch_to_view(ibutton->view_dispatcher, iButtonViewPopup);

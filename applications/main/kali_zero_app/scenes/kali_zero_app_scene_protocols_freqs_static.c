@@ -42,9 +42,9 @@ void kali_zero_app_scene_protocols_freqs_static_on_enter(void* context) {
         variable_item_set_current_value_text(item, "Aucune");
     }
 
-    variable_item_list_add(var_item_list, "Supprimer une fr""\xE9""quence statique", 0, NULL, app);
+    variable_item_list_add(var_item_list, "Supprimer une fréquence statique", 0, NULL, app);
 
-    variable_item_list_add(var_item_list, "Ajouter une fr""\xE9""quence statique", 0, NULL, app);
+    variable_item_list_add(var_item_list, "Ajouter une fréquence statique", 0, NULL, app);
 
     variable_item_list_set_enter_callback(
         var_item_list, kali_zero_app_scene_protocols_freqs_static_var_item_list_callback, app);

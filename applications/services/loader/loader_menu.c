@@ -105,7 +105,7 @@ static void loader_menu_build_menu(LoaderMenuApp* app, LoaderMenu* menu) {
     menu_add_item(
         app->primary_menu, last->name, last->icon, (uint32_t)last->path, loader_menu_callback, app);
     menu_add_item(
-        app->primary_menu, "Param""\xE8""tres", &A_Settings_14, 0, loader_menu_switch_to_settings, app);
+        app->primary_menu, "Paramètres", &A_Settings_14, 0, loader_menu_switch_to_settings, app);
 };
 
 static void loader_menu_build_submenu(LoaderMenuApp* app, LoaderMenu* loader_menu) {

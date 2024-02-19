@@ -14,7 +14,7 @@ void gpio_scene_usb_uart_close_rpc_on_enter(void* context) {
         AlignLeft,
         AlignTop,
         FontSecondary,
-		"D""\xE9""connecter \nPC/telephone pour\nutiliser la fonction");
+		"Déconnecter \nPC/telephone pour\nutiliser la fonction");
 
     view_dispatcher_switch_to_view(app->view_dispatcher, GpioAppViewUsbUartCloseRpc);
 }

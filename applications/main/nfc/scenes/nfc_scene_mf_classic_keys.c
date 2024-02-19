@@ -32,7 +32,7 @@ void nfc_scene_mf_classic_keys_on_enter(void* context) {
 
     FuriString* temp_str = furi_string_alloc();
     widget_add_string_element(
-        instance->widget, 0, 0, AlignLeft, AlignTop, FontPrimary, "Cl""\xE9""s classiques MIFARE");
+        instance->widget, 0, 0, AlignLeft, AlignTop, FontPrimary, "Clés classiques MIFARE");
     furi_string_printf(temp_str, "Dict. syst: %lu", flipper_dict_keys_total);
     widget_add_string_element(
         instance->widget,

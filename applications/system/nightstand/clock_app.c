@@ -188,7 +188,7 @@ static void clock_render_callback(Canvas* const canvas, void* ctx) {
         canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignTop, timer_string); // DRAW TIMER
         canvas_set_font(canvas, FontSecondary);
         canvas_draw_str_aligned(canvas, 64, 20, AlignCenter, AlignTop, date_string); // DRAW DATE
-        elements_button_left(canvas, "R""\xE9""initialiser");
+        elements_button_left(canvas, "RÃ©initialiser");
     } else {
         canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignCenter, time_string);
         canvas_set_font(canvas, FontSecondary);
@@ -200,7 +200,7 @@ static void clock_render_callback(Canvas* const canvas, void* ctx) {
     if(timer_running) {
         elements_button_center(canvas, "Stop");
     } else if(timer_start_timestamp != 0 && !timer_running) {
-        elements_button_center(canvas, "D""\xE9""but");
+        elements_button_center(canvas, "DÃ©but");
     }
 }
 
@@ -258,7 +258,7 @@ int32_t clock_app(void* p) {
 
     plugin_state->event_queue = furi_message_queue_alloc(8, sizeof(PluginEvent));
     if(plugin_state->event_queue == NULL) {
-        FURI_LOG_E(TAG, "Impossible de créer une file d'attente event");
+        FURI_LOG_E(TAG, "Impossible de crÃ©er une file d'attente event");
         free(plugin_state);
         return 255;
     }
@@ -266,7 +266,7 @@ int32_t clock_app(void* p) {
 
     plugin_state->mutex = furi_mutex_alloc(FuriMutexTypeNormal);
     if(plugin_state->mutex == NULL) {
-        FURI_LOG_E(TAG, "Impossible de créer un mutex");
+        FURI_LOG_E(TAG, "Impossible de crÃ©er un mutex");
         furi_message_queue_free(plugin_state->event_queue);
         free(plugin_state);
         return 255;
@@ -291,7 +291,7 @@ int32_t clock_app(void* p) {
         furi_timer_alloc(clock_tick, FuriTimerTypePeriodic, plugin_state->event_queue);
 
     if(timer == NULL) {
-        FURI_LOG_E(TAG, "Impossible de créer un timer");
+        FURI_LOG_E(TAG, "Impossible de crÃ©er un timer");
         furi_mutex_free(plugin_state->mutex);
         furi_message_queue_free(plugin_state->event_queue);
         free(plugin_state);

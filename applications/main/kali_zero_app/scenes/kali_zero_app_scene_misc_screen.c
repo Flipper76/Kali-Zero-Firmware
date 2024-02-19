@@ -164,7 +164,7 @@ void kali_zero_app_scene_misc_screen_on_enter(void* context) {
     variable_item_set_current_value_index(item, value);
     variable_item_set_current_value_text(item, value ? "ON" : "OFF");
 
-    item = variable_item_list_add(var_item_list, "R""\xE9""tro""\xE9""clairage RVB", 1, NULL, app);
+    item = variable_item_list_add(var_item_list, "Rétroéclairage RVB", 1, NULL, app);
     variable_item_set_current_value_text(item, kalizero_settings.rgb_backlight ? "ON" : "OFF");
 
     RgbColor color;
@@ -188,19 +188,19 @@ void kali_zero_app_scene_misc_screen_on_enter(void* context) {
             snprintf(str, sizeof(str), "%02X%02X%02X", color.r, color.g, color.b);
             variable_item_set_current_value_text(item, str);
         }
-        variable_item_set_locked(item, !kalizero_settings.rgb_backlight, "N""\xE9""cessite un \nr""\xE9""tro""\xE9""clairage \nRVB!");
+        variable_item_set_locked(item, !kalizero_settings.rgb_backlight, "Nécessite un \nrétroéclairage \nRVB!");
     }
 
     item = variable_item_list_add(
         var_item_list,
-        "\xC9""cran LCD arc-en-ciel",
+        "Écran LCD arc-en-ciel",
         RGBBacklightRainbowModeCount,
         kali_zero_app_scene_misc_screen_rainbow_lcd_changed,
         app);
     value_index = rgb_backlight_get_rainbow_mode();
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, rainbow_lcd_names[value_index]);
-    variable_item_set_locked(item, !kalizero_settings.rgb_backlight, "N""\xE9""cessite un \nr""\xE9""tro""\xE9""clairage \nRVB!");
+    variable_item_set_locked(item, !kalizero_settings.rgb_backlight, "Nécessite un \nrétroéclairage \nRVB!");
 
     item = variable_item_list_add(
         var_item_list,
@@ -213,7 +213,7 @@ void kali_zero_app_scene_misc_screen_on_enter(void* context) {
     char speed_str[4];
     snprintf(speed_str, sizeof(speed_str), "%d", value_index);
     variable_item_set_current_value_text(item, speed_str);
-    variable_item_set_locked(item, !kalizero_settings.rgb_backlight, "N""\xE9""cessite un \nr""\xE9""tro""\xE9""clairage \nRVB!");
+    variable_item_set_locked(item, !kalizero_settings.rgb_backlight, "Nécessite un \nrétroéclairage \nRVB!");
 
     item = variable_item_list_add(
         var_item_list,
@@ -227,7 +227,7 @@ void kali_zero_app_scene_misc_screen_on_enter(void* context) {
         COUNT_OF(rainbow_interval_values));
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, rainbow_interval_names[value_index]);
-    variable_item_set_locked(item, !kalizero_settings.rgb_backlight, "N""\xE9""cessite un \nr""\xE9""tro""\xE9""clairage \nRVB!");
+    variable_item_set_locked(item, !kalizero_settings.rgb_backlight, "Nécessite un \nrétroéclairage \nRVB!");
 
     item = variable_item_list_add(
         var_item_list,
@@ -240,7 +240,7 @@ void kali_zero_app_scene_misc_screen_on_enter(void* context) {
     char saturation_str[4];
     snprintf(saturation_str, sizeof(saturation_str), "%d", value_index);
     variable_item_set_current_value_text(item, saturation_str);
-    variable_item_set_locked(item, !kalizero_settings.rgb_backlight, "N""\xE9""cessite un \nr""\xE9""tro""\xE9""clairage \nRVB!");
+    variable_item_set_locked(item, !kalizero_settings.rgb_backlight, "Nécessite un \nrétroéclairage \nRVB!");
 
     variable_item_list_set_enter_callback(
         var_item_list, kali_zero_app_scene_misc_screen_var_item_list_callback, app);
@@ -264,11 +264,11 @@ bool kali_zero_app_scene_misc_screen_on_event(void* context, SceneManagerEvent e
             bool change = kalizero_settings.rgb_backlight;
             if(!change) {
                 DialogMessage* msg = dialog_message_alloc();
-                dialog_message_set_header(msg, "R""\xE9""tro""\xE9""clairage RVB", 64, 0, AlignCenter, AlignTop);
+                dialog_message_set_header(msg, "Rétroéclairage RVB", 64, 0, AlignCenter, AlignTop);
                 dialog_message_set_buttons(msg, "Non", NULL, "Oui");
                 dialog_message_set_text(
                     msg,
-                    "Cette option n""\xE9""cessite \nl'installation\n d'une modification \nmat""\xE9""rielle!\nEst-elle install""\xE9""?",
+                    "Cette option nécessite \nl'installation\n d'une modification \nmatérielle!\nEst-elle installé?",
                     64,
                     32,
                     AlignCenter,
@@ -291,24 +291,24 @@ bool kali_zero_app_scene_misc_screen_on_event(void* context, SceneManagerEvent e
                     variable_item_set_locked(
                         variable_item_list_get(app->var_item_list, VarItemListIndexLcdColor0 + i),
                         !kalizero_settings.rgb_backlight,
-                        "N""\xE9""cessite un \nr""\xE9""tro""\xE9""clairage \nRVB!");
+                        "Nécessite un \nrétroéclairage \nRVB!");
                 }
                 variable_item_set_locked(
                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowLcd),
                     !kalizero_settings.rgb_backlight,
-                    "N""\xE9""cessite un \nr""\xE9""tro""\xE9""clairage \nRVB!");
+                    "Nécessite un \nrétroéclairage \nRVB!");
                 variable_item_set_locked(
                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowSpeed),
                     !kalizero_settings.rgb_backlight,
-                    "N""\xE9""cessite un \nr""\xE9""tro""\xE9""clairage \nRVB!");
+                    "Nécessite un \nrétroéclairage \nRVB!");
                 variable_item_set_locked(
                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowInterval),
                     !kalizero_settings.rgb_backlight,
-                    "N""\xE9""cessite un \nr""\xE9""tro""\xE9""clairage \nRVB!");
+                    "Nécessite un \nrétroéclairage \nRVB!");
                 variable_item_set_locked(
                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowSaturation),
                     !kalizero_settings.rgb_backlight,
-                    "N""\xE9""cessite un \nr""\xE9""tro""\xE9""clairage \nRVB!");
+                    "Nécessite un \nrétroéclairage \nRVB!");
             }
             break;
         }

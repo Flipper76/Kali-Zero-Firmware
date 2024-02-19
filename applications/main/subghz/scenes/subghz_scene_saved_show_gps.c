@@ -51,7 +51,7 @@ void subghz_scene_saved_show_gps_draw_satellites(void* context) {
 
     furi_string_printf(
         text_str,
-		"Captur: %f,\r\n%f\r\n\r\nTemps : Sats: %d\r\nDistance : %.2f%s Dir: %s\r\nHeure GPS: %02d:%02d:%02d UTC",
+		"Captur: %f,\r\n%f\r\n\r\nTemps : Sats: %d\r\nDistanceÂ : %.2f%s Dir: %s\r\nHeure GPS: %02d:%02d:%02d UTC",
         latitude,
         longitude,
         subghz->gps->satellites,

@@ -49,7 +49,7 @@ static void hid_mouse_jiggler_draw_callback(Canvas* canvas, void* context) {
     furi_string_free(interval_str);
 
     canvas_set_font(canvas, FontPrimary);
-    elements_multiline_text(canvas, AlignLeft, 40, "Presser D""\xE9""but\npour jiggle");
+    elements_multiline_text(canvas, AlignLeft, 40, "Presser Début\npour jiggle");
     canvas_set_font(canvas, FontSecondary);
 
     // Ok
@@ -62,7 +62,7 @@ static void hid_mouse_jiggler_draw_callback(Canvas* canvas, void* context) {
     if(model->running) {
         elements_multiline_text_aligned(canvas, 91, 41, AlignLeft, AlignBottom, "Stop");
     } else {
-        elements_multiline_text_aligned(canvas, 91, 41, AlignLeft, AlignBottom, "D""\xE9""but");
+        elements_multiline_text_aligned(canvas, 91, 41, AlignLeft, AlignBottom, "Début");
     }
     canvas_set_color(canvas, ColorBlack);
 

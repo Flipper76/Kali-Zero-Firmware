@@ -119,7 +119,7 @@ bool subghz_scene_transmitter_on_event(void* context, SceneManagerEvent event) {
                 subghz->scene_manager, SubGhzSceneStart);
             return true;
         } else if(event.event == SubGhzCustomEventViewTransmitterError) {
-            furi_string_set(subghz->error_str, "Protocole non\ntrouv""\xE9""!");
+            furi_string_set(subghz->error_str, "Protocole non\ntrouvé!");
             scene_manager_next_scene(subghz->scene_manager, SubGhzSceneShowErrorSub);
         }
     } else if(event.type == SceneManagerEventTypeTick) {

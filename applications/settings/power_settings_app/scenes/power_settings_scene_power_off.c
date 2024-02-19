@@ -11,7 +11,7 @@ void power_settings_scene_power_off_on_enter(void* context) {
     PowerSettingsApp* app = context;
     DialogEx* dialog = app->dialog;
 
-    dialog_ex_set_header(dialog, "\xC9""teindre l'appareil?", 64, 2, AlignCenter, AlignTop);
+    dialog_ex_set_header(dialog, "Éteindre l'appareil?", 64, 2, AlignCenter, AlignTop);
     if(kalizero_assets.is_nsfw) {
         dialog_ex_set_text(
             dialog, "   Je vous \nattendrai\nBOSS", 78, 16, AlignLeft, AlignTop);

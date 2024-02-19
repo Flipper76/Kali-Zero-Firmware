@@ -37,7 +37,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
     canvas_draw_str(canvas, 2, 8, furi_string_get_cstr(disp_str));
 
     if(strlen(model->layout) == 0) {
-        furi_string_set(disp_str, "(d""\xE9""faut)");
+        furi_string_set(disp_str, "(défaut)");
     } else {
         furi_string_printf(disp_str, "(%s)", model->layout);
     }

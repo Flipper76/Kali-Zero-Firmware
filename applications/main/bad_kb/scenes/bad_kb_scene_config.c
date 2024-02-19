@@ -71,14 +71,14 @@ void bad_kb_scene_config_on_enter(void* context) {
 
         item = variable_item_list_add(var_item_list, "Adresse MAC BT", 0, NULL, bad_kb);
         if(bad_kb->bt_remember) {
-            variable_item_set_locked(item, true, "Rappelez-vous\ndoit ""\xEA""tre Off!");
+            variable_item_set_locked(item, true, "Rappelez-vous\ndoit être Off!");
         } else if(bad_kb->set_bt_id) {
             variable_item_set_locked(item, true, "Le script a \n""un BT_ID cmd ! \nLock sur\nset MAC!");
         }
 
         item = variable_item_list_add(var_item_list, "Randomize BT MAC", 0, NULL, bad_kb);
         if(bad_kb->bt_remember) {
-            variable_item_set_locked(item, true, "Rappelez-vous\ndoit ""\xEA""tre Off!");
+            variable_item_set_locked(item, true, "Rappelez-vous\ndoit être Off!");
         } else if(bad_kb->set_bt_id) {
             variable_item_set_locked(item, true, "Le script a \n""un BT_ID cmd ! \nLock sur\nset MAC!");
         }

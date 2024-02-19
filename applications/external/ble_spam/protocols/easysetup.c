@@ -11,23 +11,23 @@ static const struct {
     {0xEE7A0C, "Ecouteurs alternatifs"},
     {0x9D1700, "Points alternatifs"},
     {0x39EA48, "Buds2 violet clair"},
-    {0xA7C62C, "Buds2 argent bleu""\xE2""tre"},
+    {0xA7C62C, "Buds2 argent bleuâtre"},
     {0x850116, "Buds Live noirs"},
     {0x3D8F41, "Buds2 gris et noirs"},
-    {0x3B6D02, "Buds2 chrome bleu""\xE2""tre"},
+    {0x3B6D02, "Buds2 chrome bleuâtre"},
     {0xAE063C, "Buds2 beige gris"},
     {0xB8B905, "Buds blancs purs"},
     {0xEAAA17, "Buds2 blancs purs"},
     {0xD30704, "Buds noirs"},
-    {0x9DB006, "Buds drapeau fran""\xE7""ais"},
-    {0x101F1A, "Buds Live violet fonc""\xE9"},
-    {0x859608, "Buds bleus fonc""\xE9""s"},
+    {0x9DB006, "Buds drapeau français"},
+    {0x101F1A, "Buds Live violet foncé"},
+    {0x859608, "Buds bleus foncés"},
     {0x8E4503, "Buds roses"},
     {0x2C6740, "Buds2 blancs et noirs"},
     {0x3F6718, "Buds Live bronze"},
     {0x42C519, "Buds Live rouges"},
     {0xAE073A, "Buds2 noirs et blancs"},
-    {0x011716, "Buds2 noirs ""\xE9""l""\xE9""gants"},
+    {0x011716, "Buds2 noirs élégants"},
 };
 static const uint8_t buds_models_count = COUNT_OF(buds_models);
 
@@ -69,7 +69,7 @@ static const struct {
 static const uint8_t watch_models_count = COUNT_OF(watch_models);
 
 static const char* type_names[EasysetupTypeCOUNT] = {
-    [EasysetupTypeBuds] = "EasySetup ""\xC9""couteurs",
+    [EasysetupTypeBuds] = "EasySetup Écouteurs",
     [EasysetupTypeWatch] = "EasySetup Montre",
 };
 static const char* get_name(const Payload* payload) {
@@ -274,7 +274,7 @@ static void extra_config(Ctx* ctx) {
     switch(cfg->type) {
     case EasysetupTypeBuds: {
         item = variable_item_list_add(
-            list, "Code mod""\xE8""le", buds_models_count + 1, buds_model_changed, payload);
+            list, "Code modèle", buds_models_count + 1, buds_model_changed, payload);
         const char* model_name = NULL;
         char model_name_buf[9];
         switch(payload->mode) {
@@ -559,7 +559,7 @@ void scene_easysetup_watch_model_custom_on_enter(void* _ctx) {
     EasysetupCfg* cfg = &payload->cfg.easysetup;
     ByteInput* byte_input = ctx->byte_input;
 
-    byte_input_set_header_text(byte_input, "Entrez code mod""\xE8""le perso");
+    byte_input_set_header_text(byte_input, "Entrez code modèle perso");
 
     ctx->byte_store[0] = (cfg->data.watch.model >> 0x00) & 0xFF;
 

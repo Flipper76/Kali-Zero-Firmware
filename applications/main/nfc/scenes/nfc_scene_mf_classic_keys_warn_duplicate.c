@@ -12,11 +12,11 @@ void nfc_scene_mf_classic_keys_warn_duplicate_on_enter(void* context) {
     // Setup view
     Popup* popup = instance->popup;
     popup_set_icon(popup, 83, 22, &I_WarningDolphinFlip_45x42);
-    popup_set_header(popup, "La cl""\xE9"" existe!", 64, 3, AlignCenter, AlignTop);
+    popup_set_header(popup, "La clé existe!", 64, 3, AlignCenter, AlignTop);
     popup_set_text(
         popup,
         "Veuillez saisir une\n"
-        "Autre cl""\xE9",
+        "Autre clé",
         4,
         24,
         AlignLeft,

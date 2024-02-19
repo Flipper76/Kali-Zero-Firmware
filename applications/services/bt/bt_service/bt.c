@@ -485,7 +485,7 @@ int32_t bt_srv(void* p) {
             furi_hal_bt_set_key_storage_change_callback(bt_on_key_storage_change_callback, bt);
         }
     } else {
-        bt_show_warning(bt, "Pile radio non support""\xE9");
+        bt_show_warning(bt, "Pile radio non supporté");
         bt->status = BtStatusUnavailable;
     }
 

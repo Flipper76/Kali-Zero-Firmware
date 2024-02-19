@@ -18,7 +18,7 @@ static void kali_zero_app_scene_protocols_gpio_cc1101_handle_changed(VariableIte
     kalizero_settings.spi_cc1101_handle =
         variable_item_get_current_value_index(item) == 0 ? SpiDefault : SpiExtra;
     variable_item_set_current_value_text(
-        item, kalizero_settings.spi_cc1101_handle == SpiDefault ? "D""\xE9""faut" : "Extra");
+        item, kalizero_settings.spi_cc1101_handle == SpiDefault ? "Défaut" : "Extra");
     app->save_settings = true;
 }
 
@@ -27,7 +27,7 @@ static void kali_zero_app_scene_protocols_gpio_nrf24_handle_changed(VariableItem
     kalizero_settings.spi_nrf24_handle =
         variable_item_get_current_value_index(item) == 0 ? SpiDefault : SpiExtra;
     variable_item_set_current_value_text(
-        item, kalizero_settings.spi_nrf24_handle == SpiDefault ? "D""\xE9""faut" : "Extra");
+        item, kalizero_settings.spi_nrf24_handle == SpiDefault ? "Défaut" : "Extra");
     app->save_settings = true;
 }
 
@@ -74,7 +74,7 @@ void kali_zero_app_scene_protocols_gpio_on_enter(void* context) {
         app);
     variable_item_set_current_value_index(item, kalizero_settings.spi_cc1101_handle);
     variable_item_set_current_value_text(
-        item, kalizero_settings.spi_cc1101_handle == SpiDefault ? "D""\xE9""faut" : "Extra");
+        item, kalizero_settings.spi_cc1101_handle == SpiDefault ? "Défaut" : "Extra");
 
     item = variable_item_list_add(
         var_item_list,
@@ -84,7 +84,7 @@ void kali_zero_app_scene_protocols_gpio_on_enter(void* context) {
         app);
     variable_item_set_current_value_index(item, kalizero_settings.spi_nrf24_handle);
     variable_item_set_current_value_text(
-        item, kalizero_settings.spi_nrf24_handle == SpiDefault ? "D""\xE9""faut" : "Extra");
+        item, kalizero_settings.spi_nrf24_handle == SpiDefault ? "Défaut" : "Extra");
 
     item = variable_item_list_add(
         var_item_list,
@@ -108,7 +108,7 @@ void kali_zero_app_scene_protocols_gpio_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Canal UART G""\xE9""n""\xE9""ral",
+        "Canal UART Général",
         2,
         kali_zero_app_scene_protocols_gpio_general_channel_changed,
         app);

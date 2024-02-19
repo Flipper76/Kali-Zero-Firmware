@@ -51,7 +51,7 @@ void ibutton_scene_write_on_enter(void* context) {
 
     ibutton_worker_write_set_callback(worker, ibutton_scene_write_callback, ibutton);
 
-    furi_string_set(tmp, "iButton\nen train d'""\xE9""crire ");
+    furi_string_set(tmp, "iButton\nen train d'écrire ");
 
     if(ibutton->write_mode == iButtonWriteModeBlank) {
         furi_string_cat(tmp, "Vide");

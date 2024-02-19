@@ -12,8 +12,8 @@ void nfc_scene_save_confirm_on_enter(void* context) {
 
     dialog_ex_set_left_button_text(dialog_ex, "Passer");
     dialog_ex_set_right_button_text(dialog_ex, "Enregistrer");
-    dialog_ex_set_header(dialog_ex, "Enregistrer la Cl""\xE9""?", 64, 0, AlignCenter, AlignTop);
-    dialog_ex_set_text(dialog_ex, "Toutes donn""\xE9""es non enregistr""\xE9""es seront perdues", 64, 12, AlignCenter, AlignTop);
+    dialog_ex_set_header(dialog_ex, "Enregistrer la Clé?", 64, 0, AlignCenter, AlignTop);
+    dialog_ex_set_text(dialog_ex, "Toutes données non enregistrées seront perdues", 64, 12, AlignCenter, AlignTop);
     dialog_ex_set_context(dialog_ex, nfc);
     dialog_ex_set_result_callback(dialog_ex, nfc_scene_save_confirm_dialog_callback);
 

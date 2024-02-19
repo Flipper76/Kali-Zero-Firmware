@@ -522,11 +522,11 @@ void subghz_scene_receiver_config_on_enter(void* context) {
         variable_item_set_current_value_index(item, value_index);
         variable_item_set_current_value_text(item, combobox_text[value_index]);
         variable_item_set_locked(
-            item, subghz->repeater != SubGhzRepeaterStateOff, "\xC9""teignez r""\xE9""p""\xE9""teur, \nne faites pas ça!");
+            item, subghz->repeater != SubGhzRepeaterStateOff, "Éteignez répéteur, \nne faites pas ça!");
 
         item = variable_item_list_add(
             subghz->variable_item_list,
-            "R""\xE9""p""\xE9""titeur",
+            "Répétiteur",
             REPEATER_COUNT,
             subghz_scene_receiver_config_set_repeater,
             subghz);
@@ -548,7 +548,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
 
         item = variable_item_list_add(
             subghz->variable_item_list,
-            "Supprimer anciens signaux sur m""\xE9""moire pleine",
+            "Supprimer anciens signaux sur mémoire pleine",
             COMBO_BOX_COUNT,
             subghz_scene_receiver_config_set_delete_old_signals,
             subghz);
@@ -630,7 +630,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
 
         item = variable_item_list_add(
             subghz->variable_item_list,
-            "Ignorer M""\xE9""t""\xE9""o",
+            "Ignorer Météo",
             COMBO_BOX_COUNT,
             subghz_scene_receiver_config_set_weather,
             subghz);
@@ -668,7 +668,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
     if(scene_manager_get_scene_state(subghz->scene_manager, SubGhzSceneReadRAW) !=
        SubGhzCustomEventManagerSet) {
         // Reset to default
-        variable_item_list_add(subghz->variable_item_list, "R""\xE9""initialiser par d""\xE9""faut", 1, NULL, NULL);
+        variable_item_list_add(subghz->variable_item_list, "Réinitialiser par défaut", 1, NULL, NULL);
 
         variable_item_list_set_enter_callback(
             subghz->variable_item_list,

@@ -42,11 +42,11 @@ bool subghz_tx_start(SubGhz* subghz, FlipperFormat* flipper_format) {
 void subghz_dialog_message_freq_error(SubGhz* subghz, bool only_rx) {
     DialogsApp* dialogs = subghz->dialogs;
     DialogMessage* message = dialog_message_alloc();
-    const char* header_text = "Frequence non support""\xE9""e";
+    const char* header_text = "Frequence non supportée";
     const char* message_text = "Frequence\nhors\n plage.";
 
     if(only_rx) {
-        header_text = "Transmission bloqu""\xE9""e";
+        header_text = "Transmission bloquée";
         message_text = "Frequence hors\nplage d'origine.\nConsultez la doc.";
     }
 
@@ -300,7 +300,7 @@ bool subghz_save_protocol_to_file(
 
         // Create subghz folder directory if necessary
         if(!storage_simply_mkdir(storage, furi_string_get_cstr(file_dir))) {
-            dialog_message_show_storage_error(subghz->dialogs, "Impossible de \ncr""\xE9""er dossier");
+            dialog_message_show_storage_error(subghz->dialogs, "Impossible de \ncréer dossier");
             break;
         }
 

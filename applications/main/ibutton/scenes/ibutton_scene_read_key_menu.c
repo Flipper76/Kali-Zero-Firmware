@@ -33,7 +33,7 @@ void ibutton_scene_read_key_menu_on_enter(void* context) {
     if(features & iButtonProtocolFeatureExtData) {
         submenu_add_item(
             submenu,
-            "Afficher donn""\xE9""es",
+            "Afficher données",
             SubmenuIndexViewData,
             ibutton_scene_read_key_menu_submenu_callback,
             ibutton);

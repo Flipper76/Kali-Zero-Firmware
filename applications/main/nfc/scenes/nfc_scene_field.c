@@ -8,7 +8,7 @@ void nfc_scene_field_on_enter(void* context) {
     Popup* popup = nfc->popup;
     popup_set_header(
         popup,
-		"Champ activ""\xE9""\nNe laissez pas \n ce mode trop longtemps.",
+		"Champ activé\nNe laissez pas \n ce mode trop longtemps.",
         64,
         11,
         AlignCenter,

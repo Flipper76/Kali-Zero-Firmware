@@ -127,7 +127,7 @@ void subrem_view_remote_draw(Canvas* canvas, SubRemViewRemoteModel* model) {
         canvas_draw_rbox(canvas, 12, 0, 52 - 12, 13, 2);
         canvas_invert_color(canvas);
         canvas_draw_rframe(canvas, 12, 0, 52 - 12, 13, 2);
-        canvas_draw_str_aligned(canvas, 32, 3, AlignCenter, AlignTop, "Aper""\xE7""u");
+        canvas_draw_str_aligned(canvas, 32, 3, AlignCenter, AlignTop, "Aperçu");
     } else {
         canvas_draw_icon(
             canvas,

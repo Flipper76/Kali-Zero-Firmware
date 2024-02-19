@@ -47,7 +47,7 @@ bool desktop_settings_app_set_keybind(DesktopSettingsApp* app, const char* value
         dialog_message_set_buttons(message, NULL, "Ok", NULL);
         dialog_message_set_text(
             message,
-            "Max 63 caract""\xE8""res.\n"
+            "Max 63 caractères.\n"
             "raccourcir le chemin ou\n"
             "en choisir un autre.",
             64,

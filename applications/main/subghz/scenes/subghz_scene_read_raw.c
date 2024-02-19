@@ -210,7 +210,7 @@ bool subghz_scene_read_raw_on_event(void* context, SceneManagerEvent event) {
                     scene_manager_next_scene(subghz->scene_manager, SubGhzSceneMoreRAW);
                     consumed = true;
                 } else {
-                    furi_crash("SubGhz : erreur MAJ du nom de fichier RAW.");
+                    furi_crash("SubGhzÂ : erreur MAJ du nom de fichier RAW.");
                 }
             } else {
                 if(!scene_manager_search_and_switch_to_previous_scene(

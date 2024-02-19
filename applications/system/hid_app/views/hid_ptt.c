@@ -511,11 +511,11 @@ static void hid_ptt_menu_callback(
                 app_specific_help =
                     "Google Meet:\n"
                     "Cette fonction est \n"
-					"d""\xE9""sactiv""\xE9""e par d""\xE9""faut \n"
-					"dans vos r""\xE9""glages audio \n"
+					"désactivée par défaut \n"
+					"dans vos réglages audio \n"
 					"et peut disfonctionner \n"
 					"pour les utilisateurs Windows\n"
-					"qui utilisent leur ""\xE9""cran \n"
+					"qui utilisent leur écran \n"
 					"lecteur. \n"
                     "Dans cette situation, \n"
 					"la barre d'espace effectue \n"
@@ -524,39 +524,39 @@ static void hid_ptt_menu_callback(
             case HidPushToTalkAppIndexDiscord:
                 app_specific_help =
 					"Discorde:\n"
-                    "1. Sous Param""\xE8""tres \n"
+                    "1. Sous Paramètres \n"
 					"de l'application, cliquez \n"
-					"sur Voix et vid""\xE9""o. \n"
+					"sur Voix et vidéo. \n"
 					"Sous Mode de saisie, cochez\n"
-                    " la case ""\xE0"" c""\xF4""t""\xE9"" de \n"
+                    " la case à côté de \n"
 					"Push to Talk.\n"
-					"2. Faites d""\xE9""filer \n"
-					"jusqu'""\xE0"" RACCOURCI, \n"
+					"2. Faites défiler \n"
+					"jusqu'à RACCOURCI, \n"
 					"cliquez sur Enregistrer \n"
 					"le raccourci clavier.\n"
                     "3. Appuyez sur PTT dans \n"
 					"l'application pour la lier.\n"
-                    "4. Acc""\xE9""dez aux \n"
+                    "4. Accédez aux \n"
 					"raccourcis clavier et \n"
 					"attribuez le bouton Muet.\n\n";
                 break;
             case HidPushToTalkAppIndexTeamSpeak:
                 app_specific_help = 
 					"TeamSpeak:\n"
-					"Pour que les cl""\xE9""s \n"
+					"Pour que les clés \n"
 					"fonctionnent, les lier \n"
-					"dans r""\xE9""glages \n"
+					"dans réglages \n"
 					"TeamSpeak.\n\n";
                 break;
             case HidPushToTalkAppIndexTeams:
                 app_specific_help =
                     "Teams:\n"
                     "Allez dans \n"
-					"Param""\xE8""tres > Confidentialit""\xE9"". \n"
+					"Paramètres > Confidentialité. \n"
 					"Assurez-vous que \n"
 					"le raccourci clavier \n"
-					"pour r""\xE9""activer \n"
-					"le son est activ""\xE9"".\n\n";
+					"pour réactiver \n"
+					"le son est activé.\n\n";
                 break;
             }
 
@@ -566,18 +566,18 @@ static void hid_ptt_menu_callback(
 				"%sGeneral:\n"
                 "Pour faire fonctionner \n"
 				"correctement le microphone \n"
-                "flipper le statut doit ""\xEA""tre \n"
-				"synchronis""\xE9"" avec votre \n"
+                "flipper le statut doit être \n"
+				"synchronisé avec votre \n"
 				"ordinateur.\n"
                 "Maintenez > pour \n"
-				"modifier l'""\xE9""tat du micro.\n"
+				"modifier l'état du micro.\n"
                 "Maintenez < pour ouvrir \ncette aide.\n"
                 "Appuyez sur RETOUR pour \n"
-				"activer/d""\xE9""sactiver le micro.\n"
+				"activer/désactiver le micro.\n"
                 "Maintenez 'o' pour \n"
 				"le mode PTT (le micro sera \n"
-				"""\xE9""teint une fois que vous \n"
-				"rel""\xE2""cherez 'o')\n"
+				"éteint une fois que vous \n"
+				"relâcherez 'o')\n"
                 "RETOUR pour sortir.",
                 app_specific_help);
             widget_add_text_scroll_element(

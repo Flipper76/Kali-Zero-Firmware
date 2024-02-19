@@ -13,7 +13,7 @@ void nfc_scene_mf_classic_keys_list_on_enter(void* context) {
 
     instance->mf_user_dict = mf_user_dict_alloc(NFC_SCENE_MF_CLASSIC_KEYS_LIST_MAX);
 
-    submenu_set_header(instance->submenu, "Sélectionnez cl""\xE9"" ""\xE0"" supprimer :");
+    submenu_set_header(instance->submenu, "Sélectionnez clé à supprimer :");
     FuriString* temp_str = furi_string_alloc();
     for(size_t i = 0; i < mf_user_dict_get_keys_cnt(instance->mf_user_dict); i++) {
         mf_user_dict_get_key_str(instance->mf_user_dict, i, temp_str);

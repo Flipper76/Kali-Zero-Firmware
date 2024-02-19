@@ -35,7 +35,7 @@ void storage_move_to_sd_scene_confirm_on_enter(void* context) {
         app);
 
     widget_add_string_element(
-        app->widget, 64, 10, AlignCenter, AlignCenter, FontPrimary, "SD ins""\xE9""r""\xE9""e");
+        app->widget, 64, 10, AlignCenter, AlignCenter, FontPrimary, "SD insérée");
     widget_add_string_multiline_element(
         app->widget,
         64,
@@ -43,7 +43,7 @@ void storage_move_to_sd_scene_confirm_on_enter(void* context) {
         AlignCenter,
         AlignCenter,
         FontSecondary,
-        "D""\xE9""placer les donn""\xE9""es du stockage interne vers SD?");
+        "déplacer les données du stockage interne vers SD?");
 
     view_dispatcher_switch_to_view(app->view_dispatcher, StorageMoveToSdViewWidget);
 }

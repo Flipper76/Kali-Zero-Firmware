@@ -42,7 +42,7 @@ static void hid_mouse_draw_callback(Canvas* canvas, void* context) {
     canvas_set_font(canvas, FontSecondary);
 
     if(model->left_mouse_held == true) {
-        elements_multiline_text_aligned(canvas, 0, 62, AlignLeft, AlignBottom, "S""\xE9""lection...");
+        elements_multiline_text_aligned(canvas, 0, 62, AlignLeft, AlignBottom, "Sélection...");
     } else {
         canvas_draw_icon(canvas, 0, 54, &I_Pin_back_arrow_10x8);
         canvas_set_font(canvas, FontSecondary);

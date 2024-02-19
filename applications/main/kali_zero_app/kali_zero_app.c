@@ -71,7 +71,7 @@ bool kali_zero_app_apply(KaliZeroApp* app) {
                 break;
             if(!flipper_format_write_header_cstr(file, "Fichier de configuration Flipper SubGhz", 1)) break;
             if(!flipper_format_write_comment_cstr(
-                   file, "S'il faut autoriser des port""\xE9""es étendues qui peuvent casser votre flipper"))
+                   file, "S'il faut autoriser des portées étendues qui peuvent casser votre flipper"))
                 break;
             if(!flipper_format_write_bool(
                    file, "use_ext_range_at_own_risk", &app->subghz_extend, 1))
@@ -122,7 +122,7 @@ bool kali_zero_app_apply(KaliZeroApp* app) {
     if(app->show_slideshow) {
         callback_reboot(NULL);
     } else if(app->require_reboot) {
-        popup_set_header(app->popup, "Red""\xE9""marrage...", 64, 26, AlignCenter, AlignCenter);
+        popup_set_header(app->popup, "Redémarrage...", 64, 26, AlignCenter, AlignCenter);
         popup_set_text(app->popup, "Appliquer modifications...", 64, 40, AlignCenter, AlignCenter);
         popup_set_callback(app->popup, callback_reboot);
         popup_set_context(app->popup, app);

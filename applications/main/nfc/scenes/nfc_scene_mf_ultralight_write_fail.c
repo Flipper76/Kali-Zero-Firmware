@@ -18,7 +18,7 @@ void nfc_scene_mf_ultralight_write_fail_on_enter(void* context) {
 
     widget_add_icon_element(widget, 83, 22, &I_WarningDolphinFlip_45x42);
     widget_add_string_element(
-        widget, 7, 4, AlignLeft, AlignTop, FontPrimary, "L'""\xE9""criture a mal tourn""\xE9""!");
+        widget, 7, 4, AlignLeft, AlignTop, FontPrimary, "L'écriture a mal tourné!");
     widget_add_string_multiline_element(
         widget,
         7,
@@ -26,7 +26,7 @@ void nfc_scene_mf_ultralight_write_fail_on_enter(void* context) {
         AlignLeft,
         AlignTop,
         FontSecondary,
-		"Carte prot""\xE9""g""\xE9""e par\nmot de passe, AUTH0\nou bits de verrouillage");
+		"Carte protégée par\nmot de passe, AUTH0\nou bits de verrouillage");
 
     widget_add_button_element(
         widget,

@@ -8,7 +8,7 @@
  *
  *     0110 0100 | 1010 1011 | 0110 0010 | 0000 0000 | 0111 0110
  *     tttt tttt | IIII IIII | iiii iiii | nbuu uuuu | cccc cccc
- * - t: temperature in °F
+ * - t: temperature in Â°F
  * - I: identification (high byte)
  * - i: identification (low byte)
  * - n: sensor number

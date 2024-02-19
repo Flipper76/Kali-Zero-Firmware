@@ -96,7 +96,7 @@ bool desktop_scene_lock_menu_on_event(void* context, SceneManagerEvent event) {
                 if(status == LoaderStatusOk) {
                     scene_manager_set_scene_state(desktop->scene_manager, DesktopSceneLockMenu, 1);
                 } else {
-                    FURI_LOG_E(TAG, "Impossible de démarrer les réglages bureau");
+                    FURI_LOG_E(TAG, "Impossible de dÃ©marrer les rÃ©glages bureau");
                 }
             }
             consumed = true;
@@ -115,7 +115,7 @@ bool desktop_scene_lock_menu_on_event(void* context, SceneManagerEvent event) {
                 if(status == LoaderStatusOk) {
                     scene_manager_set_scene_state(desktop->scene_manager, DesktopSceneLockMenu, 2);
                 } else {
-                    FURI_LOG_E(TAG, "Impossible de démarrer les réglages bureau");
+                    FURI_LOG_E(TAG, "Impossible de dÃ©marrer les rÃ©glages bureau");
                 }
             }
             consumed = true;

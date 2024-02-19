@@ -41,10 +41,10 @@ static void render_callback(Canvas* canvas, void* _ctx) {
     if(kalizero_assets.is_nsfw) {
         if(stats->butthurt <= 4) {
             portrait = &I_passport_happy_46x49;
-            mood_str = "Statut: Mouill""\xE9";
+            mood_str = "Statut: Mouillé";
         } else if(stats->butthurt <= 9) {
             portrait = &I_passport_okay_46x49;
-            mood_str = "Statut: Excit""\xE9""e";
+            mood_str = "Statut: Excitée";
         } else {
             portrait = &I_passport_bad_46x49;
             mood_str = "Statut: Malheureux";

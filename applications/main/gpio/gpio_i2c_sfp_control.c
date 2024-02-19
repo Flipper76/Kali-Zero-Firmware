@@ -4,7 +4,7 @@
 
 // Il s'agit d'une carte mappant le type de connecteur au nom approprié. (see SFF-8024 Rev. 4.9, Table 4-3)
 const char* sfp_connector_map[256] = {
-    "Inconnu ou non précis""\xE9",
+    "Inconnu ou non précisé",
     "SC",
     "Canal fibre Style 1",
     "Canal fibre Style 2",

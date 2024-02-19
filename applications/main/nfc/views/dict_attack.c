@@ -32,7 +32,7 @@ static void dict_attack_draw_callback(Canvas* canvas, void* model) {
         elements_multiline_text_aligned(
             canvas, 64, 23, AlignCenter, AlignTop, "Assurez-vous que la balise \nest mise correctement.");
     } else {
-        char draw_str[37] = {};
+        char draw_str[40] = {};
         canvas_set_font(canvas, FontSecondary);
         canvas_draw_str_aligned(
             canvas, 64, 0, AlignCenter, AlignTop, furi_string_get_cstr(m->header));
@@ -40,7 +40,7 @@ static void dict_attack_draw_callback(Canvas* canvas, void* model) {
             snprintf(
                 draw_str,
                 sizeof(draw_str),
-                "R""\xE9""utiliser contr""\xF4""le cl""\xE9"" secteur: %d",
+                "Réutiliser contrôle clé secteur: %d",
                 m->key_attack_current_sector);
         } else {
             snprintf(draw_str, sizeof(draw_str), "Secteur lock: %d", m->current_sector);

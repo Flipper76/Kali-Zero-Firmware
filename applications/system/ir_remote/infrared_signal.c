@@ -61,7 +61,7 @@ static bool infrared_signal_is_raw_valid(InfraredRawSignal* raw) {
     if((raw->frequency > INFRARED_MAX_FREQUENCY) || (raw->frequency < INFRARED_MIN_FREQUENCY)) {
         FURI_LOG_E(
             TAG,
-            "fréquence hors plage (%X - %X): %lX",
+            "frÃ©quence hors plage (%X - %X): %lX",
             INFRARED_MIN_FREQUENCY,
             INFRARED_MAX_FREQUENCY,
             raw->frequency);

@@ -69,7 +69,7 @@ bool lfrfid_scene_write_on_event(void* context, SceneManagerEvent event) {
             popup_set_header(popup, "Essaie toujours d'encoder...", 64, 3, AlignCenter, AlignTop);
             popup_set_text(
                 popup,
-				"V""\xE9""rifiez que cette\ncarte n'est pas\n prot""\xE9""g""\xE9""e en \n""\xE9""criture\n",				
+				"Vérifiez que cette\ncarte n'est pas\n protégée en \nécriture\n",				
                 3,
                 17,
                 AlignLeft,

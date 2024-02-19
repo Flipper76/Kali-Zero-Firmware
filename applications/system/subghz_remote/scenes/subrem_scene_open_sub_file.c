@@ -83,7 +83,7 @@ void subrem_scene_open_sub_file_on_enter(void* context) {
         switch(load_state) {
         case SubRemLoadSubStateErrorFreq:
 
-            popup_set_text(popup, "Mauvaise fr""\xE9""quence", 63, 30, AlignCenter, AlignBottom);
+            popup_set_text(popup, "Mauvaise fréquence", 63, 30, AlignCenter, AlignBottom);
             break;
         case SubRemLoadSubStateErrorMod:
 
@@ -91,7 +91,7 @@ void subrem_scene_open_sub_file_on_enter(void* context) {
             break;
         case SubRemLoadSubStateErrorProtocol:
 
-            popup_set_text(popup, "Protocole non support""\xE9", 63, 30, AlignCenter, AlignBottom);
+            popup_set_text(popup, "Protocole non supporté", 63, 30, AlignCenter, AlignBottom);
             break;
 
         default:

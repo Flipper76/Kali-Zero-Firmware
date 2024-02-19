@@ -29,8 +29,8 @@ void nfc_scene_start_on_enter(void* context) {
 
     submenu_add_item(submenu, "Lire", SubmenuIndexRead, nfc_scene_start_submenu_callback, nfc);
     submenu_add_item(
-        submenu, "D""\xE9""tecter le lecteur", SubmenuIndexDetectReader, nfc_scene_start_submenu_callback, nfc);
-    submenu_add_item(submenu, "Enregistr""\xE9", SubmenuIndexSaved, nfc_scene_start_submenu_callback, nfc);
+        submenu, "détecter le lecteur", SubmenuIndexDetectReader, nfc_scene_start_submenu_callback, nfc);
+    submenu_add_item(submenu, "Enregistré", SubmenuIndexSaved, nfc_scene_start_submenu_callback, nfc);
     submenu_add_item(
         submenu, "Actions suppl", SubmenuIndexExtraAction, nfc_scene_start_submenu_callback, nfc);
     submenu_add_item(

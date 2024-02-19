@@ -46,10 +46,10 @@ const char* storage_data_status_text(StorageData* storage) {
         result = "ok";
         break;
     case StorageStatusNotReady:
-        result = "pas pr\xEAt";
+        result = "pas prêt";
         break;
     case StorageStatusNotMounted:
-        result = "non mont\xE9";
+        result = "non monté";
         break;
     case StorageStatusNoFS:
         result = "aucun fichiers syst\xE8me";

@@ -1,6 +1,6 @@
 // Parser for Philips Sonicare toothbrush heads.
 // Made by @Sil333033
-// Thanks to Cyrill Künzi for this research! https://kuenzi.dev/toothbrush/
+// Thanks to Cyrill KÃ¼nzi for this research! https://kuenzi.dev/toothbrush/
 
 #include "nfc_supported_card_plugin.h"
 

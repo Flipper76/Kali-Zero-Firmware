@@ -44,8 +44,8 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
 
     // Set text
     if(charge_current > 0) {
-        snprintf(emote, sizeof(emote), "%s", "D""\xE9""licieux!");
-        snprintf(header, sizeof(header), "%s", "Chargement ""\xE0");
+        snprintf(emote, sizeof(emote), "%s", "Délicieux!");
+        snprintf(header, sizeof(header), "%s", "Chargement à);
         snprintf(
             value,
             sizeof(value),
@@ -70,8 +70,8 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
         snprintf(header, 20, "...");
     } else if(data->charging_voltage < 4.2) {
         // Non-default battery charging limit, mention it
-        snprintf(emote, sizeof(emote), "Charg""\xE9""!");
-        snprintf(header, sizeof(header), "Limit""\xE9"" ""\xE0");
+        snprintf(emote, sizeof(emote), "Chargé!");
+        snprintf(header, sizeof(header), "Limité à);
         snprintf(
             value,
             sizeof(value),
@@ -79,7 +79,7 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
             (uint32_t)(data->charging_voltage),
             (uint32_t)(data->charging_voltage * 10) % 10);
     } else {
-        snprintf(header, sizeof(header), "Charg""\xE9""!");
+        snprintf(header, sizeof(header), "Chargé!");
     }
 
     canvas_draw_str_aligned(canvas, 92, y + 3, AlignCenter, AlignCenter, emote);

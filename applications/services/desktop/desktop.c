@@ -469,7 +469,7 @@ int32_t desktop_srv(void* p) {
     UNUSED(p);
 
     if(!furi_hal_is_normal_boot()) {
-        FURI_LOG_W(TAG, "Ignorer le mode démarrage spécial");
+        FURI_LOG_W(TAG, "Ignorer le mode dÃ©marrage spÃ©cial");
         return 0;
     }
 

@@ -11,7 +11,7 @@ void nfc_scene_mf_classic_keys_add_on_enter(void* context) {
 
     // Setup view
     ByteInput* byte_input = instance->byte_input;
-    byte_input_set_header_text(byte_input, "Entrez cl""\xE9"" en hex");
+    byte_input_set_header_text(byte_input, "Entrez clé en hex");
     byte_input_set_result_callback(
         byte_input,
         nfc_scene_mf_classic_keys_add_byte_input_callback,

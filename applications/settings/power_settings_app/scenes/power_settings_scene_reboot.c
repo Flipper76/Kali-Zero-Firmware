@@ -15,7 +15,7 @@ void power_settings_scene_reboot_on_enter(void* context) {
     PowerSettingsApp* app = context;
     Submenu* submenu = app->submenu;
 
-    submenu_set_header(submenu, "Mode de red""\xE9""marrage");
+    submenu_set_header(submenu, "Mode de redémarrage");
     submenu_add_item(
         submenu,
         "MAJ micrologiciel",

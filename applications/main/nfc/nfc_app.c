@@ -246,7 +246,7 @@ void nfc_make_app_folders(NfcApp* instance) {
     furi_assert(instance);
 
     if(!storage_simply_mkdir(instance->storage, NFC_APP_FOLDER)) {
-        dialog_message_show_storage_error(instance->dialogs, "Impossible de cr""\xE9""er \nle dossier app");
+        dialog_message_show_storage_error(instance->dialogs, "Impossible de créer \nle dossier app");
     }
 }
 
@@ -465,7 +465,7 @@ static bool nfc_is_hal_ready() {
         DialogMessage* message = dialog_message_alloc();
         dialog_message_set_text(
             message,
-			"Erreur !\nLa puce NFC n'a pas d""\xE9""marrer\n\n\nEnvoyez une photo de ceci:\nsupport@flipperzero.one",
+			"Erreur !\nLa puce NFC n'a pas démarrer\n\n\nEnvoyez une photo de ceci:\nsupport@flipperzero.one",
             0,
             0,
             AlignLeft,

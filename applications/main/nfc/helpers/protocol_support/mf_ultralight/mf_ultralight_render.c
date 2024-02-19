@@ -5,13 +5,13 @@
 static void nfc_render_mf_ultralight_pages_count(const MfUltralightData* data, FuriString* str) {
     furi_string_cat_printf(str, "\nPages lus: %u/%u", data->pages_read, data->pages_total);
     if(data->pages_read != data->pages_total) {
-        furi_string_cat_printf(str, "\nPages prot""\xE9""g""\xE9""es par mdp!");
+        furi_string_cat_printf(str, "\nPages protégées par mdp!");
     }
 }
 
 void nfc_render_mf_ultralight_pwd_pack(const MfUltralightData* data, FuriString* str) {
     bool all_pages = mf_ultralight_is_all_data_read(data);
-    furi_string_cat_printf(str, "\e#%s page débloqu""\xE9""e!", all_pages ? "Tout" : "Pas tout");
+    furi_string_cat_printf(str, "\e#%s page débloquée!", all_pages ? "Tout" : "Pas tout");
 
     MfUltralightConfigPages* config;
     mf_ultralight_get_config_page(data, &config);

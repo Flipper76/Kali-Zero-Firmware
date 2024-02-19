@@ -106,7 +106,7 @@ void hex_viewer_scene_settings_on_enter(void* context) {
     // Save Settings to File
     item = variable_item_list_add(
         app->variable_item_list,
-        "Enregistrer les param""\xE8""tres",
+        "Enregistrer les paramètres",
         2,
         hex_viewer_scene_settings_set_save_settings,
         app);

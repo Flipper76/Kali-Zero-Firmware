@@ -32,7 +32,7 @@ void power_settings_scene_shutdown_idle_on_enter(void* context) {
 
     item = variable_item_list_add(
         variable_item_list,
-        "R""\xE9""gler le temps",
+        "Régler le temps",
         SHUTDOWN_IDLE_DELAY_COUNT,
         power_settings_scene_start_shutdown_idle_delay_changed,
         app);

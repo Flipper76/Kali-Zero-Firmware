@@ -18,7 +18,7 @@ void nfc_scene_mf_classic_write_initial_fail_on_enter(void* context) {
 
     widget_add_icon_element(widget, 83, 22, &I_WarningDolphinFlip_45x42);
     widget_add_string_element(
-        widget, 7, 4, AlignLeft, AlignTop, FontPrimary, "Erreur d'""\xE9""criture!");
+        widget, 7, 4, AlignLeft, AlignTop, FontPrimary, "Erreur d'écriture!");
     widget_add_string_multiline_element(
         widget,
         7,
@@ -26,7 +26,7 @@ void nfc_scene_mf_classic_write_initial_fail_on_enter(void* context) {
         AlignLeft,
         AlignTop,
         FontSecondary,
-		"Tous les secteurs \nn'ont pas ""\xE9""t""\xE9"" \n""\xE9""crits correctement");
+		"Tous les secteurs \nn'ont pas été \nécrits correctement");
 
     widget_add_button_element(
         widget,

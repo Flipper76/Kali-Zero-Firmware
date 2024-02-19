@@ -84,7 +84,7 @@ void nfc_render_mf_desfire_version(const MfDesfireVersion* data, FuriString* str
     furi_string_cat_printf(
         str,
         "batch %02x:%02x:%02x:%02x:%02x\n"
-        "semaine %d ann""\xE9""e %d\n",
+        "semaine %d année %d\n",
         data->batch[0],
         data->batch[1],
         data->batch[2],
@@ -118,7 +118,7 @@ void nfc_render_mf_desfire_key_version(
     const MfDesfireKeyVersion* data,
     uint32_t index,
     FuriString* str) {
-    furi_string_cat_printf(str, "cl""\xE9"" %lu version %u\n", index, *data);
+    furi_string_cat_printf(str, "clé %lu version %u\n", index, *data);
 }
 
 void nfc_render_mf_desfire_application_id(const MfDesfireApplicationId* data, FuriString* str) {
@@ -204,7 +204,7 @@ void nfc_render_mf_desfire_file_settings_data(
             str, "lo %lu hi %lu\n", settings->value.lo_limit, settings->value.hi_limit);
         furi_string_cat_printf(
             str,
-            "limite %lu activ""\xE9"" %d\n",
+            "limite %lu activé %d\n",
             settings->value.limited_credit_value,
             settings->value.limited_credit_enabled);
         break;

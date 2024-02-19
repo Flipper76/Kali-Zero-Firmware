@@ -25,13 +25,13 @@ void power_settings_scene_start_on_enter(void* context) {
         app);
     submenu_add_item(
         submenu,
-        "Red""\xE9""marrage",
+        "Redémarrage",
         PowerSettingsSubmenuIndexReboot,
         power_settings_scene_start_submenu_callback,
         app);
     submenu_add_item(
         submenu,
-        "\xC9""teindre",
+        "Éteindre",
         PowerSettingsSubmenuIndexOff,
         power_settings_scene_start_submenu_callback,
         app);

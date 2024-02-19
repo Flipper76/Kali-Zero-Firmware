@@ -8,7 +8,7 @@ if (console_resp === undefined) {
     print("No CLI response");
 } else {
     serial.write("uci\n");
-    let uci_state = serial.expect([": non trouv""\xE9", "Usage: "]);
+    let uci_state = serial.expect([": non trouvé", "Usage: "]);
     if (uci_state === 1) {
         serial.expect("# ");
         serial.write("uci show wireless\n");

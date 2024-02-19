@@ -23,7 +23,7 @@ void storage_settings_scene_wipe_device_on_enter(void* context) {
     dialog_ex_set_header(dialog_ex, "Confirmer formatage", 64, 10, AlignCenter, AlignCenter);
     dialog_ex_set_text(
         dialog_ex,
-        "Tout sera effac""\xE9"" \r\nLes donn""\xE9""es et \nles param""\xE8""tres \n""seront perdus!",
+        "Tout sera effacé \r\nLes données et \nles paramètres \n""seront perdus!",
         64,
         32,
         AlignCenter,

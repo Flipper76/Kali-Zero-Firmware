@@ -11,7 +11,7 @@ void nfc_scene_restore_original_on_enter(void* context) {
     // Setup view
     Popup* popup = nfc->popup;
     popup_set_icon(popup, 48, 6, &I_DolphinDone_80x58);
-    popup_set_header(popup, "Fichier original\nrestaur""\xE9", 5, 22, AlignLeft, AlignBottom);
+    popup_set_header(popup, "Fichier original\nrestauré", 5, 22, AlignLeft, AlignBottom);
     popup_set_timeout(popup, 1500);
     popup_set_context(popup, nfc);
     popup_set_callback(popup, nfc_scene_restore_original_popup_callback);

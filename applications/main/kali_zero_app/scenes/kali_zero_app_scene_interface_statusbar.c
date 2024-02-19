@@ -71,7 +71,7 @@ void kali_zero_app_scene_interface_statusbar_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Ic""\xF4""ne de batterie",
+        "Icône de batterie",
         BatteryIconCount,
         kali_zero_app_scene_interface_statusbar_battery_icon_changed,
         app);
@@ -89,7 +89,7 @@ void kali_zero_app_scene_interface_statusbar_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Ic""\xF4""nes de statut",
+        "Icônes de statut",
         2,
         kali_zero_app_scene_interface_statusbar_status_icons_changed,
         app);

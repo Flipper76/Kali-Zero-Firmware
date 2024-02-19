@@ -519,7 +519,7 @@ static void render_callback(Canvas* canvas, void* ctx) {
     case STATE_NONE:
         canvas_set_font(canvas, FontPrimary);
         canvas_draw_str_aligned(
-            canvas, WIDTH / 2, HEIGHT / 2, AlignCenter, AlignCenter, "Aucune playlist charg""\xE9""e");
+            canvas, WIDTH / 2, HEIGHT / 2, AlignCenter, AlignCenter, "Aucune playlist chargée");
         break;
 
     case STATE_OVERVIEW:
@@ -554,7 +554,7 @@ static void render_callback(Canvas* canvas, void* ctx) {
         draw_corner_aligned(canvas, 40, 15, AlignCenter, AlignBottom);
 
         canvas_set_color(canvas, ColorWhite);
-        canvas_draw_str_aligned(canvas, WIDTH / 2 - 7, HEIGHT - 11, AlignLeft, AlignTop, "D""\xE9""but");
+        canvas_draw_str_aligned(canvas, WIDTH / 2 - 7, HEIGHT - 11, AlignLeft, AlignTop, "Début");
         canvas_draw_disc(canvas, WIDTH / 2 - 14, HEIGHT - 8, 3);
 
         //

@@ -32,9 +32,9 @@ void animation_handler_select_manifest() {
         furi_string_printf(manifest, "%s/manifest.txt", furi_string_get_cstr(anim_dir));
         Storage* storage = furi_record_open(RECORD_STORAGE);
         if(storage_common_stat(storage, furi_string_get_cstr(manifest), NULL) == FSE_OK) {
-            FURI_LOG_I(TAG, "Manifeste personnalisé choisi");
+            FURI_LOG_I(TAG, "Manifeste personnalisÃ© choisi");
         } else {
-            FURI_LOG_E(TAG, "manifeste personnalisé introuvable!");
+            FURI_LOG_E(TAG, "manifeste personnalisÃ© introuvable!");
             use_asset_pack = false;
         }
         furi_record_close(RECORD_STORAGE);
@@ -496,7 +496,7 @@ static BubbleAnimation* animation_storage_load_animation(const char* name) {
         uint32_t count = 0;
         if(!flipper_format_get_value_count(ff, "Frames order", &count)) break;
         if(count != frames) {
-            FURI_LOG_E(TAG, "Erreur de chargement de l'animation : ordre des images");
+            FURI_LOG_E(TAG, "Erreur de chargement de l'animationÂ : ordre des images");
             break;
         }
         u32array = malloc(sizeof(uint32_t) * frames);

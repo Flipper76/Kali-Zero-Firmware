@@ -922,7 +922,7 @@ MOBLE_RESULT GenericModelServer_ProcessMessageCb(MODEL_MessageHeader_t *pmsgPara
     case GENERIC_ON_OFF_SET_UNACK:
     {
       result = Chk_ParamValidity(pRxData[0], 1); 
-      /* 3.1.1 Generic OnOff 0x02–0xFF Prohibited */
+      /* 3.1.1 Generic OnOff 0x02â€“0xFF Prohibited */
       /* 3.2.1.2 Generic OnOff Set If the Transition Time field is present, 
       the Delay field shall also be present; otherwise these fields shall 
       not be present*/
@@ -1516,7 +1516,7 @@ void Light_HslSaturation_GenericLevelBinding(Light_HslStatus_t* bHslSatParam,
                                              MOBLEUINT8 elementIndex)
 {
   /* 6.1.4.4.1 Binding with the Generic Level state
-  Generic Level = Light HSL Saturation – 32768
+  Generic Level = Light HSL Saturation â€“ 32768
   */ 
  
   Generic_LevelStatus[elementIndex].Present_Level16 = (MOBLEINT16)(bHslSatParam->PresentHslSaturation16 - 32768);

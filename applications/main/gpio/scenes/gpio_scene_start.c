@@ -61,7 +61,7 @@ void gpio_scene_start_on_enter(void* context) {
 
     variable_item_list_add(var_item_list, "Pont USB-UART", 0, NULL, NULL);
 
-    variable_item_list_add(var_item_list, "Contr""\xF4""le manuel GPIO", 0, NULL, NULL);
+    variable_item_list_add(var_item_list, "Contrôle manuel GPIO", 0, NULL, NULL);
 
     item = variable_item_list_add(
         var_item_list,

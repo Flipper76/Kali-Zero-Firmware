@@ -127,11 +127,11 @@ static int32_t ducky_fnc_hold(BadKbScript* bad_kb, const char* line, int32_t par
     line = &line[ducky_get_command_len(line) + 1];
     uint16_t key = ducky_get_keycode(bad_kb, line, true);
     if(key == HID_KEYBOARD_NONE) {
-        return ducky_error(bad_kb, "Aucun code cl""\xE9"" set pour %s", line);
+        return ducky_error(bad_kb, "Aucun code clé set pour %s", line);
     }
     bad_kb->key_hold_nb++;
     if(bad_kb->key_hold_nb > (HID_KB_MAX_KEYS - 1)) {
-        return ducky_error(bad_kb, "Trop de cl""\xE9""s en attente");
+        return ducky_error(bad_kb, "Trop de clés en attente");
     }
     if(bad_kb->bt) {
         ble_profile_hid_kb_press(bad_kb->app->ble_hid, key);
@@ -147,10 +147,10 @@ static int32_t ducky_fnc_release(BadKbScript* bad_kb, const char* line, int32_t 
     line = &line[ducky_get_command_len(line) + 1];
     uint16_t key = ducky_get_keycode(bad_kb, line, true);
     if(key == HID_KEYBOARD_NONE) {
-        return ducky_error(bad_kb, "Aucun code cl""\xE9"" set pour%s", line);
+        return ducky_error(bad_kb, "Aucun code clé set pour%s", line);
     }
     if(bad_kb->key_hold_nb == 0) {
-        return ducky_error(bad_kb, "Aucune cl""\xE9""s en attente");
+        return ducky_error(bad_kb, "Aucune clés en attente");
     }
     bad_kb->key_hold_nb--;
     if(bad_kb->bt) {

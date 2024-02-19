@@ -49,7 +49,7 @@ void flipper_migrate_files() {
     Storage* storage = furi_record_open(RECORD_STORAGE);
 
     // Revert cringe
-    FURI_LOG_I(TAG, "Migration : supprimer les \nfichiers inutilisés");
+    FURI_LOG_I(TAG, "MigrationÂ :Â supprimer les \nfichiers inutilisÃ©s");
     storage_common_remove(storage, INT_PATH(".passport.settings"));
     storage_common_remove(storage, INT_PATH(".region_data"));
 
@@ -98,13 +98,13 @@ static void flipper_boot_status(Canvas* canvas, const char* text) {
     canvas_reset(canvas);
     canvas_draw_str_aligned(canvas, 64, 40, AlignCenter, AlignCenter, text);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str_aligned(canvas, 64, 24, AlignCenter, AlignCenter, "Kali Zero d""\xE9""marre");
+    canvas_draw_str_aligned(canvas, 64, 24, AlignCenter, AlignCenter, "Kali Zero dÃ©marre");
     canvas_commit(canvas);
 }
 #endif
 
 void flipper_start_service(const FlipperInternalApplication* service) {
-    FURI_LOG_D(TAG, "Démarrage du service %s", service->name);
+    FURI_LOG_D(TAG, "DÃ©marrage du service %s", service->name);
 
     FuriThread* thread =
         furi_thread_alloc_ex(service->name, service->stack_size, service->app, NULL);
@@ -135,7 +135,7 @@ void flipper_init() {
         flipper_boot_status(canvas, "Migration de fichiers");
         flipper_migrate_files();
         
-        flipper_boot_status(canvas, "D""\xE9""marrage usurpation de nom");
+        flipper_boot_status(canvas, "DÃ©marrage usurpation de nom");
         namespoof_init();
         
         flipper_boot_status(canvas, "Chargement param. Kali Zero");
@@ -145,7 +145,7 @@ void flipper_init() {
         flipper_boot_status(canvas, "Chargement actifs Kali Zero");
         kalizero_assets_init();
     } else {
-        FURI_LOG_I(TAG, "Démarrage spécial, exclus option");
+        FURI_LOG_I(TAG, "DÃ©marrage spÃ©cial, exclus option");
     }
 	flipper_boot_status(canvas, "Initialisation des services");
 #endif
@@ -158,7 +158,7 @@ void flipper_init() {
     canvas_free(canvas);
 #endif
 
-    FURI_LOG_I(TAG, "Démarrage terminé");
+    FURI_LOG_I(TAG, "DÃ©marrage terminÃ©");
 }
 
 void vApplicationGetIdleTaskMemory(

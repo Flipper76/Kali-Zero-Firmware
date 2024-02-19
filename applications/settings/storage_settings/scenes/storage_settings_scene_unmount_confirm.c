@@ -24,11 +24,11 @@ void storage_settings_scene_unmount_confirm_on_enter(void* context) {
         dialog_ex_set_left_button_text(dialog_ex, "Annuler");
         dialog_ex_set_right_button_text(dialog_ex, "Monter");
     } else {
-        dialog_ex_set_header(dialog_ex, "D""\xE9""monter la carte SD?", 64, 10, AlignCenter, AlignCenter);
+        dialog_ex_set_header(dialog_ex, "Démonter la carte SD?", 64, 10, AlignCenter, AlignCenter);
         dialog_ex_set_text(
             dialog_ex, "La carte SD sera\nindisponible", 64, 32, AlignCenter, AlignCenter);
         dialog_ex_set_left_button_text(dialog_ex, "Annuler");
-        dialog_ex_set_right_button_text(dialog_ex, "D""\xE9""monter");
+        dialog_ex_set_right_button_text(dialog_ex, "Démonter");
     }
 
     dialog_ex_set_context(dialog_ex, app);

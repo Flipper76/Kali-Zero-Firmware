@@ -114,8 +114,8 @@ static void heap_trace_mode_changed(VariableItem* item) {
 }
 
 const char* const measurement_units_text[] = {
-	"M""\xE9""trique",
-    "Imp""\xE9""rial",
+	"Métrique",
+    "Impérial",
 };
 
 const uint32_t measurement_units_value[] = {
@@ -164,8 +164,8 @@ static void date_format_changed(VariableItem* item) {
 }
 
 const char* const sleep_method[] = {
-	"D""\xE9""faut",
-    "H""\xE9""ritage",
+	"Défaut",
+    "Héritage",
 };
 
 static void sleep_method_changed(VariableItem* item) {
@@ -216,7 +216,7 @@ SystemSettings* system_settings_alloc() {
 
     item = variable_item_list_add(
         app->var_item_list,
-        "Unit""\xE9""s",
+        "Unités",
         COUNT_OF(measurement_units_text),
         measurement_units_changed,
         app);
@@ -283,7 +283,7 @@ SystemSettings* system_settings_alloc() {
     variable_item_set_current_value_text(item, heap_trace_mode_text[value_index]);
 
     item = variable_item_list_add(
-        app->var_item_list, "M""\xE9""thode de veille", COUNT_OF(sleep_method), sleep_method_changed, app);
+        app->var_item_list, "Méthode de veille", COUNT_OF(sleep_method), sleep_method_changed, app);
     value_index = furi_hal_rtc_is_flag_set(FuriHalRtcFlagLegacySleep) ? 1 : 0;
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, sleep_method[value_index]);

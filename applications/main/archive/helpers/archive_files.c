@@ -136,7 +136,7 @@ FS_Error archive_copy_rename_file_or_dir(
     bool find_name) {
     furi_assert(context);
     FURI_LOG_I(
-        TAG, "%s de %s vers %s", copy ? "Copier" : "Déplacer", src_path, furi_string_get_cstr(dst_path));
+        TAG, "%s de %s vers %s", copy ? "Copier" : "DÃ©placer", src_path, furi_string_get_cstr(dst_path));
 
     Storage* fs_api = furi_record_open(RECORD_STORAGE);
 
@@ -191,14 +191,14 @@ FS_Error archive_copy_rename_file_or_dir(
         FURI_LOG_I(
             TAG,
             "%s de %s vers %s est FAIT",
-            copy ? "Copy" : "Déplacer",
+            copy ? "Copy" : "DÃ©placer",
             src_path,
             furi_string_get_cstr(dst_path));
     } else {
         FURI_LOG_E(
             TAG,
-            "%s de %s vers %s échoué: %s, Code: %d",
-            copy ? "Copy" : "Déplacer",
+            "%s de %s vers %s Ã©chouÃ©: %s, Code: %d",
+            copy ? "Copy" : "DÃ©placer",
             src_path,
             furi_string_get_cstr(dst_path),
             filesystem_api_error_get_desc(error),

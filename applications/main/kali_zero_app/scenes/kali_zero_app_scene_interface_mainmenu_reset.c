@@ -12,10 +12,10 @@ void kali_zero_app_scene_interface_mainmenu_reset_on_enter(void* context) {
     KaliZeroApp* app = context;
     DialogEx* dialog_ex = app->dialog_ex;
 	
-    dialog_ex_set_header(dialog_ex, "R""\xE9""initialiser le menu Apps?", 64, 10, AlignCenter, AlignCenter);
+    dialog_ex_set_header(dialog_ex, "Réinitialiser le menu Apps?", 64, 10, AlignCenter, AlignCenter);
     dialog_ex_set_text(dialog_ex, "Vos modifs seront perdues!", 64, 32, AlignCenter, AlignCenter);
     dialog_ex_set_left_button_text(dialog_ex, "Annuler");
-    dialog_ex_set_right_button_text(dialog_ex, "R""\xE9""initialiser");
+    dialog_ex_set_right_button_text(dialog_ex, "Réinitialiser");
 
     dialog_ex_set_context(dialog_ex, app);
     dialog_ex_set_result_callback(

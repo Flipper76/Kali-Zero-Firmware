@@ -15,7 +15,7 @@ void storage_settings_scene_unmounted_on_enter(void* context) {
     if(sd_status == FSE_NOT_READY) {
         FS_Error error = storage_sd_mount(app->fs_api);
         if(error == FSE_OK) {
-            dialog_ex_set_header(dialog_ex, "SD mont""\xE9""e", 64, 3, AlignCenter, AlignTop);
+            dialog_ex_set_header(dialog_ex, "SD montée", 64, 3, AlignCenter, AlignTop);
             dialog_ex_set_text(
                 dialog_ex, "Flipper peut \nutiliser la \n carte SD.", 3, 22, AlignLeft, AlignTop);
             notification_message(app->notification, &sequence_blink_green_100);
@@ -28,7 +28,7 @@ void storage_settings_scene_unmounted_on_enter(void* context) {
     } else {
         FS_Error error = storage_sd_unmount(app->fs_api);
         if(error == FSE_OK) {
-            dialog_ex_set_header(dialog_ex, "SD non mont""\xE9""e", 64, 3, AlignCenter, AlignTop);
+            dialog_ex_set_header(dialog_ex, "SD non montée", 64, 3, AlignCenter, AlignTop);
             dialog_ex_set_text(
                 dialog_ex, "Vous pouvez \nretirer \nla carte SD.", 3, 22, AlignLeft, AlignTop);
             notification_message(app->notification, &sequence_blink_green_100);

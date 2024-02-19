@@ -52,7 +52,7 @@ bool infrared_scene_rpc_on_event(void* context, SceneManagerEvent event) {
             }
             const char* remote_name = infrared_remote_get_name(infrared->remote);
 
-            infrared_text_store_set(infrared, 0, "Charg""\xE9""\n%s", remote_name);
+            infrared_text_store_set(infrared, 0, "Chargé\n%s", remote_name);
             popup_set_text(
                 infrared->popup, infrared->text_store[0], 89, 44, AlignCenter, AlignTop);
 

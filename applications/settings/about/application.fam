@@ -1,6 +1,6 @@
 App(
     appid="about",
-    name="A propos",
+    name="À propos",
     apptype=FlipperAppType.SETTINGS,
     entry_point="about_settings_app",
     cdefines=["APP_ABOUT"],

@@ -15,8 +15,8 @@
 
 static Attack attacks[] = {
     {
-        .title = "La panoplie compl""\xE8""te",
-        .text = "Attaques simultan""\xE9""es",
+        .title = "La panoplie complète",
+        .text = "Attaques simultanées",
         .protocol = NULL,
         .payload =
             {
@@ -26,7 +26,7 @@ static Attack attacks[] = {
     },
     {
         .title = "iOS 17 Chaos",
-        .text = "iPhones r""\xE9""cents, long",
+        .text = "iPhones récents, long",
         .protocol = &protocol_continuity,
         .payload =
             {
@@ -100,7 +100,7 @@ static Attack attacks[] = {
             },
     },
     {
-        .title = "P""\xE9""riph""\xE9""rique Windows trouv""\xE9",
+        .title = "Périphérique Windows trouvé",
        .text = "Aucune attente, court",
         .protocol = &protocol_swiftpair,
         .payload =
@@ -286,9 +286,9 @@ static void draw_callback(Canvas* canvas, void* _ctx) {
             48,
             AlignLeft,
             AlignTop,
-			"\e#Des apps\e# interf""\xE8""rent\n"
+			"\e#Des apps\e# interfèrent\n"
 			"avec les attaques, conseil:\n"
-			"reste ""\xE0"" l'""\xE9""cran d'accueil",
+			"reste à l'écran d'accueil",
             false);
         break;
     case PageHelpDelay:
@@ -302,8 +302,8 @@ static void draw_callback(Canvas* canvas, void* _ctx) {
             48,
             AlignLeft,
             AlignTop,
-			"\e#D""\xE9""lai\e# temps entre les\n"
-			"tentatives (haut ""\xE0"" droite),\n"
+			"\e#Délai\e# temps entre les\n"
+			"tentatives (haut à droite),\n"
 			"conseil 20ms.",
             false);
         break;

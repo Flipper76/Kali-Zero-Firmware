@@ -170,7 +170,7 @@ Hid* hid_alloc() {
     submenu_add_item(
         app->device_type_submenu, "Numpad", HidSubmenuIndexNumpad, hid_submenu_callback, app);
     submenu_add_item(
-        app->device_type_submenu, "M""\xE9""dia", HidSubmenuIndexMedia, hid_submenu_callback, app);
+        app->device_type_submenu, "Média", HidSubmenuIndexMedia, hid_submenu_callback, app);
     submenu_add_item(
         app->device_type_submenu,
         "Apple Musique macOS",

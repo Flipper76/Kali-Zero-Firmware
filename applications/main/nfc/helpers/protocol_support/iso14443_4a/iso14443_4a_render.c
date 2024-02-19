@@ -22,28 +22,28 @@ void nfc_render_iso14443_4a_extra(const Iso14443_4aData* data, FuriString* str) 
     furi_string_cat_printf(str, "\n:::::::::::::[Info protocole]::::::::::::::\n");
 
     if(iso14443_4a_supports_bit_rate(data, Iso14443_4aBitRateBoth106Kbit)) {
-        furi_string_cat(str, "D""\xE9""bit PICC <-> PCD:\n  106 kBit/s support""\xE9""\n");
+        furi_string_cat(str, "Débit PICC <-> PCD:\n  106 kBit/s supporté\n");
     } else {
-        furi_string_cat(str, "D""\xE9""bit PICC -> PCD:\n");
+        furi_string_cat(str, "Débit PICC -> PCD:\n");
         if(iso14443_4a_supports_bit_rate(data, Iso14443_4aBitRatePiccToPcd212Kbit)) {
-            furi_string_cat(str, "  212 kBit/s support""\xE9""\\n");
+            furi_string_cat(str, "  212 kBit/s supporté\n");
         }
         if(iso14443_4a_supports_bit_rate(data, Iso14443_4aBitRatePiccToPcd424Kbit)) {
-            furi_string_cat(str, "  424 kBit/s support""\xE9""\\n");
+            furi_string_cat(str, "  424 kBit/s supporté\n");
         }
         if(iso14443_4a_supports_bit_rate(data, Iso14443_4aBitRatePiccToPcd848Kbit)) {
-            furi_string_cat(str, "  848 kBit/s support""\xE9""\\n");
+            furi_string_cat(str, "  848 kBit/s supporté\n");
         }
 
-        furi_string_cat(str, "D""\xE9""bit PICC <- PCD:\n");
+        furi_string_cat(str, "Débit PICC <- PCD:\n");
         if(iso14443_4a_supports_bit_rate(data, Iso14443_4aBitRatePcdToPicc212Kbit)) {
-            furi_string_cat(str, "  212 kBit/s support""\xE9""\\n");
+            furi_string_cat(str, "  212 kBit/s supporté\n");
         }
         if(iso14443_4a_supports_bit_rate(data, Iso14443_4aBitRatePcdToPicc424Kbit)) {
-            furi_string_cat(str, "  424 kBit/s support""\xE9""\\n");
+            furi_string_cat(str, "  424 kBit/s supporté\n");
         }
         if(iso14443_4a_supports_bit_rate(data, Iso14443_4aBitRatePcdToPicc848Kbit)) {
-            furi_string_cat(str, "  848 kBit/s support""\xE9""\\n");
+            furi_string_cat(str, "  848 kBit/s supporté\n");
         }
     }
 
@@ -63,11 +63,11 @@ void nfc_render_iso14443_4a_extra(const Iso14443_4aData* data, FuriString* str) 
 
     const char* nad_support_str =
         iso14443_4a_supports_frame_option(data, Iso14443_4aFrameOptionNad) ? "" : "non ";
-    furi_string_cat_printf(str, "NAD: %ssupport""\xE9\n", nad_support_str);
+    furi_string_cat_printf(str, "NAD: %ssupport\n", nad_support_str);
 
     const char* cid_support_str =
         iso14443_4a_supports_frame_option(data, Iso14443_4aFrameOptionCid) ? "" : "non ";
-    furi_string_cat_printf(str, "CID: %ssupport""\xE9", cid_support_str);
+    furi_string_cat_printf(str, "CID: %ssupporté", cid_support_str);
 
     uint32_t hist_bytes_count;
     const uint8_t* hist_bytes = iso14443_4a_get_historical_bytes(data, &hist_bytes_count);

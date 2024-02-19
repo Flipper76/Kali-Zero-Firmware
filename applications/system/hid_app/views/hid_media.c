@@ -52,7 +52,7 @@ static void hid_media_draw_callback(Canvas* canvas, void* context) {
     }
 
     canvas_set_font(canvas, FontPrimary);
-    elements_multiline_text_aligned(canvas, 17, 3, AlignLeft, AlignTop, "M""\xE9""dia");
+    elements_multiline_text_aligned(canvas, 17, 3, AlignLeft, AlignTop, "Média");
     canvas_set_font(canvas, FontSecondary);
 
     // Keypad circles

@@ -75,7 +75,7 @@ static bool
 static void storage_settings_scene_benchmark(StorageSettings* app) {
     DialogEx* dialog_ex = app->dialog_ex;
     uint8_t* bench_data;
-    dialog_ex_set_header(dialog_ex, "Pr""\xE9""paration \n""des donn""\xE9""es...", 64, 32, AlignCenter, AlignCenter);
+    dialog_ex_set_header(dialog_ex, "Préparation \n""des données...", 64, 32, AlignCenter, AlignCenter);
 
     bench_data = malloc(BENCH_DATA_SIZE);
     for(size_t i = 0; i < BENCH_DATA_SIZE; i++) {
@@ -126,7 +126,7 @@ void storage_settings_scene_benchmark_on_enter(void* context) {
 
     if(sd_status != FSE_OK) {
         dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);
-        dialog_ex_set_header(dialog_ex, "SD non mont""\xE9""e", 64, 3, AlignCenter, AlignTop);
+        dialog_ex_set_header(dialog_ex, "SD non montée", 64, 3, AlignCenter, AlignTop);
         dialog_ex_set_text(
             dialog_ex, "Essayez de repositionner\n""Ne pas formater \nla carte SD.", 3, 19, AlignLeft, AlignTop);
         dialog_ex_set_center_button_text(dialog_ex, "Ok");

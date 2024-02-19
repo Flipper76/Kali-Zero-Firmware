@@ -13,7 +13,7 @@ void hex_viewer_scene_scroll_on_enter(void* context) {
 
     TextInput* text_input = app->text_input;
 
-    text_input_set_header_text(text_input, "D""\xE9""filer jusqu'au pourcentage (0..100)");
+    text_input_set_header_text(text_input, "Défiler jusqu'au pourcentage (0..100)");
     text_input_set_result_callback(
         text_input,
         hex_viewer_scene_scroll_callback,

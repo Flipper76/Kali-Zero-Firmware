@@ -23,7 +23,7 @@ void infrared_scene_edit_rename_on_enter(void* context) {
             enter_name_length);
 
     } else if(edit_target == InfraredEditTargetRemote) {
-        text_input_set_header_text(text_input, "Nom de la telecommande");
+        text_input_set_header_text(text_input, "Nom de la télécommande");
         enter_name_length = INFRARED_MAX_REMOTE_NAME_LENGTH;
         strncpy(infrared->text_store[0], infrared_remote_get_name(remote), enter_name_length);
 

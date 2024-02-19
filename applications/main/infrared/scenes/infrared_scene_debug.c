@@ -9,7 +9,7 @@ void infrared_scene_debug_on_enter(void* context) {
     infrared_worker_rx_enable_blink_on_receiving(worker, true);
     infrared_worker_rx_start(worker);
 
-    infrared_debug_view_set_text(infrared->debug_view, "Signaux re""\xE7""us\nvisible ici");
+    infrared_debug_view_set_text(infrared->debug_view, "Signaux reçus\nvisible ici");
     view_dispatcher_switch_to_view(infrared->view_dispatcher, InfraredViewDebugView);
 }
 

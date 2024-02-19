@@ -29,7 +29,7 @@ static void subghz_remote_make_app_folder(SubGhzRemoteApp* app) {
 
     if(!storage_simply_mkdir(storage, SUBREM_APP_FOLDER)) {
         // FURI_LOG_E(TAG, "Could not create folder %s", SUBREM_APP_FOLDER);
-        dialog_message_show_storage_error(app->dialogs, "Impossible de cr""\xE9""er \nle dossier app");
+        dialog_message_show_storage_error(app->dialogs, "Impossible de créer \nle dossier app");
     }
     furi_record_close(RECORD_STORAGE);
 }

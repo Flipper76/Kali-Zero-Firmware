@@ -465,7 +465,7 @@ static StorageAnimation*
         selected = animation_storage_find_animation(HARDCODED_ANIMATION_NAME);
     } else if(!animation_storage_get_bubble_animation(selected)) {
         const char* name = animation_storage_get_meta(selected)->name;
-        FURI_LOG_E(TAG, "Impossible de télécharger l'animation décrite dans le manifeste: \'%s\'", name);
+        FURI_LOG_E(TAG, "Impossible de tÃ©lÃ©charger l'animation dÃ©crite dans le manifeste: \'%s\'", name);
         animation_storage_free_storage_animation(&selected);
         selected = animation_storage_find_animation(HARDCODED_ANIMATION_NAME);
     }
@@ -504,7 +504,7 @@ void animation_manager_unload_and_stall_animation(AnimationManager* animation_ma
 
     FURI_LOG_I(
         TAG,
-        "Décharger l'animation \'%s\'",
+        "DÃ©charger l'animation \'%s\'",
         animation_storage_get_meta(animation_manager->current_animation)->name);
 
     StorageAnimationManifestInfo* meta =

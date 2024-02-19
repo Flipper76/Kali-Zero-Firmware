@@ -33,7 +33,7 @@ void subghz_scene_start_on_enter(void* context) {
         subghz_scene_start_submenu_callback,
         subghz);
     submenu_add_item(
-        subghz->submenu, "Enregistr""\xE9", SubmenuIndexSaved, subghz_scene_start_submenu_callback, subghz);
+        subghz->submenu, "Enregistré", SubmenuIndexSaved, subghz_scene_start_submenu_callback, subghz);
     submenu_add_item(
         subghz->submenu,
         "Ajout manuel",
@@ -42,7 +42,7 @@ void subghz_scene_start_on_enter(void* context) {
         subghz);
     submenu_add_item(
         subghz->submenu,
-        "Analyseur fr""\xE9""quence",
+        "Analyseur fréquence",
         SubmenuIndexFrequencyAnalyzer,
         subghz_scene_start_submenu_callback,
         subghz);

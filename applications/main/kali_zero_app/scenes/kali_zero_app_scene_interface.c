@@ -24,10 +24,10 @@ void kali_zero_app_scene_interface_on_enter(void* context) {
     item = variable_item_list_add(var_item_list, "Menu principal", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
-    item = variable_item_list_add(var_item_list, "\xC9""cran de verrouillage", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "Écran de verrouillage", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
-    item = variable_item_list_add(var_item_list, "Barre d'""\xE9""tat", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "Barre d'état", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
     item = variable_item_list_add(var_item_list, "Navigateur de fichiers", 0, NULL, app);

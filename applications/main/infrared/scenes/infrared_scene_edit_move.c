@@ -48,7 +48,7 @@ bool infrared_scene_edit_move_on_event(void* context, SceneManagerEvent event) {
             if(!button_moved) {
                 infrared_show_error_message(
                     infrared,
-                    "Echec du d""\xE9""placement\n\"%s\"",
+                    "Echec du déplacement\n\"%s\"",
                     infrared_remote_get_signal_name(
                         infrared->remote, infrared->app_state.current_button_index));
                 scene_manager_search_and_switch_to_previous_scene(

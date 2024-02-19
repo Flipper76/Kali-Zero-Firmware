@@ -16,7 +16,7 @@ static DialogMessageButton about_screen_product(DialogsApp* dialogs, DialogMessa
 
     FuriString* screen_header = furi_string_alloc_printf(
         "Produit: %s\n"
-        "Mod""\xE8""le: %s",
+        "Modèle: %s",
         furi_hal_version_get_model_name(),
         furi_hal_version_get_model_code());
 
@@ -56,7 +56,7 @@ static DialogMessageButton about_screen_compliance(DialogsApp* dialogs, DialogMe
     DialogMessageButton result;
 
     const char* screen_text = "Pour tous certificats\n"
-                              "de conformit""\xE9"" visite:\n"
+                              "de conformité visite:\n"
                               "www.flipp.dev/compliance";
 
     dialog_message_set_text(message, screen_text, 0, 0, AlignLeft, AlignTop);

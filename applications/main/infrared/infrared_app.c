@@ -22,7 +22,7 @@ static const NotificationSequence*
 
 static void infrared_make_app_folder(InfraredApp* infrared) {
     if(!storage_simply_mkdir(infrared->storage, INFRARED_APP_FOLDER)) {
-        infrared_show_error_message(infrared, "Impossible de cr""\xE9""er \nle dossier app");
+        infrared_show_error_message(infrared, "Impossible de créer \nle dossier app");
     }
 }
 

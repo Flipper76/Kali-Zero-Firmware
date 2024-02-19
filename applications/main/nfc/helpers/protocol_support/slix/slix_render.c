@@ -27,12 +27,12 @@ void nfc_render_slix_info(const SlixData* data, NfcProtocolFormatType format_typ
 
     if(slix_type_has_features(slix_type, SLIX_TYPE_FEATURE_EAS)) {
         furi_string_cat_printf(
-            str, "EAS: %s Bloqu""\xE9""\n", data->system_info.lock_bits.eas ? "" : "not");
+            str, "EAS: %s Bloqué\n", data->system_info.lock_bits.eas ? "" : "not");
     }
 
     if(slix_type_has_features(slix_type, SLIX_TYPE_FEATURE_PROTECTION)) {
         furi_string_cat_printf(
-            str, "PPL: %s Bloqu""\xE9""\n", data->system_info.lock_bits.ppl ? "" : "not");
+            str, "PPL: %s Bloqué\n", data->system_info.lock_bits.ppl ? "" : "not");
 
         const SlixProtection protection = data->system_info.protection;
 
@@ -50,8 +50,8 @@ void nfc_render_slix_info(const SlixData* data, NfcProtocolFormatType format_typ
     }
 
     if(slix_type_has_features(slix_type, SLIX_TYPE_FEATURE_PRIVACY)) {
-        furi_string_cat(str, "::::::::::::::::[Confidentialit""\xE9""]::::::::::::::::::\n");
-        furi_string_cat_printf(str, "Mode Confidentialit""\xE9"": %sactiv""\xE9""\n", data->privacy ? "" : "des");
+        furi_string_cat(str, "::::::::::::::::[Confidentialité]::::::::::::::::::\n");
+        furi_string_cat_printf(str, "Mode Confidentialité: %sactivé\n", data->privacy ? "" : "des");
     }
 
     if(slix_type_has_features(slix_type, SLIX_TYPE_FEATURE_SIGNATURE)) {

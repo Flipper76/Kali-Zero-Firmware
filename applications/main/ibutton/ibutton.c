@@ -34,7 +34,7 @@ static void ibutton_make_app_folder(iButton* ibutton) {
     Storage* storage = furi_record_open(RECORD_STORAGE);
 
     if(!storage_simply_mkdir(storage, IBUTTON_APP_FOLDER)) {
-        dialog_message_show_storage_error(ibutton->dialogs, "Impossible de cr""\xE9""er \nun dossier app");
+        dialog_message_show_storage_error(ibutton->dialogs, "Impossible de créer \nun dossier app");
     }
 
     furi_record_close(RECORD_STORAGE);

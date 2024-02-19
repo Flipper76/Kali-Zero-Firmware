@@ -74,7 +74,7 @@ static void
             AlignCenter,
             AlignCenter,
             FontSecondary,
-            "Oui, je comprends que\nl'application peut\ncasser mon fichier \n cl""\xE9"" subghz");		
+            "Oui, je comprends que\nl'application peut\ncasser mon fichier \n clé subghz");		
         break;
     }
 }

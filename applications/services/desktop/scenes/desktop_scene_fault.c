@@ -18,7 +18,7 @@ void desktop_scene_fault_on_enter(void* context) {
     if(kalizero_assets.is_nsfw) {
         popup_set_header(
             popup,
-            "Flipper s'est ""\xE9""vanouie, \n""mais est maintenant de retour.",
+            "Flipper s'est évanouie, \n""mais est maintenant de retour.",
             60,
             14 + STATUS_BAR_Y_SHIFT,
             AlignCenter,
@@ -26,7 +26,7 @@ void desktop_scene_fault_on_enter(void* context) {
     } else {
         popup_set_header(
             popup,
-            "Flipper a plant""\xE9""\n mais a ""\xE9""t""\xE9"" red""\xE9""marr""\xE9",
+            "Flipper a planté\n mais a été redémarré",
             60,
             14 + STATUS_BAR_Y_SHIFT,
             AlignCenter,

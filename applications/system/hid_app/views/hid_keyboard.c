@@ -28,8 +28,8 @@ typedef struct {
 
 typedef struct {
     uint8_t width;
-    char key;
-    char shift_key;
+    char* key;
+    char* shift_key;
     const Icon* icon;
     const Icon* icon_toggled;
     uint8_t value;
@@ -65,70 +65,70 @@ const HidKeyboardKey hid_keyboard_keyset[ROW_COUNT][COLUMN_COUNT] = {
         {.width = 1, .icon = &I_ButtonF12_5x8, .value = HID_KEYBOARD_F12},
     },
     {
-        {.width = 1, .icon = NULL, .key = '&', .shift_key = '1', .value = HID_KEYBOARD_1},
-		{.width = 1, .icon = NULL, .key = '\xE9', .shift_key = '2', .value = HID_KEYBOARD_2}, //"\xE9" = é
-        {.width = 1, .icon = NULL, .key = '\"', .shift_key = '3', .value = HID_KEYBOARD_3},
-		{.width = 1, .icon = NULL, .key = '\'', .shift_key = '4', .value = HID_KEYBOARD_4},
-        {.width = 1, .icon = NULL, .key = '(', .shift_key = '5', .value = HID_KEYBOARD_5},
-        {.width = 1, .icon = NULL, .key = '-', .shift_key = '6', .value = HID_KEYBOARD_6},
-		{.width = 1, .icon = NULL, .key = '\xE8', .shift_key = '7', .value = HID_KEYBOARD_7}, //"\xE8" = è
-        {.width = 1, .icon = NULL, .key = '_', .shift_key = '8', .value = HID_KEYBOARD_8},	
-		{.width = 1, .icon = NULL, .key = '\xE7', .shift_key = '9', .value = HID_KEYBOARD_9}, //"\xE7" = ç
-        {.width = 1, .icon = NULL, .key = '\xE0', .shift_key = '0', .value = HID_KEYBOARD_0}, //"\xE0" = à		
+        {.width = 1, .icon = NULL, .key = "&", .shift_key = "1", .value = HID_KEYBOARD_1},
+		{.width = 1, .icon = NULL, .key = "é", .shift_key = "2", .value = HID_KEYBOARD_2}, //"\xE9" = é
+        {.width = 1, .icon = NULL, .key = "\"", .shift_key = "3", .value = HID_KEYBOARD_3},
+		{.width = 1, .icon = NULL, .key = "\"", .shift_key = "4", .value = HID_KEYBOARD_4},
+        {.width = 1, .icon = NULL, .key = "(", .shift_key = "5", .value = HID_KEYBOARD_5},
+        {.width = 1, .icon = NULL, .key = "-", .shift_key = "6", .value = HID_KEYBOARD_6},
+		{.width = 1, .icon = NULL, .key = "è", .shift_key = "7", .value = HID_KEYBOARD_7}, //"\xE8" = è
+        {.width = 1, .icon = NULL, .key = "_", .shift_key = "8", .value = HID_KEYBOARD_8},	
+		{.width = 1, .icon = NULL, .key = "ç", .shift_key = "9", .value = HID_KEYBOARD_9}, //"\xE7" = ç
+        {.width = 1, .icon = NULL, .key = "à", .shift_key = "0", .value = HID_KEYBOARD_0}, //"\xE0" = à		
         {.width = 2, .icon = &I_Backspace_9x7, .value = HID_KEYBOARD_DELETE},
         {.width = 0, .value = HID_KEYBOARD_DELETE}, 
     },
     {
-	    {.width = 1, .icon = NULL, .key = 'a', .shift_key = 'A', .value = HID_KEYBOARD_A},
-        {.width = 1, .icon = NULL, .key = 'z', .shift_key = 'Z', .value = HID_KEYBOARD_Z},
-        {.width = 1, .icon = NULL, .key = 'e', .shift_key = 'E', .value = HID_KEYBOARD_E},
-        {.width = 1, .icon = NULL, .key = 'r', .shift_key = 'R', .value = HID_KEYBOARD_R},
-        {.width = 1, .icon = NULL, .key = 't', .shift_key = 'T', .value = HID_KEYBOARD_T},
-        {.width = 1, .icon = NULL, .key = 'y', .shift_key = 'Y', .value = HID_KEYBOARD_Y},	
-        {.width = 1, .icon = NULL, .key = 'u', .shift_key = 'U', .value = HID_KEYBOARD_U},
-        {.width = 1, .icon = NULL, .key = 'i', .shift_key = 'I', .value = HID_KEYBOARD_I},
-        {.width = 1, .icon = NULL, .key = 'o', .shift_key = 'O', .value = HID_KEYBOARD_O},
-        {.width = 1, .icon = NULL, .key = 'p', .shift_key = 'P', .value = HID_KEYBOARD_P},	
-		{.width = 1, .icon = NULL, .key = '^', .shift_key = '\xA8', .value = HID_KEYPAD_CARET},//'\xA8' = ¨
-        {.width = 1, .icon = NULL, .key = '$', .shift_key = '\xA3', .value = HID_KEYBOARD_DOLAR},//'\xA3' = £		
+	    {.width = 1, .icon = NULL, .key = "a", .shift_key = "A", .value = HID_KEYBOARD_A},
+        {.width = 1, .icon = NULL, .key = "z", .shift_key = "Z", .value = HID_KEYBOARD_Z},
+        {.width = 1, .icon = NULL, .key = "e", .shift_key = "E", .value = HID_KEYBOARD_E},
+        {.width = 1, .icon = NULL, .key = "r", .shift_key = "R", .value = HID_KEYBOARD_R},
+        {.width = 1, .icon = NULL, .key = "t", .shift_key = "T", .value = HID_KEYBOARD_T},
+        {.width = 1, .icon = NULL, .key = "y", .shift_key = "Y", .value = HID_KEYBOARD_Y},	
+        {.width = 1, .icon = NULL, .key = "u", .shift_key = "U", .value = HID_KEYBOARD_U},
+        {.width = 1, .icon = NULL, .key = "i", .shift_key = "I", .value = HID_KEYBOARD_I},
+        {.width = 1, .icon = NULL, .key = "o", .shift_key = "O", .value = HID_KEYBOARD_O},
+        {.width = 1, .icon = NULL, .key = "p", .shift_key = "P", .value = HID_KEYBOARD_P},	
+		{.width = 1, .icon = NULL, .key = "^", .shift_key = "¨", .value = HID_KEYPAD_CARET},//"\xA8" = ¨
+        {.width = 1, .icon = NULL, .key = "$", .shift_key = "£", .value = HID_KEYBOARD_DOLAR},//"\xA3" = £		
     },	
     {
-        {.width = 1, .icon = NULL, .key = 'q', .shift_key = 'Q', .value = HID_KEYBOARD_Q},
-        {.width = 1, .icon = NULL, .key = 's', .shift_key = 'S', .value = HID_KEYBOARD_S},
-        {.width = 1, .icon = NULL, .key = 'd', .shift_key = 'D', .value = HID_KEYBOARD_D},
-        {.width = 1, .icon = NULL, .key = 'f', .shift_key = 'F', .value = HID_KEYBOARD_F},
-        {.width = 1, .icon = NULL, .key = 'g', .shift_key = 'G', .value = HID_KEYBOARD_G},
-        {.width = 1, .icon = NULL, .key = 'h', .shift_key = 'H', .value = HID_KEYBOARD_H},
-        {.width = 1, .icon = NULL, .key = 'j', .shift_key = 'J', .value = HID_KEYBOARD_J},
-        {.width = 1, .icon = NULL, .key = 'k', .shift_key = 'K', .value = HID_KEYBOARD_K},
-        {.width = 1, .icon = NULL, .key = 'l', .shift_key = 'L', .value = HID_KEYBOARD_L},
-        {.width = 1, .icon = NULL, .key = 'm', .shift_key = 'M', .value = HID_KEYBOARD_M},
+        {.width = 1, .icon = NULL, .key = "q", .shift_key = "Q", .value = HID_KEYBOARD_Q},
+        {.width = 1, .icon = NULL, .key = "s", .shift_key = "S", .value = HID_KEYBOARD_S},
+        {.width = 1, .icon = NULL, .key = "d", .shift_key = "D", .value = HID_KEYBOARD_D},
+        {.width = 1, .icon = NULL, .key = "f", .shift_key = "F", .value = HID_KEYBOARD_F},
+        {.width = 1, .icon = NULL, .key = "g", .shift_key = "G", .value = HID_KEYBOARD_G},
+        {.width = 1, .icon = NULL, .key = "h", .shift_key = "H", .value = HID_KEYBOARD_H},
+        {.width = 1, .icon = NULL, .key = "j", .shift_key = "J", .value = HID_KEYBOARD_J},
+        {.width = 1, .icon = NULL, .key = "k", .shift_key = "K", .value = HID_KEYBOARD_K},
+        {.width = 1, .icon = NULL, .key = "l", .shift_key = "L", .value = HID_KEYBOARD_L},
+        {.width = 1, .icon = NULL, .key = "m", .shift_key = "M", .value = HID_KEYBOARD_M},
 		{.width = 2, .icon = &I_Return_10x7, .value = HID_KEYBOARD_RETURN}, 
         {.width = 0, .value = HID_KEYBOARD_RETURN}, 
     },
     {
 		{.width = 1, .icon = &I_Pin_arrow_up_7x9,.icon_toggled = &I_Shift_pressed_7x10, .value = HID_KEYBOARD_L_SHIFT},
-        {.width = 1, .icon = NULL, .key = 'w', .shift_key = 'W', .value = HID_KEYBOARD_W},
-        {.width = 1, .icon = NULL, .key = 'x', .shift_key = 'X', .value = HID_KEYBOARD_X},
-        {.width = 1, .icon = NULL, .key = 'c', .shift_key = 'C', .value = HID_KEYBOARD_C},
-        {.width = 1, .icon = NULL, .key = 'v', .shift_key = 'V', .value = HID_KEYBOARD_V},
-        {.width = 1, .icon = NULL, .key = 'b', .shift_key = 'B', .value = HID_KEYBOARD_B},
-        {.width = 1, .icon = NULL, .key = 'n', .shift_key = 'N', .value = HID_KEYBOARD_N},
-        {.width = 1, .icon = NULL, .key = ',', .shift_key = '?', .value = HID_KEYBOARD_COMMA},
-		{.width = 1, .icon = NULL, .key = ';', .shift_key = '.', .value = HID_KEYBOARD_SEMICOLON},
+        {.width = 1, .icon = NULL, .key = "w", .shift_key = "W", .value = HID_KEYBOARD_W},
+        {.width = 1, .icon = NULL, .key = "x", .shift_key = "X", .value = HID_KEYBOARD_X},
+        {.width = 1, .icon = NULL, .key = "c", .shift_key = "C", .value = HID_KEYBOARD_C},
+        {.width = 1, .icon = NULL, .key = "v", .shift_key = "V", .value = HID_KEYBOARD_V},
+        {.width = 1, .icon = NULL, .key = "b", .shift_key = "B", .value = HID_KEYBOARD_B},
+        {.width = 1, .icon = NULL, .key = "n", .shift_key = "N", .value = HID_KEYBOARD_N},
+        {.width = 1, .icon = NULL, .key = ",", .shift_key = "?", .value = HID_KEYBOARD_COMMA},
+		{.width = 1, .icon = NULL, .key = ";", .shift_key = ".", .value = HID_KEYBOARD_SEMICOLON},
 		{.width = 1, .icon = &I_ButtonUp_7x4, .value = HID_KEYBOARD_UP_ARROW},
-		{.width = 1, .icon = NULL, .key = ':', .shift_key = '/', .value = HID_KEYBOARD_DOUBLEDOT}, 
-		{.width = 1, .icon = NULL, .key = '!', .shift_key = '\xA7', .value = HID_KEYBOARD_EXCLA},//'\xA7'= §
+		{.width = 1, .icon = NULL, .key = ":", .shift_key = "/", .value = HID_KEYBOARD_DOUBLEDOT}, 
+		{.width = 1, .icon = NULL, .key = "!", .shift_key = "§", .value = HID_KEYBOARD_EXCLA},//"\xA7"= §
     },
     {
-		{.width = 1, .icon = NULL, .key = '\xF9', .shift_key = '%', .value = HID_KEYBOARD_UGRAVE},//'\xF9' = ù 
-		{.width = 1, .icon = NULL, .key = '*', .shift_key = '\xB5', .value = HID_KEYPAD_ASTERISK},//'\xB5' = µ 
-        {.width = 4, .icon = NULL, .key = ' ', .value = HID_KEYBOARD_SPACEBAR},
+		{.width = 1, .icon = NULL, .key = "ù", .shift_key = "%", .value = HID_KEYBOARD_UGRAVE},//"\xF9" = ù 
+		{.width = 1, .icon = NULL, .key = "*", .shift_key = "µ", .value = HID_KEYPAD_ASTERISK},//"\xB5" = µ 
+        {.width = 4, .icon = NULL, .key = " ", .value = HID_KEYBOARD_SPACEBAR},
         {.width = 0, .value = HID_KEYBOARD_SPACEBAR},
         {.width = 0, .value = HID_KEYBOARD_SPACEBAR},
         {.width = 0, .value = HID_KEYBOARD_SPACEBAR},
-		{.width = 1, .icon = NULL, .key = ')', .shift_key = '\xB0', .value = HID_KEYPAD_CLOSE_PARENTHESIS}, //'\xB0' = °
-		{.width = 1, .icon = NULL, .key = '=', .shift_key = '+', .value = HID_KEYBOARD_EQUAL_SIGN},	
+		{.width = 1, .icon = NULL, .key = ")", .shift_key = "°", .value = HID_KEYPAD_CLOSE_PARENTHESIS}, //"\xB0" = °
+		{.width = 1, .icon = NULL, .key = "=", .shift_key = "+", .value = HID_KEYBOARD_EQUAL_SIGN},	
         {.width = 1, .icon = &I_ButtonLeft_4x7, .value = HID_KEYBOARD_LEFT_ARROW},
         {.width = 1, .icon = &I_ButtonDown_7x4, .value = HID_KEYBOARD_DOWN_ARROW},
         {.width = 1, .icon = &I_ButtonRight_4x7, .value = HID_KEYBOARD_RIGHT_ARROW}, 
@@ -195,7 +195,7 @@ static void hid_keyboard_draw_key(
             MARGIN_TOP + y * (KEY_HEIGHT + KEY_PADDING) + KEY_HEIGHT / 2 - key_icon->height / 2,
             key_icon);
     } else {
-		char key_str[2] = "\0\0";
+		char* key_str[2] = {NULL, NULL};
         // Si Shift est activé, utilisez la touche Shift lorsqu'elle est disponible
         key_str[0] = (model->shift && key.shift_key != 0) ? key.shift_key : key.key;
         canvas_draw_str_aligned(
@@ -204,7 +204,7 @@ static void hid_keyboard_draw_key(
             MARGIN_TOP + y * (KEY_HEIGHT + KEY_PADDING) + KEY_HEIGHT / 2,
             AlignCenter,
             AlignCenter,
-            key_str);
+             key_str[0]);
     }
 }
 

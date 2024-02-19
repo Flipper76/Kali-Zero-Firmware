@@ -12,7 +12,7 @@
  * - c: checksum (sum of previous by bytes)
  * - u: unknown
  * - b: battery low; flag to indicate low battery voltage
- * - t: temperature; in °C * 10, 12 bit with complement
+ * - t: temperature; in Â°C * 10, 12 bit with complement
  * - h: humidity
  *
  */

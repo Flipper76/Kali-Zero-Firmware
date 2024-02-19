@@ -18,7 +18,7 @@ void nfc_scene_mf_classic_keys_delete_on_enter(void* context) {
     FuriString* key_str = furi_string_alloc();
 
     widget_add_string_element(
-        instance->widget, 64, 0, AlignCenter, AlignTop, FontPrimary, "Supprimer la cl""\xE9""?");
+        instance->widget, 64, 0, AlignCenter, AlignTop, FontPrimary, "Supprimer la clé?");
     widget_add_button_element(
         instance->widget,
         GuiButtonTypeLeft,

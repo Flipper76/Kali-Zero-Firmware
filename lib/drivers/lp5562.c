@@ -26,7 +26,7 @@ void lp5562_configure(FuriHalI2cBusHandle* handle) {
 void lp5562_enable(FuriHalI2cBusHandle* handle) {
     Reg00_Enable reg = {.CHIP_EN = true, .LOG_EN = true};
     furi_hal_i2c_write_reg_8(handle, LP5562_ADDRESS, 0x00, *(uint8_t*)&reg, LP5562_I2C_TIMEOUT);
-    //>488μs delay is required after writing to 0x00 register, otherwise program engine will not work
+    //>488Î¼s delay is required after writing to 0x00 register, otherwise program engine will not work
     furi_delay_us(500);
 }
 

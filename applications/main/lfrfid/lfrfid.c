@@ -335,7 +335,7 @@ void lfrfid_make_app_folder(LfRfid* app) {
     furi_assert(app);
 
     if(!storage_simply_mkdir(app->storage, LFRFID_APP_FOLDER)) {
-        dialog_message_show_storage_error(app->dialogs, "Impossible de cr""\xE9""er \nle dossier app");
+        dialog_message_show_storage_error(app->dialogs, "Impossible de créer \nle dossier app");
     }
 }
 

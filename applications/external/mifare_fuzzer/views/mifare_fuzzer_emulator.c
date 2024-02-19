@@ -2,7 +2,7 @@
 
 #define TAG "MifareFuzzerApp_emulator_view"
 
-// Screen is 128 × 64 pixels
+// Screen is 128 Ã— 64 pixels
 
 /// @brief mifare_fuzzer_emulator_set_callback
 /// @param mifare_fuzzer_emulator

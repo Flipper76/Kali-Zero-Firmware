@@ -246,7 +246,7 @@ SubGhzTxRxStartTxState subghz_txrx_tx_start(SubGhzTxRx* instance, FlipperFormat*
             break;
         }
         if(!flipper_format_insert_or_update_uint32(flipper_format, "Repeat", &repeat, 1)) {
-            FURI_LOG_E(TAG, "Impossible de répéter");
+            FURI_LOG_E(TAG, "Impossible de rÃ©pÃ©ter");
             break;
         }
         ret = SubGhzTxRxStartTxStateOk;

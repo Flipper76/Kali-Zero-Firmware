@@ -6,10 +6,10 @@ void infrared_scene_learn_done_on_enter(void* context) {
 
     if(infrared->app_state.is_learning_new_remote) {
         popup_set_icon(popup, 48, 6, &I_DolphinDone_80x58);
-        popup_set_header(popup, "T""\xE9""l""\xE9""commande\najout""\xE9""e!", 0, 0, AlignLeft, AlignTop);
+        popup_set_header(popup, "Télécommande\najoutée!", 0, 0, AlignLeft, AlignTop);
     } else {
         popup_set_icon(popup, 36, 5, &I_DolphinSaved_92x58);
-        popup_set_header(popup, "Enregistr""\xE9""", 15, 19, AlignLeft, AlignBottom);
+        popup_set_header(popup, "Enregistré", 15, 19, AlignLeft, AlignBottom);
     }
 
     popup_set_callback(popup, infrared_popup_closed_callback);

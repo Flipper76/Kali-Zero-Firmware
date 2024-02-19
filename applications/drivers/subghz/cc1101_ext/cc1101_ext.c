@@ -332,7 +332,7 @@ void subghz_device_cc1101_ext_load_custom_preset(const uint8_t* preset_data) {
     //show debug
     if(furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug)) {
         i = 0;
-        FURI_LOG_D(TAG, "Chargement d'un préréglage personnalisé");
+        FURI_LOG_D(TAG, "Chargement d'un prÃ©rÃ©glage personnalisÃ©");
         while(preset_data[i]) {
             FURI_LOG_D(TAG, "Reg[%lu]: %02X=%02X", i, preset_data[i], preset_data[i + 1]);
             i += 2;
@@ -511,13 +511,13 @@ bool subghz_device_cc1101_ext_is_tx_allowed(uint32_t value) {
        !(value >= 299999755 && value <= 350000335) && // was increased from 348 to 350
        !(value >= 386999938 && value <= 467750000) && // was increased from 464 to 467.75
        !(value >= 778999847 && value <= 928000000)) {
-        FURI_LOG_I(TAG, "Fréquence bloquée - en dehors de la plage par défaut");
+        FURI_LOG_I(TAG, "FrÃ©quence bloquÃ©e - en dehors de la plage par dÃ©faut");
         return false;
     } else if(
         (SUBGHZ_DEVICE_CC1101_EXT_FORCE_EXTENDED_RANGE ||
          subghz_device_cc1101_ext->extended_range) &&
         !subghz_device_cc1101_ext_is_frequency_valid(value)) {
-        FURI_LOG_I(TAG, "Fréquence bloquée - en dehors de la plage étendue");
+        FURI_LOG_I(TAG, "FrÃ©quence bloquÃ©e - en dehors de la plage Ã©tendue");
         return false;
     }
 

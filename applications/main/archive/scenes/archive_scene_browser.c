@@ -268,7 +268,7 @@ bool archive_scene_browser_on_event(void* context, SceneManagerEvent event) {
                         furi_string_cat_printf(
                             dialog_msg,
                             "Impossible %s:\n%s",
-                            copy ? "copier" : "d""\xE9""placer",
+                            copy ? "copier" : "déplacer",
                             storage_error_get_desc(error));
                         dialog_message_show_storage_error(
                             archive->dialogs, furi_string_get_cstr(dialog_msg));

@@ -62,7 +62,7 @@ bool kali_zero_app_scene_protocols_freqs_add_on_event(void* context, SceneManage
         case TextInputResultError:
             popup_set_header(app->popup, "Valeur invalide!", 64, 26, AlignCenter, AlignCenter);
             popup_set_text(
-                app->popup, "La fr""\xE9""quence n'a pas ""\xE9""t""\xE9"" ajout""\xE9""e...", 64, 40, AlignCenter, AlignCenter);
+                app->popup, "La fréquence n'a pas été ajoutée...", 64, 40, AlignCenter, AlignCenter);
             popup_set_callback(app->popup, callback_return);
             popup_set_context(app->popup, app);
             popup_set_timeout(app->popup, 1000);

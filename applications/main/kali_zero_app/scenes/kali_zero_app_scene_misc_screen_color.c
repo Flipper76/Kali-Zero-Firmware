@@ -14,7 +14,7 @@ void kali_zero_app_scene_misc_screen_color_on_enter(void* context) {
     KaliZeroApp* app = context;
     ByteInput* byte_input = app->byte_input;
 
-    byte_input_set_header_text(byte_input, "D""\xE9""finir la couleur LCD (#RRVVBB)");
+    byte_input_set_header_text(byte_input, "Définir la couleur LCD (#RRVVBB)");
 
     rgb_backlight_get_color(
         scene_manager_get_scene_state(app->scene_manager, KaliZeroAppSceneMiscScreenColor),

@@ -59,7 +59,7 @@ void desktop_settings_scene_start_on_enter(void* context) {
 
     variable_item_list_add(variable_item_list, "Configuration raccourcis", 1, NULL, NULL);
 
-    variable_item_list_add(variable_item_list, "R""\xE9""initialiser les raccourcis", 1, NULL, NULL);
+    variable_item_list_add(variable_item_list, "Réinitialiser les raccourcis", 1, NULL, NULL);
 
     variable_item_list_add(variable_item_list, "Configuration PIN", 1, NULL, NULL);
 

@@ -26,8 +26,8 @@ void nfc_scene_mf_ultralight_unlock_warn_on_enter(void* context) {
         nfc_text_store_set(nfc, furi_string_get_cstr(password_str));
         furi_string_free(password_str);
 
-        const char* message = (type == MfUltralightAuthTypeReader) ? "MDP captur""\xE9""!" :
-                                                                     "Fonction risqu""\xE9""e!";
+        const char* message = (type == MfUltralightAuthTypeReader) ? "MDP capturé!" :
+                                                                     "Fonction risquée!";
         dialog_ex_set_header(dialog_ex, message, 64, 0, AlignCenter, AlignTop);
         dialog_ex_set_text(dialog_ex, nfc->text_store, 64, 12, AlignCenter, AlignTop);
         dialog_ex_set_left_button_text(dialog_ex, "Annuler");
@@ -37,7 +37,7 @@ void nfc_scene_mf_ultralight_unlock_warn_on_enter(void* context) {
             notification_message(nfc->notifications, &sequence_set_green_255);
         }
     } else {
-        dialog_ex_set_header(dialog_ex, "Fonction risqu""\xE9""e!", 64, 4, AlignCenter, AlignTop);
+        dialog_ex_set_header(dialog_ex, "Fonction risquée!", 64, 4, AlignCenter, AlignTop);
         dialog_ex_set_text(
             dialog_ex, "Un mdp incorrect\npeut bloquer votre\ncarte.", 4, 18, AlignLeft, AlignTop);
         dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);

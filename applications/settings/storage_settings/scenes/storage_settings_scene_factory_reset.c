@@ -24,7 +24,7 @@ void storage_settings_scene_factory_reset_on_enter(void* context) {
     dialog_ex_set_header(dialog_ex, "Confirmer Factory Reset", 64, 10, AlignCenter, AlignCenter);
     dialog_ex_set_text(
         dialog_ex,
-        "Le stockage interne \r\nsera effac""\xE9"" \nLes donn""\xE9""es et les \nparam""\xE8""tres seront perdus!",
+        "Le stockage interne \r\nsera effacé \nLes données et les \nparamètres seront perdus!",
         64,
         32,
         AlignCenter,

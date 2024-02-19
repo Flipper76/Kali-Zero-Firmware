@@ -101,7 +101,7 @@ void text_viewer_scene_show_on_enter(void* context) {
             64,
             AlignLeft,
             AlignCenter,
-            "\e#Erreur:\nErreur du fichiers syst""\xE8""me\e#",
+            "\e#Erreur:\nErreur du fichiers système\e#",
             false);
     }
 

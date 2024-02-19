@@ -11,7 +11,7 @@ void infrared_scene_ask_retry_on_enter(void* context) {
 
     dialog_ex_set_header(dialog_ex, "Retenter de lire?", 64, 11, AlignCenter, AlignTop);
     dialog_ex_set_text(
-        dialog_ex, "Toutes donn""\xE9""es non \nsauvegard""\xE9""es \nseront perdues!", 64, 25, AlignCenter, AlignTop);
+        dialog_ex, "Toutes données non \nsauvegardées \nseront perdues!", 64, 25, AlignCenter, AlignTop);
     dialog_ex_set_icon(dialog_ex, 0, 0, NULL);
     dialog_ex_set_left_button_text(dialog_ex, "Quitter");
     dialog_ex_set_center_button_text(dialog_ex, NULL);

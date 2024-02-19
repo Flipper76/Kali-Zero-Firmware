@@ -44,7 +44,7 @@ void storage_settings_scene_start_on_enter(void* context) {
     } else {
         submenu_add_item(
             submenu,
-            "D""\xE9""monter la carte SD",
+            "Démonter la carte SD",
             StorageSettingsStartSubmenuIndexUnmount,
             storage_settings_scene_start_submenu_callback,
             app);

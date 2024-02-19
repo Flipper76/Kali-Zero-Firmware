@@ -9,7 +9,7 @@ void lfrfid_scene_retry_confirm_on_enter(void* context) {
     widget_add_string_element(
         widget, 64, 19, AlignCenter, AlignBottom, FontPrimary, "Retenter de lire?");
     widget_add_string_element(
-        widget, 64, 29, AlignCenter, AlignBottom, FontSecondary, "Toutes donn""\xE9""es non \nenregistr""\xE9""es seront perdues!");
+        widget, 64, 29, AlignCenter, AlignBottom, FontSecondary, "Toutes données non \nenregistrées seront perdues!");
 
     view_dispatcher_switch_to_view(app->view_dispatcher, LfRfidViewWidget);
 }

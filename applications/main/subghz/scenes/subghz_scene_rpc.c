@@ -48,7 +48,7 @@ bool subghz_scene_rpc_on_event(void* context, SceneManagerEvent event) {
                     rpc_system_app_set_error_code(subghz->rpc_ctx, SubGhzErrorTypeOnlyRX);
                     rpc_system_app_set_error_text(
                         subghz->rpc_ctx,
-                        "La transmission sur cette fr""\xE9""quence est restreinte dans votre config");
+                        "La transmission sur cette fréquence est restreinte dans votre config");
                     break;
                 case SubGhzTxRxStartTxStateErrorParserOthers:
                     rpc_system_app_set_error_code(subghz->rpc_ctx, SubGhzErrorTypeParserOthers);
@@ -86,7 +86,7 @@ bool subghz_scene_rpc_on_event(void* context, SceneManagerEvent event) {
                     snprintf(
                         subghz->file_name_tmp,
                         SUBGHZ_MAX_LEN_NAME,
-                        "Charg""\xE9""e\n%s",
+                        "Chargée\n%s",
                         furi_string_get_cstr(file_name));
                     popup_set_text(popup, subghz->file_name_tmp, 89, 44, AlignCenter, AlignTop);
 

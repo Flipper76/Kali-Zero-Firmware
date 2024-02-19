@@ -4,7 +4,7 @@ void storage_move_to_sd_scene_progress_on_enter(void* context) {
     StorageMoveToSd* app = context;
 
     widget_add_string_element(
-        app->widget, 64, 10, AlignCenter, AlignCenter, FontPrimary, "D""\xE9""placement...");
+        app->widget, 64, 10, AlignCenter, AlignCenter, FontPrimary, "déplacement...");
 
     view_dispatcher_switch_to_view(app->view_dispatcher, StorageMoveToSdViewWidget);
 

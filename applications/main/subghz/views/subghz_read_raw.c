@@ -344,7 +344,7 @@ void subghz_read_raw_draw(Canvas* canvas, SubGhzReadRAWModel* model) {
     case SubGhzReadRAWStatusLoadKeyTX:
     case SubGhzReadRAWStatusLoadKeyTXRepeat:
         graphics_mode = 0;
-        elements_button_center(canvas, "Maintenez pour r""\xE9""p""\xE9""ter");
+        elements_button_center(canvas, "Maintenez pour répéter");
         break;
 
     case SubGhzReadRAWStatusStart:

@@ -13,7 +13,7 @@ void lfrfid_scene_save_data_on_enter(void* context) {
         protocol_dict_get_data(app->dict, app->protocol_id, app->new_key_data, size);
     }
 
-    byte_input_set_header_text(byte_input, "Entrez les donn""\xE9""es en hex");
+    byte_input_set_header_text(byte_input, "Entrez les données en hex");
 
     byte_input_set_result_callback(
         byte_input, lfrfid_text_input_callback, NULL, app, app->new_key_data, size);

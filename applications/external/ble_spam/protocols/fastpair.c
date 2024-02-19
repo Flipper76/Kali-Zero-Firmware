@@ -660,7 +660,7 @@ static void extra_config(Ctx* ctx) {
     uint8_t value_index;
     uint16_t model_index;
 
-    item = variable_item_list_add(list, "Code mod""\xE8""le", 3, model_changed, payload);
+    item = variable_item_list_add(list, "Code modèle", 3, model_changed, payload);
     const char* model_name = NULL;
     char model_name_buf[9];
     switch(payload->mode) {

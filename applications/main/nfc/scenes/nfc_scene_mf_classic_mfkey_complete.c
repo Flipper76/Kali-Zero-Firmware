@@ -22,7 +22,7 @@ void nfc_scene_mf_classic_mfkey_complete_on_enter(void* context) {
         AlignCenter,
         AlignTop,
         FontSecondary,
-		"Utilisez maintenant Mfkey32 pour extraire les \nles cl""\xE9"": lab.flipper.net/nfc-tools");
+		"Utilisez maintenant Mfkey32 pour extraire les \nles clé: lab.flipper.net/nfc-tools");
     widget_add_icon_element(instance->widget, 50, 39, &I_MFKey_qr_25x25);
     widget_add_button_element(
         instance->widget,

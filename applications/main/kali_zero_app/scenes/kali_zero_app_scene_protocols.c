@@ -39,7 +39,7 @@ static void kali_zero_app_scene_protocols_subghz_extend_changed(VariableItem* it
 static void kali_zero_app_scene_protocols_file_naming_prefix_changed(VariableItem* item) {
     KaliZeroApp* app = variable_item_get_context(item);
     bool value = variable_item_get_current_value_index(item);
-    variable_item_set_current_value_text(item, value ? "Apr""\xE9""s" : "Avant");
+    variable_item_set_current_value_text(item, value ? "Aprés" : "Avant");
     kalizero_settings.file_naming_prefix_after = value;
     app->save_settings = true;
 }
@@ -63,11 +63,11 @@ void kali_zero_app_scene_protocols_on_enter(void* context) {
     variable_item_set_current_value_index(item, kalizero_settings.bad_bt_remember);
     variable_item_set_current_value_text(item, kalizero_settings.bad_bt_remember ? "ON" : "OFF");
 
-    item = variable_item_list_add(var_item_list, "Frequences subGHz", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "Fréquences subGHz", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
     item = variable_item_list_add(
-        var_item_list, "Extension SubGHz", 2, kali_zero_app_scene_protocols_subghz_extend_changed, app);
+        var_item_list, "Éxtension SubGHz", 2, kali_zero_app_scene_protocols_subghz_extend_changed, app);
     variable_item_set_current_value_index(item, app->subghz_extend);
     variable_item_set_current_value_text(item, app->subghz_extend ? "ON" : "OFF");
 
@@ -76,13 +76,13 @@ void kali_zero_app_scene_protocols_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Pr""\xE9""fixe nom de fichier",
+        "Préfixe nom de fichier",
         2,
         kali_zero_app_scene_protocols_file_naming_prefix_changed,
         app);
     variable_item_set_current_value_index(item, kalizero_settings.file_naming_prefix_after);
     variable_item_set_current_value_text(
-        item, kalizero_settings.file_naming_prefix_after ? "Apr""\xE9""s" : "Avant");;
+        item, kalizero_settings.file_naming_prefix_after ? "Aprés" : "Avant");;
 
     variable_item_list_set_enter_callback(
         var_item_list, kali_zero_app_scene_protocols_var_item_list_callback, app);

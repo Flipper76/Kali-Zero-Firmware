@@ -45,7 +45,7 @@ __int32_t bt_trigger_app(void* p) {
         //Dealing with events one by one
         switch(event.type) {
         case(EventTypeInput):
-            //On ne considère que les appuies courts
+            //On ne considÃ¨re que les appuies courts
             if(event.input.type == InputTypeShort) {
                 switch(event.input.key) {
                 case(InputKeyBack):

@@ -7,7 +7,7 @@
 static bool subghz_device_cc1101_ext_interconnect_is_frequency_valid(uint32_t frequency) {
     bool ret = subghz_device_cc1101_ext_is_frequency_valid(frequency);
     if(!ret) {
-        furi_crash("SubGhz: fr""\xE9""quence incorrecte.");
+        furi_crash("SubGhz: fr√©quence incorrecte.");
     }
     return ret;
 }

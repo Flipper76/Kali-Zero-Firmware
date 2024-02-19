@@ -26,7 +26,7 @@ void kali_zero_app_scene_protocols_freqs_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Par d""\xE9""faut",
+        "Par défaut",
         2,
         kali_zero_app_scene_protocols_freqs_use_defaults_changed,
         app);

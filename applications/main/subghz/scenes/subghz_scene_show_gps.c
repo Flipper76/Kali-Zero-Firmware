@@ -74,7 +74,7 @@ void subghz_scene_show_gps_draw_satellites(void* context) {
 
     furi_string_printf(
         text,
-		"Capture: %s,\r\n%s  Heure: %s\r\n\r\nTemps r""\xE9""el: Sats : %d\r\nDistance: %.2f%s Dir: %s\r\nHeure GPS: %02d:%02d:%02d UTC",
+		"Capture: %s,\r\n%s  Heure: %s\r\n\r\nTemps réel: Sats : %d\r\nDistance: %.2f%s Dir: %s\r\nHeure GPS: %02d:%02d:%02d UTC",
         furi_string_get_cstr(lat_str),
         furi_string_get_cstr(lon_str),
         furi_string_get_cstr(time_text),

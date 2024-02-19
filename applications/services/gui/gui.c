@@ -322,7 +322,7 @@ static void gui_input(Gui* gui, InputEvent* input_event) {
     } else if(!(gui->ongoing_input & key_bit)) {
         FURI_LOG_D(
             TAG,
-            "non complémentaire, suppression: %s type: %s, séquence: %p",
+            "non complÃ©mentaire, suppression: %s type: %s, sÃ©quence: %p",
             input_get_key_name(input_event->key),
             input_get_type_name(input_event->type),
             (void*)input_event->sequence);
@@ -355,7 +355,7 @@ static void gui_input(Gui* gui, InputEvent* input_event) {
         } else if(gui->ongoing_input_view_port && input_event->type == InputTypeRelease) {
             FURI_LOG_D(
                 TAG,
-                "ViewPort changé quand vous appuyez sur la touche  %p -> %p. Sending key: %s, type: %s, séquence: %p vers l'affichage précédent",
+                "ViewPort changÃ© quand vous appuyez sur la touche  %p -> %p. Sending key: %s, type: %s, sÃ©quence: %p vers l'affichage prÃ©cÃ©dent",
                 gui->ongoing_input_view_port,
                 view_port,
                 input_get_key_name(input_event->key),
@@ -365,7 +365,7 @@ static void gui_input(Gui* gui, InputEvent* input_event) {
         } else {
             FURI_LOG_D(
                 TAG,
-                "ViewPort change quand vous appuyez sur la touche  %p -> %p. Discarding key: %s, type: %s, séquence: %p",
+                "ViewPort change quand vous appuyez sur la touche  %p -> %p. Discarding key: %s, type: %s, sÃ©quence: %p",
                 gui->ongoing_input_view_port,
                 view_port,
                 input_get_key_name(input_event->key),

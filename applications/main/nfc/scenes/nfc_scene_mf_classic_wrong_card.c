@@ -26,7 +26,7 @@ void nfc_scene_mf_classic_wrong_card_on_enter(void* context) {
         AlignLeft,
         AlignTop,
         FontSecondary,
-        "La gestion des donn""\xE9""es n'est \npossible qu'avec la carte initiale");
+        "La gestion des données n'est \npossible qu'avec la carte initiale");
     widget_add_button_element(
         widget,
         GuiButtonTypeLeft,

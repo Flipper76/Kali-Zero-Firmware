@@ -48,7 +48,7 @@ void subrem_view_edit_menu_add_data_to_show(
             if(!furi_string_empty(label)) {
                 furi_string_set(model->label, label);
             } else {
-                furi_string_set(model->label, "\xC9""tiquette vide");
+                furi_string_set(model->label, "Étiquette vide");
             }
             furi_string_set(model->file_path, path);
             model->sub_state = state;
@@ -161,13 +161,13 @@ void subrem_view_edit_menu_draw(Canvas* canvas, SubRemViewEditMenuModel* model) 
             canvas_draw_str(canvas, 26, FRAME_HEIGHT * 2 - 2, "Fichier introuvable");
             break;
         case SubRemLoadSubStateErrorFreq:
-            canvas_draw_str(canvas, 26, FRAME_HEIGHT * 2 - 2, "Mauvaise fr""\xE9""quence");
+            canvas_draw_str(canvas, 26, FRAME_HEIGHT * 2 - 2, "Mauvaise fréquence");
             break;
         case SubRemLoadSubStateErrorMod:
             canvas_draw_str(canvas, 26, FRAME_HEIGHT * 2 - 2, "Mauvaise modulation");
             break;
         case SubRemLoadSubStateErrorProtocol:
-            canvas_draw_str(canvas, 26, FRAME_HEIGHT * 2 - 2, "Protocole non support""\xE9");
+            canvas_draw_str(canvas, 26, FRAME_HEIGHT * 2 - 2, "Protocole non supporté");
             break;
 
         default:

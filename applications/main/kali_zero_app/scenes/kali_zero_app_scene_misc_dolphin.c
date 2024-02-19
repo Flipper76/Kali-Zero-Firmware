@@ -83,7 +83,7 @@ void kali_zero_app_scene_misc_dolphin_on_enter(void* context) {
     snprintf(angry_str, 4, "%li", app->dolphin_angry);
     item = variable_item_list_add(
         var_item_list,
-        "Dauphin en col""\xE8""re",
+        "Dauphin en colère",
         BUTTHURT_MAX + 1,
         kali_zero_app_scene_misc_dolphin_dolphin_angry_changed,
         app);
@@ -92,7 +92,7 @@ void kali_zero_app_scene_misc_dolphin_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Timer de m""\xE9""contentement",
+        "Timer de mécontentement",
         COUNT_OF(butthurt_timer_names),
         kali_zero_app_scene_misc_dolphin_butthurt_timer_changed,
         app);

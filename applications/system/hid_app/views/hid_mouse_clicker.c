@@ -70,14 +70,14 @@ static void hid_mouse_clicker_draw_callback(Canvas* canvas, void* context) {
         canvas_set_color(canvas, ColorWhite);
     } else {
         canvas_set_font(canvas, FontPrimary);
-        elements_multiline_text(canvas, AlignLeft, 35, "Presser D""\xE9""but\npour lancer\nle cliqueur");
+        elements_multiline_text(canvas, AlignLeft, 35, "Presser Début\npour lancer\nle cliqueur");
         canvas_set_font(canvas, FontSecondary);
     }
     canvas_draw_icon(canvas, 74, 29, &I_Ok_btn_9x9);
     if(model->running) {
         elements_multiline_text_aligned(canvas, 91, 36, AlignLeft, AlignBottom, "Stop");
     } else {
-        elements_multiline_text_aligned(canvas, 91, 36, AlignLeft, AlignBottom, "D""\xE9""but");
+        elements_multiline_text_aligned(canvas, 91, 36, AlignLeft, AlignBottom, "Début");
     }
     canvas_set_color(canvas, ColorBlack);
 

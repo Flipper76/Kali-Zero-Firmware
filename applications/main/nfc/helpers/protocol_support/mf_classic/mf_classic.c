@@ -169,7 +169,7 @@ static void nfc_scene_saved_menu_on_enter_mf_classic(NfcApp* instance) {
     }
     submenu_add_item(
         submenu,
-        "\xC9""crire sur la carte initiale",
+        "Écrire sur la carte initiale",
         SubmenuIndexWrite,
         nfc_protocol_support_common_submenu_callback,
         instance);

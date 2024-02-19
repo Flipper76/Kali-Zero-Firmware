@@ -193,21 +193,21 @@ static NotificationAppSettings* alloc_settings() {
     variable_item_set_current_value_text(item, contrast_text[value_index]);
 
     item = variable_item_list_add(
-        app->variable_item_list, "Luminosit""\xE9"" LCD", BACKLIGHT_COUNT, backlight_changed, app);
+        app->variable_item_list, "Luminosité LCD", BACKLIGHT_COUNT, backlight_changed, app);
     value_index = value_index_float(
         app->notification->settings.display_brightness, backlight_value, BACKLIGHT_COUNT);
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, backlight_text[value_index]);
 
     item = variable_item_list_add(
-        app->variable_item_list, "Temps de r""\xE9""tro""\xE9""clairage", DELAY_COUNT, screen_changed, app);
+        app->variable_item_list, "Temps de rétroéclairage", DELAY_COUNT, screen_changed, app);
     value_index = value_index_uint32(
         app->notification->settings.display_off_delay_ms, delay_value, DELAY_COUNT);
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, delay_text[value_index]);
 
     item = variable_item_list_add(
-        app->variable_item_list, "Luminosit\xE9 LED", BACKLIGHT_COUNT, led_changed, app);
+        app->variable_item_list, "Luminosité LED", BACKLIGHT_COUNT, led_changed, app);
     value_index = value_index_float(
         app->notification->settings.led_brightness, backlight_value, BACKLIGHT_COUNT);
     variable_item_set_current_value_index(item, value_index);

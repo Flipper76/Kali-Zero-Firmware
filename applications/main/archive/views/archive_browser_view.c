@@ -102,7 +102,7 @@ static void render_item_menu(Canvas* canvas, ArchiveBrowserViewModel* model) {
                 if(selected->type != ArchiveFileTypeFolder) {
                     archive_menu_add_item(
                         menu_array_push_raw(model->context_menu),
-                        "Ex""\xE9""cuter",
+                        "Exécuter",
                         ArchiveBrowserEventFileMenuRun);
                 }
                 archive_menu_add_item(
@@ -125,7 +125,7 @@ static void render_item_menu(Canvas* canvas, ArchiveBrowserViewModel* model) {
             if(favorites) {
                 archive_menu_add_item(
                     menu_array_push_raw(model->context_menu),
-                    "D""\xE9""placer",
+                    "Déplacer",
                     ArchiveBrowserEventEnterFavMove);
             }
         }
@@ -141,7 +141,7 @@ static void render_item_menu(Canvas* canvas, ArchiveBrowserViewModel* model) {
     elements_slightly_rounded_frame(canvas, 71, 2, 57, calc_height + 4);
 
     canvas_draw_str_aligned(
-        canvas, 100, 11, AlignCenter, AlignBottom, model->menu_manage ? "G""\xE9""rer:" : "Actions:");
+        canvas, 100, 11, AlignCenter, AlignBottom, model->menu_manage ? "Gérer:" : "Actions:");
     if(model->menu_can_switch) {
         if(model->menu_manage) {
             canvas_draw_icon(canvas, 74, 4, &I_ButtonLeft_4x7);

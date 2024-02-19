@@ -79,7 +79,7 @@ void kali_zero_app_scene_interface_mainmenu_on_enter(void* context) {
     variable_item_set_current_value_index(item, kalizero_settings.menu_style);
     variable_item_set_current_value_text(item, menu_style_names[kalizero_settings.menu_style]);
 
-    variable_item_list_add(var_item_list, "R""\xE9""initialiser le menu", 0, NULL, app);
+    variable_item_list_add(var_item_list, "Réinitialiser le menu", 0, NULL, app);
 
     size_t count = CharList_size(app->mainmenu_app_labels);
     item = variable_item_list_add(
@@ -100,10 +100,10 @@ void kali_zero_app_scene_interface_mainmenu_on_enter(void* context) {
     variable_item_list_add(var_item_list, "Ajouter App", 0, NULL, app);
 
     item = variable_item_list_add(
-        var_item_list, "D""\xE9""placer App", 3, kali_zero_app_scene_interface_mainmenu_move_app_changed, app);
+        var_item_list, "déplacer App", 3, kali_zero_app_scene_interface_mainmenu_move_app_changed, app);
     variable_item_set_current_value_text(item, "");
     variable_item_set_current_value_index(item, 1);
-    variable_item_set_locked(item, count < 2, "Impossible de d""\xE9""placer\navec moins\nde 2 apps!");
+    variable_item_set_locked(item, count < 2, "Impossible de déplacer\navec moins\nde 2 apps!");
 
     variable_item_list_add(var_item_list, "Supprimer App", 0, NULL, app);
 

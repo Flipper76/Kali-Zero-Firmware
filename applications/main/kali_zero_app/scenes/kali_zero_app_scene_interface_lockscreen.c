@@ -106,7 +106,7 @@ void kali_zero_app_scene_interface_lockscreen_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Verrouiller au d""\xE9""marrage",
+        "Verrouiller au démarrage",
         2,
         kali_zero_app_scene_interface_lockscreen_lock_on_boot_changed,
         app);
@@ -170,7 +170,7 @@ void kali_zero_app_scene_interface_lockscreen_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Afficher la barre d'""\xE9""tat",
+        "Afficher la barre d'état",
         2,
         kali_zero_app_scene_interface_lockscreen_lockscreen_statusbar_changed,
         app);
@@ -180,7 +180,7 @@ void kali_zero_app_scene_interface_lockscreen_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Invite de d""\xE9""verrouillage",
+        "Invite de déverrouillage",
         2,
         kali_zero_app_scene_interface_lockscreen_lockscreen_prompt_changed,
         app);

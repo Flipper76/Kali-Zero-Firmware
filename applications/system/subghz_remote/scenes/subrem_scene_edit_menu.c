@@ -61,7 +61,7 @@ void subrem_scene_edit_menu_on_enter(void* context) {
     Widget* widget = app->widget;
 
     widget_add_string_element(
-        widget, 63, 12, AlignCenter, AlignBottom, FontPrimary, "Modifications non enregistr""\xE9""es");
+        widget, 63, 12, AlignCenter, AlignBottom, FontPrimary, "Modifications non enregistrées");
     widget_add_string_element(
         widget, 63, 32, AlignCenter, AlignBottom, FontPrimary, "Quitter?");
 

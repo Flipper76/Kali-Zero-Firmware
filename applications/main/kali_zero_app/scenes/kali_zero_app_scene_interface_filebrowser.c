@@ -62,7 +62,7 @@ void kali_zero_app_scene_interface_filebrowser_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Afficher les fichiers cach""\xE9""s",
+        "Afficher les fichiers cachés",
         2,
         kali_zero_app_scene_interface_filebrowser_show_hidden_files_changed,
         app);
@@ -80,7 +80,7 @@ void kali_zero_app_scene_interface_filebrowser_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "D""\xE9""lai d'attente favori",
+        "Délai d'attente favori",
         61,
         kali_zero_app_scene_interface_filebrowser_favorite_timeout_changed,
         app);

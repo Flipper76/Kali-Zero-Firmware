@@ -167,7 +167,7 @@ static void nfc_scene_read_setup_view(NfcApp* instance) {
 
     if(state == NfcSceneMfUltralightReadMenuStateCardSearch) {
         popup_set_icon(instance->popup, 0, 8, &I_NFC_manual_60x50);
-        popup_set_header(instance->popup, "D""\xE9""verrouillage", 97, 15, AlignCenter, AlignTop);
+        popup_set_header(instance->popup, "Déverrouillage", 97, 15, AlignCenter, AlignTop);
         popup_set_text(
             instance->popup, "Appliquer la \ncarte sur\nle dos de \n Flipper", 97, 27, AlignCenter, AlignTop);
     } else {
@@ -215,7 +215,7 @@ static void nfc_scene_read_and_saved_menu_on_enter_mf_ultralight(NfcApp* instanc
     if(!mf_ultralight_is_all_data_read(data)) {
         submenu_add_item(
             submenu,
-            "D""\xE9""verrouiller",
+            "Déverrouiller",
             SubmenuIndexUnlock,
             nfc_protocol_support_common_submenu_callback,
             instance);
@@ -224,7 +224,7 @@ static void nfc_scene_read_and_saved_menu_on_enter_mf_ultralight(NfcApp* instanc
         data->type == MfUltralightTypeNTAG216) {
         submenu_add_item(
             submenu,
-            "\xC9""crire",
+            "Écrire",
             SubmenuIndexWrite,
             nfc_protocol_support_common_submenu_callback,
             instance);

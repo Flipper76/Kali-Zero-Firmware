@@ -34,10 +34,10 @@ static const ContinuityColor colors_beats_solo_3[] = {
     {0x09, "Noir"},
     {0xE, "Violet/Blanc"},
     {0xF, "Rouge vif"},
-    {0x12, "Rouge fonc""\xE9"},
+    {0x12, "Rouge foncé"},
     {0x13, "Vert marais"},
-    {0x14, "Gris fonc""\xE9"},
-    {0x15, "Bleu fonc""\xE9"},
+    {0x14, "Gris foncé"},
+    {0x15, "Bleu foncé"},
     {0x1D, "Or rose 2"},
     {0x20, "Bleu/Vert"},
     {0x21, "Violet/Orange"},
@@ -101,13 +101,13 @@ static const ContinuityColor colors_beats_studio_3[] = {
     {0x02, "Rouge"},
     {0x03, "Bleu"},
     {0x18, "Gris Ombre"},
-    {0x19, "Sable du D""\xE9""sert"},
+    {0x19, "Sable du Désert"},
     {0x25, "Noir/Rouge"},
     {0x26, "Noir Minuit"},
-    {0x27, "Sable du D""\xE9""sert 2"},
+    {0x27, "Sable du Désert 2"},
     {0x28, "Gris"},
     {0x29, "Bleu clair / Or"},
-    {0x42, "Camo For""\xEA""t Verte"},
+    {0x42, "Camo Forêt Verte"},
     {0x43, "Camo Blanc"},
 };
 static const ContinuityColor colors_beats_studio_pro[] = {
@@ -120,11 +120,11 @@ static const ContinuityColor colors_beats_fit_pro[] = {
     {0x02, "Rose"},
     {0x03, "Gris/Blanc"},
     {0x04, "Rose Intégral"},
-    {0x05, "Vert N""\xE9""on"},
+    {0x05, "Vert Néon"},
     {0x06, "Bleu Nuit"},
     {0x07, "Rose Clair"},
     {0x08, "Marron"},
-    {0x09, "Marron Fonc""\xE9"},
+    {0x09, "Marron Foncé"},
 };
 static const ContinuityColor colors_beats_studio_buds_[] = {
     {0x00, "Noir"},
@@ -182,8 +182,8 @@ static const struct {
     {0x19, "Synchro audio AppleTV"},
     {0x1E, "Balance couleurs AppleTV"},
     {0x09, "Config du nouvel iPhone"},
-    {0x2F, "Connexion ""\xE0"" un autre appareil"},
-    {0x02, "Transfert de num""\xE9""ro de tel"},
+    {0x2F, "Connexion à un autre appareil"},
+    {0x02, "Transfert de numéro de tel"},
     {0x0B, "Config HomePod"},
     {0x01, "Config nouvelle AppleTV"},
     {0x06, "Associer AppleTV"},
@@ -199,8 +199,8 @@ static const char* type_names[ContinuityTypeCOUNT] = {
     [ContinuityTypeHandoff] = "Handoff",
     [ContinuityTypeTetheringSource] = "Source de connexion",
     [ContinuityTypeNearbyAction] = "Action Continue",
-    [ContinuityTypeNearbyInfo] = "Info de proximit""\xE9",
-    [ContinuityTypeCustomCrash] = "Continuit""\xE9"" perso",
+    [ContinuityTypeNearbyInfo] = "Info de proximité",
+    [ContinuityTypeCustomCrash] = "Continuité perso",
 };
 static const char* get_name(const Payload* payload) {
     const ContinuityCfg* cfg = &payload->cfg.continuity;
@@ -777,8 +777,8 @@ static void extra_config(Ctx* ctx) {
         break;
     }
     case ContinuityTypeCustomCrash: {
-        variable_item_list_add(list, "CRASH IOS 17.2 CORRIG""\xC9""", 0, NULL, NULL);
-        variable_item_list_add(list, "Lock+unlock aide ""\xE0"" crash", 0, NULL, NULL);
+        variable_item_list_add(list, "CRASH IOS 17.2 CORRIGÉ", 0, NULL, NULL);
+        variable_item_list_add(list, "Lock+unlock aide à crash", 0, NULL, NULL);
         variable_item_list_add(list, "Pour iPhone 12 et plus", 0, NULL, NULL);
         break;
     }
@@ -905,7 +905,7 @@ void scene_continuity_pp_model_custom_on_enter(void* _ctx) {
     ContinuityCfg* cfg = &payload->cfg.continuity;
     ByteInput* byte_input = ctx->byte_input;
 
-    byte_input_set_header_text(byte_input, "Entrez le mod""\xE8""le code perso");
+    byte_input_set_header_text(byte_input, "Entrez le modèle code perso");
 
     ctx->byte_store[0] = (cfg->data.proximity_pair.model >> 0x08) & 0xFF;
     ctx->byte_store[1] = (cfg->data.proximity_pair.model >> 0x00) & 0xFF;
@@ -1223,7 +1223,7 @@ void scene_continuity_na_action_custom_on_enter(void* _ctx) {
     ContinuityCfg* cfg = &payload->cfg.continuity;
     ByteInput* byte_input = ctx->byte_input;
 
-    byte_input_set_header_text(byte_input, "Entrez une action personnalis""\xE9");
+    byte_input_set_header_text(byte_input, "Entrez une action personnalisé");
 
     ctx->byte_store[0] = (cfg->data.nearby_action.action >> 0x00) & 0xFF;
 

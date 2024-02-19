@@ -15,7 +15,7 @@ void ibutton_scene_start_on_enter(void* context) {
     ibutton_reset_key(ibutton);
 
     submenu_add_item(submenu, "Lire", SubmenuIndexRead, ibutton_submenu_callback, ibutton);
-    submenu_add_item(submenu, "Enregistr""\xE9""e", SubmenuIndexSaved, ibutton_submenu_callback, ibutton);
+    submenu_add_item(submenu, "Enregistrée", SubmenuIndexSaved, ibutton_submenu_callback, ibutton);
     submenu_add_item(submenu, "Ajouter manuellement", SubmenuIndexAdd, ibutton_submenu_callback, ibutton);
 
     submenu_set_selected_item(

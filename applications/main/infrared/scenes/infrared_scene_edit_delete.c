@@ -52,7 +52,7 @@ void infrared_scene_edit_delete_on_enter(void* context) {
         }
 
     } else if(edit_target == InfraredEditTargetRemote) {
-        dialog_ex_set_header(dialog_ex, "Supprimer T""\xE9""l""\xE9""commande?", 64, 0, AlignCenter, AlignTop);
+        dialog_ex_set_header(dialog_ex, "Supprimer Télécommande?", 64, 0, AlignCenter, AlignTop);
         infrared_text_store_set(
             infrared,
             0,
