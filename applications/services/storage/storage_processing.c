@@ -53,7 +53,7 @@ static StorageType storage_get_type_by_path(FuriString* path) {
     if(memcmp(path_cstr, STORAGE_EXT_PATH_PREFIX, strlen(STORAGE_EXT_PATH_PREFIX)) == 0) {
         type = ST_EXT;
     } else if(memcmp(path_cstr, STORAGE_INT_PATH_PREFIX, strlen(STORAGE_INT_PATH_PREFIX)) == 0) {
-        type = ST_INT;	
+        type = ST_INT;
     } else if(memcmp(path_cstr, STORAGE_ANY_PATH_PREFIX, strlen(STORAGE_ANY_PATH_PREFIX)) == 0) {
         type = ST_ANY;
     }
@@ -89,6 +89,7 @@ FS_Error storage_get_data(Storage* app, FuriString* path, StorageData** storage)
             storage_path_change_to_real_storage(path, type);
         }
 
+        furi_assert(type == ST_EXT || type == ST_INT);
         *storage = &app->storage[type];
 
         return FSE_OK;
