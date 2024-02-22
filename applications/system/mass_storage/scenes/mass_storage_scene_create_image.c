@@ -131,7 +131,7 @@ bool mass_storage_scene_create_image_on_event(void* context, SceneManagerEvent e
                 if(!storage_file_open(
                        app->file,
                        furi_string_get_cstr(app->file_path),
-                       FSAM_WRITE,
+                       FSAM_READ | FSAM_WRITE,
                        FSOM_CREATE_NEW))
                     break;
 
