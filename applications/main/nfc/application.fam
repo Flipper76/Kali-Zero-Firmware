@@ -30,6 +30,15 @@ App(
 )
 
 App(
+    appid="ticketing_parser",
+    apptype=FlipperAppType.PLUGIN,
+    entry_point="ticketing_plugin_ep",
+    targets=["f7"],
+    requires=["nfc"],
+    sources=["plugins/supported_cards/ticketing.c"],
+)
+
+App(
     appid="microel_parser",
     apptype=FlipperAppType.PLUGIN,
     entry_point="microel_plugin_ep",
