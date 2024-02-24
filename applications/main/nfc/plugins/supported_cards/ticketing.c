@@ -295,7 +295,7 @@ static bool ticketing_parse(const NfcDevice* device, FuriString* parsed_data) {
 
     if (memcmp(data->uid, ticketing_uid_prefix, sizeof(ticketing_uid_prefix)) == 0) {
         furi_string_cat_printf(parsed_data, "\e#%s\n", "Carte ticketing");
-		furi_string_cat_printf(parsed_data, "UID:%02X.%02X.%02X.%02X.%02X.%02X.%02X.%02X\n",
+		furi_string_cat_printf(parsed_data, "%02X %02X %02X %02X %02X %02X %02X %02X\n",
                    data->uid[0], data->uid[1], data->uid[2], data->uid[3], data->uid[4], data->uid[5], data->uid[6], data->uid[7]);			   
     } else {
         FURI_LOG_D(TAG, "Bad card type detected: %d", data->type);
