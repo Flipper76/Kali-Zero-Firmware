@@ -105,7 +105,7 @@ Pour compiler un package TGZ :
 $ ./fbt updater_package
 
 Pour créer et lancer une seule application :
-$ ./fbt lancer APPSRC=votre_appid
+$ ./fbt launch APPSRC=your_appid
 ```
 
 
