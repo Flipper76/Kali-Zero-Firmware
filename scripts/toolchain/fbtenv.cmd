@@ -58,3 +58,5 @@ if not "%1" == "env" (
     cd "%FBT_ROOT%"
     cmd /k
 )
+
+exit /b 0

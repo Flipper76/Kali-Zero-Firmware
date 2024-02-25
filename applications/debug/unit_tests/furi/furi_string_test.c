@@ -417,7 +417,7 @@ MU_TEST(mu_test_furi_string_trim) {
 }
 
 MU_TEST(mu_test_furi_string_utf8) {
-    FuriString* utf8_string = furi_string_alloc_set("„Ç§„É´„Ç´");
+    FuriString* utf8_string = furi_string_alloc_set("イルカ");
 
     // test furi_string_utf8_length
     mu_assert_int_eq(9, furi_string_size(utf8_string));
@@ -440,7 +440,7 @@ MU_TEST(mu_test_furi_string_utf8) {
     // test furi_string_utf8_push
     furi_string_set(utf8_string, "");
     furi_string_utf8_push(utf8_string, value);
-    mu_assert_string_eq("üê¨", furi_string_get_cstr(utf8_string));
+    mu_assert_string_eq("🐬", furi_string_get_cstr(utf8_string));
 
     furi_string_free(utf8_string);
 }

@@ -117,14 +117,14 @@ static void nfc_scene_read_menu_on_enter_mf_classic(NfcApp* instance) {
     if(!mf_classic_is_card_read(data)) {
         submenu_add_item(
             submenu,
-            "Detect Reader",
+            "Détecter le lecteur",
             SubmenuIndexDetectReader,
             nfc_protocol_support_common_submenu_callback,
             instance);
 
         submenu_add_item(
             submenu,
-            "Unlock with Dictionary",
+            "Déverrouillage dictionnaire",
             SubmenuIndexDictAttack,
             nfc_protocol_support_common_submenu_callback,
             instance);
@@ -155,14 +155,14 @@ static void nfc_scene_saved_menu_on_enter_mf_classic(NfcApp* instance) {
     if(!mf_classic_is_card_read(data)) {
         submenu_add_item(
             submenu,
-            "D""/xE9""tecter le lecteur",
+            "Détecter le lecteur",
             SubmenuIndexDetectReader,
             nfc_protocol_support_common_submenu_callback,
             instance);
 
         submenu_add_item(
             submenu,
-            "D""/xE9""verrouiller avec le dictionnaire",
+            "Déverrouillage dictionnaire",
             SubmenuIndexDictAttack,
             nfc_protocol_support_common_submenu_callback,
             instance);

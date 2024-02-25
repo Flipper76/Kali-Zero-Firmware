@@ -271,7 +271,7 @@ SubGhzProtocolStatus
 void ws_protocol_decoder_infactory_get_string(void* context, FuriString* output) {
     furi_assert(context);
     WSProtocolDecoderInfactory* instance = context;
-    bool locale_is_metric = furi_hal_rtc_get_locale_units() == FuriHalRtcLocaleUnitsMetric;	
+    bool locale_is_metric = furi_hal_rtc_get_locale_units() == FuriHalRtcLocaleUnitsMetric;
     furi_string_cat_printf(
         output,
         "%s\r\n%dbit\r\n"

@@ -20,7 +20,7 @@ typedef enum {
     GameStatePause,
     // https://melmagazine.com/en-us/story/snake-nokia-6110-oral-history-taneli-armanto
     // Armanto: While testing the early versions of the game, I noticed it was hard
-    // to control the snake upon getting close to and edge but not crashing â€” especially
+    // to control the snake upon getting close to and edge but not crashing — especially
     // in the highest speed levels. I wanted the highest level to be as fast as I could
     // possibly make the device "run," but on the other hand, I wanted to be friendly
     // and help the player manage that level. Otherwise it might not be fun to play. So

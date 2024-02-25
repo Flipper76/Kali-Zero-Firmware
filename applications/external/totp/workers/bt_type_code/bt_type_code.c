@@ -23,7 +23,7 @@ struct TotpBtTypeCodeWorkerContext {
     FuriThread* thread;
     FuriMutex* code_buffer_sync;
     Bt* bt;
-    FuriHalBleProfileBase* ble_hid_profile;	
+    FuriHalBleProfileBase* ble_hid_profile;
     bool is_advertising;
     bool is_connected;
     AutomationKeyboardLayout keyboard_layout;
@@ -152,7 +152,7 @@ TotpBtTypeCodeWorkerContext* totp_bt_type_code_worker_init(uint16_t mac_xor) {
     furi_delay_ms(200);
     bt_keys_storage_set_storage_path(context->bt, HID_BT_KEYS_STORAGE_PATH);
 
-	BleProfileHidParams ble_params = {.device_name_prefix = "TOTP", .mac_xor = mac_xor};
+    BleProfileHidParams ble_params = {.device_name_prefix = "TOTP", .mac_xor = mac_xor};
     context->ble_hid_profile = bt_profile_start(context->bt, ble_profile_hid, &ble_params);
     furi_check(context->ble_hid_profile);
 
@@ -172,7 +172,7 @@ void totp_bt_type_code_worker_free(TotpBtTypeCodeWorkerContext* context) {
     }
 
     bt_set_status_changed_callback(context->bt, NULL, NULL);
-	
+
     furi_hal_bt_stop_advertising();
     context->is_advertising = false;
     context->is_connected = false;
@@ -182,9 +182,8 @@ void totp_bt_type_code_worker_free(TotpBtTypeCodeWorkerContext* context) {
     bt_keys_storage_set_default_path(context->bt);
     if(!bt_profile_restore_default(context->bt)) {
         FURI_LOG_E(LOGGING_TAG, "Failed to restore to default BT profile");
-    }	
+    }
 
-    furi_check(bt_profile_restore_default(context->bt));
     furi_record_close(RECORD_BT);
     context->bt = NULL;
 

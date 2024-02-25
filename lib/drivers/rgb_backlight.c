@@ -227,8 +227,8 @@ void rgb_backlight_reconfigure(bool enabled) {
     }
     rgb_state.rainbow_hsv.s = rgb_settings.rainbow_saturation;
     rgb_backlight_update(rgb_state.last_brightness, false);
-	
-	  if(rgb_state.enabled && rgb_settings.rainbow_mode == RGBBacklightRainbowModeOff)
+
+    if(rgb_state.enabled && rgb_settings.rainbow_mode == RGBBacklightRainbowModeOff)
         SK6805_update();
 
     furi_check(furi_mutex_release(rgb_state.mutex) == FuriStatusOk);

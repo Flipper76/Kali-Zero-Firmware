@@ -609,7 +609,7 @@ void mbedtls_mpi_core_ct_uint_table_lookup(mbedtls_mpi_uint *dest,
 /* Fill X with n_bytes random bytes.
  * X must already have room for those bytes.
  * The ordering of the bytes returned from the RNG is suitable for
- * deterministic ECDSA (see RFC 6979 ยง3.3 and the specification of
+ * deterministic ECDSA (see RFC 6979 §3.3 and the specification of
  * mbedtls_mpi_core_random()).
  */
 int mbedtls_mpi_core_fill_random(
@@ -666,7 +666,7 @@ int mbedtls_mpi_core_random(mbedtls_mpi_uint *X,
     int count = (n_bytes > 4 ? 30 : 250);
 
     /*
-     * Match the procedure given in RFC 6979 ยง3.3 (deterministic ECDSA)
+     * Match the procedure given in RFC 6979 §3.3 (deterministic ECDSA)
      * when f_rng is a suitably parametrized instance of HMAC_DRBG:
      * - use the same byte ordering;
      * - keep the leftmost n_bits bits of the generated octet string;

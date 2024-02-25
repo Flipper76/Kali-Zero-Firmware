@@ -18,7 +18,7 @@ while read -u $remote repo branch subdir; do
     fi
     exec {capture}>&1
     if [ "${subdir}" = "/" ]; then
-                result="$(git subtree pull -P "${path}" "${repo}" "${branch}" -m "Merge ${path} from ${repo}" 2>&1 | tee /proc/self/fd/$capture)"
+        result="$(git subtree pull -P "${path}" "${repo}" "${branch}" -m "Merge ${path} from ${repo}" 2>&1 | tee /proc/self/fd/$capture)"
     else
         result="$(bash .utils/subtree-subdir-helper.sh "${path}" "${repo}" "${branch}" "${subdir}" merge 2>&1 | tee /proc/self/fd/$capture)"
     fi

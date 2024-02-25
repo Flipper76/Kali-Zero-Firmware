@@ -170,7 +170,7 @@ void generate_calculator_layout(Canvas* canvas) {
     canvas_draw_box(canvas, 63, 43, 1, 80);
 
     //draw buttons
-    //row 1 (C, ;, %, รท)
+    //row 1 (C, ;, %, ÷)
     canvas_draw_str(canvas, 5, 54, "C");
     canvas_draw_str(canvas, 19, 54, " <-");
     canvas_draw_str(canvas, 35, 54, " %");

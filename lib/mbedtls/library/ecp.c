@@ -788,7 +788,7 @@ int mbedtls_ecp_point_read_binary(const mbedtls_ecp_group *grp,
         mbedtls_mpi_free(&pt->Y);
 
         if (grp->id == MBEDTLS_ECP_DP_CURVE25519) {
-            /* Set most significant bit to 0 as prescribed in RFC7748 ยง5 */
+            /* Set most significant bit to 0 as prescribed in RFC7748 §5 */
             MBEDTLS_MPI_CHK(mbedtls_mpi_set_bit(&pt->X, plen * 8 - 1, 0));
         }
 
