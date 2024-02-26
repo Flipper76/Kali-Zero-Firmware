@@ -1,6 +1,6 @@
 App(
     appid="4inrow",
-    name="4 in a Row",
+    name="Puissance 4",
     apptype=FlipperAppType.EXTERNAL,
     entry_point="four_in_row_app",
     requires=[
@@ -13,5 +13,5 @@ App(
     fap_author="leo-need-more-coffee",
     fap_weburl="https://github.com/leo-need-more-coffee/flipperzero-4inrow",
     fap_version="1.1",
-    fap_description="4 in row Game",
+    fap_description="Le jeu du Puissance 4",
 )

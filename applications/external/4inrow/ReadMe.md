@@ -1,1 +1,1 @@
-Four in row for flipper zero!!
+Quatre à la suite pour flipper zéro !!
