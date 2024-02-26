@@ -4,7 +4,7 @@ App(
     apptype=FlipperAppType.EXTERNAL,
     entry_point="simon_says_app_entry",
     stack_size=2 * 1024,
-    fap_category="Games",
+    fap_category="Jeux",
     # Optional values
     # fap_version=(0, 1),  # (major, minor)
     fap_icon="simon_says.png",  # 10x10 1-bit PNG
