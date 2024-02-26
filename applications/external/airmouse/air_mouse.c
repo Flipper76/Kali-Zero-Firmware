@@ -86,10 +86,10 @@ AirMouse* air_mouse_app_alloc() {
     app->dialog = dialog_ex_alloc();
     dialog_ex_set_result_callback(app->dialog, air_mouse_dialog_callback);
     dialog_ex_set_context(app->dialog, app);
-    dialog_ex_set_left_button_text(app->dialog, "Exit");
-    dialog_ex_set_right_button_text(app->dialog, "Stay");
+    dialog_ex_set_left_button_text(app->dialog, "Quitter");
+    dialog_ex_set_right_button_text(app->dialog, "Rester");
     dialog_ex_set_center_button_text(app->dialog, "Menu");
-    dialog_ex_set_header(app->dialog, "Close Current App?", 16, 12, AlignLeft, AlignTop);
+    dialog_ex_set_header(app->dialog, "Fermer l'app actuelle?", 16, 12, AlignLeft, AlignTop);
     view_dispatcher_add_view(
         app->view_dispatcher, AirMouseViewExitConfirm, dialog_ex_get_view(app->dialog));
 

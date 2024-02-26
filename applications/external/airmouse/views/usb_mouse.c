@@ -16,9 +16,9 @@ static void usb_mouse_draw_callback(Canvas* canvas, void* context) {
     UNUSED(context);
     canvas_clear(canvas);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str(canvas, 0, 10, "USB Mouse mode");
+    canvas_draw_str(canvas, 0, 10, "Mode souris USB");
     canvas_set_font(canvas, FontSecondary);
-    canvas_draw_str(canvas, 0, 63, "Hold [back] to exit");
+    canvas_draw_str(canvas, 0, 63, "Tenir pour sortir");
 }
 
 #define MOUSE_SCROLL 2

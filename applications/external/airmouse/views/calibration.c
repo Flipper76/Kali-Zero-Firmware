@@ -14,9 +14,9 @@ static void calibration_draw_callback(Canvas* canvas, void* context) {
     UNUSED(context);
     canvas_clear(canvas);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str(canvas, 0, 10, "Calibrating...");
+    canvas_draw_str(canvas, 0, 10, "Calibrage...");
     canvas_set_font(canvas, FontSecondary);
-    canvas_draw_str(canvas, 0, 63, "Please wait");
+    canvas_draw_str(canvas, 0, 63, "Veuillez patienter");
 }
 
 void calibration_enter_callback(void* context) {

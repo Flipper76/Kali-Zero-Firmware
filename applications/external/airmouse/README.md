@@ -1,54 +1,51 @@
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ginkage)
-[![paypal](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LF9S5WAF6E4VA)
+# Souris IMC Air
 
-# BMI Air Mouse
+## Bref
 
-## Brief
+> "Vous pouvez transformer n'importe quoi en souris aérienne si vous êtes assez courageux"
 
-> "You can turn anything into an air mouse if you're brave enough"
+  — Piper, alias Pez
 
- — Piper, a.k.a. Pez
+Naturellement, la citation ci-dessus s'applique également à [Flipper](https://flipperzero.one/).
 
-Naturally, the quote above applies to [Flipper](https://flipperzero.one/) as well.
+## Quoi?
 
-## What?
+L'application vous permet de transformer votre Flipper en une souris aérienne USB ou Bluetooth (vous avez besoin d'un module supplémentaire, voir la section Matériel ci-dessous)...
 
-The app allows you to turn your Flipper into a USB or Bluetooth air mouse (you do need an extra module, see the Hardware section below)...
+Son utilisation est très simple :
+  * Connectez le Flipper via un câble USB et choisissez « USB », ou choisissez « Bluetooth » et associez-le à votre PC ;
+  * Tenez le Flipper dans votre main avec les boutons pointés vers l'écran ;
+  * Agitez votre Flipper comme si vous ne vouliez pas déplacer le curseur ;
+  * Bouton haut pour un clic gauche de la souris ;
+  * Bouton bas pour un clic droit de la souris ;
+  * Bouton central pour un clic central de la souris ;
+  * Boutons gauche et droit pour le défilement ;
+  * Utilisez l'option du menu d'étalonnage si vous remarquez une dérive significative (placez votre Flipper sur une surface plane, assurez-vous qu'il ne bouge pas, exécutez cette option, attendez 2 secondes, c'est terminé).
 
-Using it is really simple:
- * Connect the Flipper via a USB cable and pick `USB`, or pick `Bluetooth` and pair it with your PC;
- * Hold the Flipper in your hand with the buttons pointing towards the screen;
- * Wave your Flipper like you don't care to move the cursor;
- * Up button for Left mouse click;
- * Down button for Right mouse click;
- * Center button for Middle mouse click;
- * Left and Right buttons for scrolling;
- * Use calibration menu option if you notice significant drift (place your Flipper onto a level surface, make sure it doesn't move, run this option, wait 2 seconds, done).
+Voir le premier prototype [en action](https://www.youtube.com/watch?v=DdxAmmsYfMA).
 
-See early prototype [in action](https://www.youtube.com/watch?v=DdxAmmsYfMA).
+## Matériel
 
-## Hardware
+Le module personnalisé utilise une puce accéléromètre/gyroscope Bosch BMI160 connectée via I2C.
 
-The custom module is using Bosch BMI160 accelerometer/gyroscope chip connected via I2C.
+Jetez un œil au dossier [schematic](https://github.com/ginkage/FlippAirMouse/tree/main/schematic) pour les fichiers Gerber, BOM et CPL, afin de pouvoir commander directement auprès de JLCPCB.
 
-Take a look into the [schematic](https://github.com/ginkage/FlippAirMouse/tree/main/schematic) folder for Gerber, BOM and CPL files, so you can order directly from JLCPCB.
+Idée originale :
 
-Original idea:
+![À quoi je pensais que cela ressemblerait](https://github.com/ginkage/FlippAirMouse/blob/main/schematic/schematic.png)
 
-![What I thought it would look like](https://github.com/ginkage/FlippAirMouse/blob/main/schematic/schematic.png)
+Attente:
 
-Expectation:
+![À quoi EDA cela ressemblerait-il](https://github.com/ginkage/FlippAirMouse/blob/main/schematic/render.png)
 
-![What EDA though it would look like](https://github.com/ginkage/FlippAirMouse/blob/main/schematic/render.png)
+Réalité:
 
-Reality:
+![À quoi ça ressemble](https://github.com/ginkage/FlippAirMouse/blob/main/schematic/flipper.jpg)
 
-![What it looks like](https://github.com/ginkage/FlippAirMouse/blob/main/schematic/flipper.jpg)
+## Logiciel
 
-## Software
+Le code est basé sur le [pilote] Bosch d'origine (https://github.com/BoschSensortec/BMI160_driver/) et sur une implémentation de suivi d'orientation de Google [Cardboard](https://github.com/googlevr/cardboard/tree /master/sdk/sensors)
 
-The code is based on the original Bosch [driver](https://github.com/BoschSensortec/BMI160_driver/) and an orientation tracking implementation from the Google [Cardboard](https://github.com/googlevr/cardboard/tree/master/sdk/sensors) project
+## Licence
 
-## License
-
-TL;DR: Use the code however you want, give credit where it's due, no warranty of any kind is provided.
+TL;DR : utilisez le code comme vous le souhaitez, accordez le crédit là où il est dû, aucune garantie d'aucune sorte n'est fournie.

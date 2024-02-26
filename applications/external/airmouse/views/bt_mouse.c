@@ -57,9 +57,9 @@ static void bt_mouse_draw_callback(Canvas* canvas, void* context) {
     UNUSED(context);
     canvas_clear(canvas);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str(canvas, 0, 10, "Bluetooth Mouse mode");
+    canvas_draw_str(canvas, 0, 10, "Mode souris Bluetooth");
     canvas_set_font(canvas, FontSecondary);
-    canvas_draw_str(canvas, 0, 63, "Hold [back] to exit");
+    canvas_draw_str(canvas, 0, 63, "tenir pour sortir");
 }
 
 static void bt_mouse_button_state(BtMouse* bt_mouse, int8_t button, bool state) {
