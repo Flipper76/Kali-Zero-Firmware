@@ -1,7 +1,7 @@
-In this classic game, your objective is to collect the highest number of points by connecting identical numbers on the playing field.
+Dans ce jeu classique, votre objectif est de collecter le plus grand nombre de points en connectant des nombres identiques sur le terrain de jeu.
 
-You can control the game using the Up, Down, Right, and Left buttons, which allow you to move all cells on the playing field simultaneously.
+Vous pouvez contrôler le jeu à l'aide des boutons Haut, Bas, Droite et Gauche, qui vous permettent de déplacer simultanément toutes les cellules du terrain de jeu.
 
-Whenever you merge two identical numbers, their value doubles. For instance, combining 2 and 2 results in 4.
+Chaque fois que vous fusionnez deux nombres identiques, leur valeur double. Par exemple, combiner 2 et 2 donne 4.
 
-The game ends when no further moves are possible. Exiting the game will save the current state of the game board.
+Le jeu se termine lorsqu'aucun autre mouvement n'est possible. Quitter le jeu sauvegardera l’état actuel du plateau de jeu.
