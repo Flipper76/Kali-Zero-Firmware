@@ -448,7 +448,7 @@ void draw_powerUps(Canvas* const canvas, PowerUp* const p) {
         //@todo Uknown Power Up Type Detected
         // Draw box with letter U inside
         canvas_draw_str(canvas, p->x, p->y, "?");
-        FURI_LOG_E(TAG, "Unexpected Power Up Type Detected: %i", p->powerUpType);
+        FURI_LOG_E(TAG, "Type de mise sous tension inattendu détecté: %i", p->powerUpType);
         break;
     }
 }
@@ -504,7 +504,7 @@ void render_callback(Canvas* const canvas, void* ctx) {
         canvas_set_font(canvas, FontPrimary);
         canvas_draw_rbox(canvas, 0, 0, SCREEN_XRES, SCREEN_YRES, 4);
         canvas_draw_str_aligned(
-            canvas, SCREEN_XRES / 2, SCREEN_YRES / 2, AlignCenter, AlignCenter, "Paused");
+            canvas, SCREEN_XRES / 2, SCREEN_YRES / 2, AlignCenter, AlignCenter, "Pause");
         return;
     }
 
@@ -516,9 +516,9 @@ void render_callback(Canvas* const canvas, void* ctx) {
         // TODO: if new highscore, display blinking "New High Score"
         // Display High Score
         if(app->is_new_highscore) {
-            canvas_draw_str(canvas, 22, 9, "New High Score!");
+            canvas_draw_str(canvas, 22, 9, "Nouveau record!");
         } else {
-            canvas_draw_str(canvas, 36, 9, "High Score");
+            canvas_draw_str(canvas, 36, 9, "Meilleur score");
         }
 
         // Convert highscore to string
@@ -538,7 +538,7 @@ void render_callback(Canvas* const canvas, void* ctx) {
 
         canvas_draw_str(canvas, 28, 35, "GAME   OVER");
         canvas_set_font(canvas, FontSecondary);
-        canvas_draw_str(canvas, 25, 50, "Press OK to restart");
+        canvas_draw_str(canvas, 25, 50, "OK pour rcommencer");
     }
 }
 
@@ -731,17 +731,17 @@ PowerUp* add_powerUp(AsteroidsApp* app) {
 
     // Randomly select power up for display
     PowerUpType selected_powerUpType = rand() % Number_of_PowerUps;
-    FURI_LOG_I(TAG, "[add_powerUp] Power Up Selected: %i", selected_powerUpType);
+    FURI_LOG_I(TAG, "[add_powerUp] Mise sous tension sélectionnée: %i", selected_powerUpType);
 
     // Don't add already existing power ups
     if(isPowerUpAlreadyExists(app, selected_powerUpType)) {
-        FURI_LOG_D(TAG, "[add_powerUp] Power Up %i already active", selected_powerUpType);
+        FURI_LOG_D(TAG, "[add_powerUp] Mise sous tension %i déjà active", selected_powerUpType);
         return NULL;
     }
 
     // Make some power ups more rare
     if(!should_trigger_rare_powerUp(selected_powerUpType)) {
-        FURI_LOG_D(TAG, "[add_powerUp] Power Up %i not triggered", selected_powerUpType);
+        FURI_LOG_D(TAG, "[add_powerUp] La mise sous tension %i n'a pas été déclenchée", selected_powerUpType);
         return NULL;
     }
 
@@ -776,7 +776,7 @@ PowerUp* add_powerUp(AsteroidsApp* app) {
     //@todo add powerup type, for now hardcoding to firepower
     p->powerUpType = selected_powerUpType;
     p->isPowerUpActive = false;
-    FURI_LOG_I(TAG, "[add_powerUp] Power Up Added: %i", p->powerUpType);
+    FURI_LOG_I(TAG, "[add_powerUp] Mise sous tension ajoutée: %i", p->powerUpType);
     return p;
 }
 
@@ -803,7 +803,7 @@ void remove_powerUp(AsteroidsApp* app, int id) {
     FURI_LOG_I(TAG, "remove_powerUp: %i", id);
     // Invalid ID, ignore
     if(id < 0) {
-        FURI_LOG_E(TAG, "remove_powerUp: Invalid ID: %i", id);
+        FURI_LOG_E(TAG, "remove_powerUp: ID invalide: %i", id);
         return;
     }
     // TODO: Break this out into object types that set the game state
@@ -969,7 +969,7 @@ void update_powerUp_status(AsteroidsApp* app) {
         } else if(app->powerUps[j].ttl == 0 || app->powerUps[j].display_ttl == 0) {
             FURI_LOG_I(
                 TAG,
-                "[update_powerUp_status] Power up expired!, ttl: %lu, display_ttl: %lu id: %d",
+                "[update_powerUp_status] Mise sous tension expirée !, ttl : %lu, display_ttl : identifiant %lu : %d",
                 app->powerUps[j].ttl,
                 app->powerUps[j].display_ttl,
                 j);
@@ -982,7 +982,7 @@ void update_powerUp_status(AsteroidsApp* app) {
         } else {
             FURI_LOG_E(
                 TAG,
-                "[update_powerUp_status] Power up error! Invalid Index: %d ttl: %lu display_ttl: %lu PowerUp_Num: %d",
+                "[update_powerUp_status] Erreur de mise sous tension ! Index invalide : %d ttl : %lu display_ttl : %lu PowerUp_Num : %d",
                 j,
                 app->powerUps[j].ttl,
                 app->powerUps[j].display_ttl,

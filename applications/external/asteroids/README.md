@@ -1,74 +1,74 @@
-This is an implementation of the classic Asteroids game for the [Flipper Zero](https://flipperzero.one/). Inside you will find a simple 2D engine that can be reused to implement other games. Note: This one is SimplyMinimal's fork of Antirez's version with several modifications.
+Il s'agit d'une implémentation du jeu classique Asteroids pour [Flipper Zero](https://flipperzero.one/). À l’intérieur, vous trouverez un moteur 2D simple qui peut être réutilisé pour implémenter d’autres jeux. Remarque : Celui-ci est le fork de SimplyMinimal de la version d'Antirez avec plusieurs modifications.
 
-# What's New
-* Auto rapid fire (less wear on the buttons this way too)
-* Up button applies thrusters
-* Haptic feedback and LED effects
-* Power up system
-* High Score system
-* Automatic save and load of high score
-* Ability to Pause
-* Some modifications to certain game play elements
+# Quoi de neuf
+* Tir rapide automatique (moins d'usure des boutons de cette façon aussi)
+* Le bouton Haut applique les propulseurs
+* Retour haptique et effets LED
+* Mise sous tension du système
+* Système de score élevé
+* Sauvegarde automatique et chargement des meilleurs scores
+* Possibilité de faire une pause
+* Quelques modifications de certains éléments de jeu
 
-## What's coming next
-* Settings screen
-* Enabling sound effects (configurable on/off option)
-* ~~Power Ups~~ Improved power up management
-
----
-
-This is a screenshot, but the game looks a lot better in the device itself:
-
-![Asteroids for Flipper Zero screenshot](/images/Asteroids-PowerUps.png "In game screenshot")
-
-![Pause Screen](images/Pause%20Screen.png "Pause screen")
-
-# Controls:
-* Left/Right: rotate ship in the two directions.
-* Ok, short press: Short burst bullets
-* Ok, long press: Auto-fire bullets
-* Up: Accelerate
-* Down: Decelerate
-* Back (Short Press): Pause game
-* Back (Long Press): Exit game. It will automatically save the high scoore too.
-
-Your high scores will automatically be saved. Go forth and compete!
+## Ce qui va suivre
+* Écran des paramètres
+* Activation des effets sonores (option marche/arrêt configurable)
+* ~~Power Ups~~ Gestion améliorée de la mise sous tension
 
 ---
-# Power Ups
-* ![](assets/firepower_shifted_9x10.png "Ammunition") - Machine gun fire. Press and hold OK button to fire more than the default 5 bullets
-* ![](assets/heart_10x10.png "Lives") - Et tu, Brute? Gives a bonus life up to a maximum of 5 lives
-* ![](assets/nuke_10x10.png "Nuke") - Nuke (work in progress). Destroys everything in sight (but keeps the power ups)
-* ![](assets/split_shield_10x10.png "Shield") - Use the force! Spins up a shield that can be used as a battering ram. Take zero damage while in use.
 
-## More power ups coming soon...
+Ceci est une capture d'écran, mais le jeu est bien meilleur dans l'appareil lui-même :
+
+![Capture d'écran d'Asteroids for Flipper Zero](/images/Asteroids-PowerUps.png "Capture d'écran dans le jeu")
+
+![Écran Pause](images/Pause%20Screen.png "Écran Pause")
+
+# Contrôles:
+* Gauche/Droite : faites pivoter le navire dans les deux directions.
+* Ok, appuyez brièvement : balles à rafale courte
+* Ok, appuyez longuement : balles à tir automatique
+* Haut : Accélérer
+* Vers le bas : décélérer
+* Retour (appui court) : mettre le jeu en pause
+* Retour (appui long) : Quitter le jeu. Il enregistrera également automatiquement le meilleur score.
+
+Vos meilleurs scores seront automatiquement enregistrés. Allez-y et concourez !
 
 ---
-## Installing the binary file (no build needed)
+# Mises sous tension
+* ![](assets/firepower_shifted_9x10.png "Munitions") - Tirs de mitrailleuses. Appuyez et maintenez le bouton OK pour tirer plus que les 5 balles par défaut
+* ![](assets/heart_10x10.png "Lives") - Et tu, Brute ? Donne une vie bonus jusqu'à un maximum de 5 vies
+* ![](assets/nuke_10x10.png "Nuke") - Nuke (travail en cours). Détruit tout ce qui est en vue (mais conserve les power-ups)
+* ![](assets/split_shield_10x10.png "Shield") - Utilisez la force ! Fait tourner un bouclier qui peut être utilisé comme bélier. Ne subissez aucun dégât pendant son utilisation.
 
-Go to the releases and drop the `asteroids.fap` file into the
-following Flipper Zero location:
+## Plus de power-ups à venir...
 
-    /ext/apps/Games
+---
+## Installation du fichier binaire (aucune build nécessaire)
 
-The `ext` part means that we are in the SD card. So if you don't want
-to use the Android (or other) application to upload the file,
-you can just take out the SD card, insert it in your computer,
-copy the fine into `apps/Games`, and that's it.
+Accédez aux versions et déposez le fichier `asteroids.fap` dans le
+Emplacement Flipper Zero suivant :
 
-## Installing the app from source
+     /ext/apps/Jeux
 
-* Download the Flipper Zero dev kit and build it:
+La partie `ext` signifie que nous sommes dans la carte SD. Alors si tu ne veux pas
+d'utiliser l'application Android (ou autre) pour télécharger le fichier,
+vous pouvez simplement retirer la carte SD, l'insérer dans votre ordinateur,
+copiez l'amende dans « applications/Jeux », et c'est tout.
+
+## Installation de l'application à partir des sources
+
+* Téléchargez le kit de développement Flipper Zero et construisez-le :
 ```
 mkdir -p ~/flipperZero/official/
-cd ~/flipperZero/official/
-git clone --recursive  https://github.com/flipperdevices/flipperzero-firmware.git  ./
+cd ~/flipperZero/officiel/
+git clone --recursive https://github.com/flipperdevices/flipperzero-firmware.git ./
 ./fbt
 ```
-* Copy this application folder in `official/application_user`.
-* Connect your Flipper via USB.
-* Build and install with: `./fbt launch_app APPSRC=asteroids`.
+* Copiez ce dossier d'application dans `official/application_user`.
+* Connectez votre Flipper via USB.
+* Construisez et installez avec : `./fbt launch_app APPSRC=asteroids`.
 
-## License
+## Licence
 
-BSD licensed. Enjoy.
+Licence BSD. Apprécier.

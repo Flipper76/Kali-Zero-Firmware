@@ -380,7 +380,7 @@ int32_t arkanoid_game_app(void* p) {
 
     arkanoid_state->mutex = furi_mutex_alloc(FuriMutexTypeNormal);
     if(!arkanoid_state->mutex) {
-        FURI_LOG_E(TAG, "Cannot create mutex\r\n");
+        FURI_LOG_E(TAG, "Impossible de créer un mutex\r\n");
         return_code = 255;
         goto free_and_exit;
     }
