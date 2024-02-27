@@ -8,7 +8,7 @@ void AccessorSceneStart::on_enter(AccessorApp* app) {
     AccessorAppViewManager* view_manager = app->get_view_manager();
     Popup* popup = view_manager->get_popup();
 
-    popup_set_header(popup, "App accès", 64, 16, AlignCenter, AlignBottom);
+    popup_set_header(popup, "App Accesseur", 64, 16, AlignCenter, AlignBottom);
     app->set_text_store("[??????]");
     popup_set_text(popup, app->get_text_store(), 64, 22, AlignCenter, AlignTop);
 
