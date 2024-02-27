@@ -131,17 +131,17 @@ void flipper_init() {
         // Wait for storage record
         furi_record_open(RECORD_STORAGE);
         furi_record_close(RECORD_STORAGE);
-        
+
         flipper_boot_status(canvas, "Migration de fichiers");
         flipper_migrate_files();
-        
+
         flipper_boot_status(canvas, "Démarrage usurpation de nom");
         namespoof_init();
-        
+
         flipper_boot_status(canvas, "Chargement param. Kali Zero");
         kalizero_settings_load();
         furi_hal_light_sequence("rgb RB");
-        
+
         flipper_boot_status(canvas, "Chargement actifs Kali Zero");
         kalizero_assets_init();
     } else {
