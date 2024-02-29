@@ -62,41 +62,41 @@ void avr_isp_writer_view_draw(Canvas* canvas, AvrIspWriterViewModel* model) {
 
     switch(model->status) {
     case AvrIspWriterViewStatusIDLE:
-        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Press start to write");
+        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Démarrer pour écrire");
         canvas_set_font(canvas, FontSecondary);
-        elements_button_center(canvas, "Start");
+        elements_button_center(canvas, "Démarrer");
         snprintf(str_flash, sizeof(str_flash), "%d%%", (uint8_t)(model->progress_flash * 100));
         snprintf(str_eeprom, sizeof(str_eeprom), "%d%%", (uint8_t)(model->progress_eeprom * 100));
         break;
     case AvrIspWriterViewStatusWriting:
         if(float_is_equal(model->progress_flash, 0.f)) {
-            canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Verifying firmware");
+            canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Vérification firmware");
             snprintf(str_flash, sizeof(str_flash), "***");
             snprintf(str_eeprom, sizeof(str_eeprom), "***");
         } else {
-            canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Writing dump");
+            canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Écriture du Dump");
             snprintf(str_flash, sizeof(str_flash), "%d%%", (uint8_t)(model->progress_flash * 100));
             snprintf(
                 str_eeprom, sizeof(str_eeprom), "%d%%", (uint8_t)(model->progress_eeprom * 100));
         }
         break;
     case AvrIspWriterViewStatusVerification:
-        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Verifying dump");
+        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Vérification dump");
         snprintf(str_flash, sizeof(str_flash), "%d%%", (uint8_t)(model->progress_flash * 100));
         snprintf(str_eeprom, sizeof(str_eeprom), "%d%%", (uint8_t)(model->progress_eeprom * 100));
         break;
     case AvrIspWriterViewStatusWritingFuse:
-        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Writing fuse");
+        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Écriture fuse");
         snprintf(str_flash, sizeof(str_flash), "%d%%", (uint8_t)(model->progress_flash * 100));
         snprintf(str_eeprom, sizeof(str_eeprom), "%d%%", (uint8_t)(model->progress_eeprom * 100));
         break;
     case AvrIspWriterViewStatusWritingFuseOk:
-        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Done!");
+        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Fait!");
         snprintf(str_flash, sizeof(str_flash), "%d%%", (uint8_t)(model->progress_flash * 100));
         snprintf(str_eeprom, sizeof(str_eeprom), "%d%%", (uint8_t)(model->progress_eeprom * 100));
         canvas_set_font(canvas, FontSecondary);
         elements_button_center(canvas, "Reflash");
-        elements_button_right(canvas, "Exit");
+        elements_button_right(canvas, "Quitter");
         break;
 
     default:
