@@ -109,9 +109,9 @@ static void draw_callback(Canvas* canvas, void* ctx) {
         canvas_draw_str_aligned(canvas, 0, 22, AlignLeft, AlignBottom, "Hash: MD5");
 
     if(mutexDraw.range == 0)
-        canvas_draw_str_aligned(canvas, 0, 34, AlignLeft, AlignBottom, "Range: 0-1");
+        canvas_draw_str_aligned(canvas, 0, 34, AlignLeft, AlignBottom, "Plage : 0-1");
     else
-        canvas_draw_str_aligned(canvas, 0, 34, AlignLeft, AlignBottom, "Range: 1-6");
+        canvas_draw_str_aligned(canvas, 0, 34, AlignLeft, AlignBottom, "Plage: 1-6");
 
     if(mutexDraw.pause == 0) {
         canvas_set_font(canvas, FontBigNumbers);

@@ -1,6 +1,6 @@
 App(
     appid="hid_usb",
-    name="Telecommande USB",
+    name="T\xE9l\xE9commande USB",
     apptype=FlipperAppType.EXTERNAL,
     entry_point="hid_usb_app",
     stack_size=1 * 1024,
@@ -17,7 +17,7 @@ App(
 
 App(
     appid="hid_ble",
-    name="Telecommande Bluetooth",
+    name="T\xE9l\xE9commande Bluetooth",
     apptype=FlipperAppType.EXTERNAL,
     entry_point="hid_ble_app",
     stack_size=1 * 1024,
