@@ -169,7 +169,7 @@ void code_39_loader(BarcodeData* barcode_data) {
     FlipperFormat* ff = flipper_format_file_alloc(storage);
 
     if(!flipper_format_file_open_existing(ff, CODE39_DICT_FILE_PATH)) {
-        FURI_LOG_E(TAG, "Could not open file %s", CODE39_DICT_FILE_PATH);
+        FURI_LOG_E(TAG, "Impossible d'ouvrir le fichier %s", CODE39_DICT_FILE_PATH);
         barcode_data->reason = MissingEncodingTable;
         barcode_data->valid = false;
     } else {
@@ -182,7 +182,7 @@ void code_39_loader(BarcodeData* barcode_data) {
             snprintf(current_character, 2, "%c", barcode_char);
 
             if(!flipper_format_read_string(ff, current_character, char_bits)) {
-                FURI_LOG_E(TAG, "Could not read \"%c\" string", barcode_char);
+                FURI_LOG_E(TAG, "Impossible de lire \"%c\" string", barcode_char);
                 barcode_data->reason = InvalidCharacters;
                 barcode_data->valid = false;
                 break;
@@ -263,7 +263,7 @@ void code_128_loader(BarcodeData* barcode_data) {
     furi_string_cat(barcode_bits, start_code_bits);
 
     if(!flipper_format_file_open_existing(ff, CODE128_DICT_FILE_PATH)) {
-        FURI_LOG_E(TAG, "Could not open file %s", CODE128_DICT_FILE_PATH);
+        FURI_LOG_E(TAG, "Impossible d'ouvrir le fichier %s", CODE128_DICT_FILE_PATH);
         barcode_data->reason = MissingEncodingTable;
         barcode_data->valid = false;
     } else {
@@ -278,14 +278,14 @@ void code_128_loader(BarcodeData* barcode_data) {
 
             //get the value of the character
             if(!flipper_format_read_string(ff, current_character, value)) {
-                FURI_LOG_E(TAG, "Could not read \"%c\" string", barcode_char);
+                FURI_LOG_E(TAG, "Impossible de lire \"%c\" string", barcode_char);
                 barcode_data->reason = InvalidCharacters;
                 barcode_data->valid = false;
                 break;
             }
             //using the value of the character, get the characters bits
             if(!flipper_format_read_string(ff, furi_string_get_cstr(value), char_bits)) {
-                FURI_LOG_E(TAG, "Could not read \"%c\" string", barcode_char);
+                FURI_LOG_E(TAG, "Impossible de lire \"%c\" string", barcode_char);
                 barcode_data->reason = EncodingTableError;
                 barcode_data->valid = false;
                 break;
@@ -319,7 +319,7 @@ void code_128_loader(BarcodeData* barcode_data) {
 
         //after the checksum has been calculated, add the bits to the full barcode
         if(!flipper_format_read_string(ff, final_check_digit_string, char_bits)) {
-            FURI_LOG_E(TAG, "Could not read \"%s\" string", final_check_digit_string);
+            FURI_LOG_E(TAG, "Impossible de lire \"%s\" string", final_check_digit_string);
             barcode_data->reason = EncodingTableError;
             barcode_data->valid = false;
         } else {
@@ -390,7 +390,7 @@ void code_128c_loader(BarcodeData* barcode_data) {
     furi_string_cat(barcode_bits, start_code_bits);
 
     if(!flipper_format_file_open_existing(ff, CODE128C_DICT_FILE_PATH)) {
-        FURI_LOG_E(TAG, "c128c Could not open file %s", CODE128C_DICT_FILE_PATH);
+        FURI_LOG_E(TAG, "c128c Impossible d'ouvrir le fichier  %s", CODE128C_DICT_FILE_PATH);
         barcode_data->reason = MissingEncodingTable;
         barcode_data->valid = false;
     } else {
@@ -407,7 +407,7 @@ void code_128c_loader(BarcodeData* barcode_data) {
 
             //using the value of the characters, get the characters bits
             if(!flipper_format_read_string(ff, current_chars, char_bits)) {
-                FURI_LOG_E(TAG, "c128c Could not read \"%s\" string", current_chars);
+                FURI_LOG_E(TAG, "c128c Impossible de lire \"%s\" string", current_chars);
                 barcode_data->reason = EncodingTableError;
                 barcode_data->valid = false;
                 break;
@@ -443,7 +443,7 @@ void code_128c_loader(BarcodeData* barcode_data) {
 
         //after the checksum has been calculated, add the bits to the full barcode
         if(!flipper_format_read_string(ff, final_check_digit_string, char_bits)) {
-            FURI_LOG_E(TAG, "c128c cksum Could not read \"%s\" string", final_check_digit_string);
+            FURI_LOG_E(TAG, "c128c cksum Impossible de lire \"%s\" string", final_check_digit_string);
             barcode_data->reason = EncodingTableError;
             barcode_data->valid = false;
         } else {
@@ -496,7 +496,7 @@ void codabar_loader(BarcodeData* barcode_data) {
     FlipperFormat* ff = flipper_format_file_alloc(storage);
 
     if(!flipper_format_file_open_existing(ff, CODABAR_DICT_FILE_PATH)) {
-        FURI_LOG_E(TAG, "Could not open file %s", CODABAR_DICT_FILE_PATH);
+        FURI_LOG_E(TAG, "Impossible d'ouvrir le fichier %s", CODABAR_DICT_FILE_PATH);
         barcode_data->reason = MissingEncodingTable;
         barcode_data->valid = false;
     } else {
@@ -509,7 +509,7 @@ void codabar_loader(BarcodeData* barcode_data) {
             snprintf(current_character, 2, "%c", barcode_char);
 
             if(!flipper_format_read_string(ff, current_character, char_bits)) {
-                FURI_LOG_E(TAG, "Could not read \"%c\" string", barcode_char);
+                FURI_LOG_E(TAG, "Impossible de lire \"%c\" string", barcode_char);
                 barcode_data->reason = InvalidCharacters;
                 barcode_data->valid = false;
                 break;

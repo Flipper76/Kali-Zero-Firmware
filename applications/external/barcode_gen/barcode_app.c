@@ -42,15 +42,15 @@ ErrorCode read_raw_data(FuriString* file_path, FuriString* raw_type, FuriString*
     ErrorCode reason = OKCode;
 
     if(!flipper_format_file_open_existing(ff, furi_string_get_cstr(file_path))) {
-        FURI_LOG_E(TAG, "Could not open file %s", furi_string_get_cstr(file_path));
+        FURI_LOG_E(TAG, "Impossible d'ouvrir le fichier %s", furi_string_get_cstr(file_path));
         reason = FileOpening;
     } else {
         if(!flipper_format_read_string(ff, "Type", raw_type)) {
-            FURI_LOG_E(TAG, "Could not read \"Type\" string");
+            FURI_LOG_E(TAG, "Impossible de lire \"Type\" string");
             reason = InvalidFileData;
         }
         if(!flipper_format_read_string(ff, "Data", raw_data)) {
-            FURI_LOG_E(TAG, "Could not read \"Data\" string");
+            FURI_LOG_E(TAG, "Impossible de lire les \"Données\" string");
             reason = InvalidFileData;
         }
     }
@@ -94,11 +94,11 @@ bool get_file_name_from_path(FuriString* file_path, FuriString* file_name, bool 
 */
 void init_folder() {
     Storage* storage = furi_record_open(RECORD_STORAGE);
-    FURI_LOG_I(TAG, "Creating barcodes folder");
+    FURI_LOG_I(TAG, "Création d'un dossier de codes-barres");
     if(storage_simply_mkdir(storage, DEFAULT_USER_BARCODES)) {
-        FURI_LOG_I(TAG, "Barcodes folder successfully created!");
+        FURI_LOG_I(TAG, "Dossier de codes-barres créé avec succès!");
     } else {
-        FURI_LOG_I(TAG, "Barcodes folder already exists.");
+        FURI_LOG_I(TAG, "Le dossier Codes-barres existe déjà.");
     }
     furi_record_close(RECORD_STORAGE);
 }
@@ -114,13 +114,13 @@ void select_barcode_item(BarcodeApp* app) {
 
     bool file_selected = select_file(DEFAULT_USER_BARCODES, file_path);
     if(file_selected) {
-        FURI_LOG_I(TAG, "The file selected is %s", furi_string_get_cstr(file_path));
+        FURI_LOG_I(TAG, "Le fichier sélectionné est %s", furi_string_get_cstr(file_path));
         Barcode* barcode = app->barcode_view;
 
         reason = read_raw_data(file_path, raw_type, raw_data);
         if(reason != OKCode) {
             loaded_success = false;
-            FURI_LOG_E(TAG, "Could not read data correctly");
+            FURI_LOG_E(TAG, "Impossible de lire les données correctement");
         }
 
         //Free the data from the previous barcode
@@ -167,12 +167,12 @@ void edit_barcode_item(BarcodeApp* app) {
 
     bool file_selected = select_file(DEFAULT_USER_BARCODES, file_path);
     if(file_selected) {
-        FURI_LOG_I(TAG, "The file selected is %s", furi_string_get_cstr(file_path));
+        FURI_LOG_I(TAG, "Le fichier sélectionné est %s", furi_string_get_cstr(file_path));
         CreateView* create_view_object = app->create_view;
 
         reason = read_raw_data(file_path, raw_type, raw_data);
         if(reason != OKCode) {
-            FURI_LOG_E(TAG, "Could not read data correctly");
+            FURI_LOG_E(TAG, "Impossible de lire les données correctement");
             with_view_model(
                 app->message_view->view,
                 MessageViewModel * model,
@@ -262,7 +262,7 @@ uint32_t exit_callback(void* context) {
 }
 
 void free_app(BarcodeApp* app) {
-    FURI_LOG_I(TAG, "Freeing Data");
+    FURI_LOG_I(TAG, "Libérer les données");
 
     init_folder();
     free_types();
@@ -313,11 +313,11 @@ int32_t barcode_main(void* p) {
     view_dispatcher_attach_to_gui(app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
 
     app->main_menu = submenu_alloc();
-    submenu_add_item(app->main_menu, "Load Barcode", SelectBarcodeItem, submenu_callback, app);
+    submenu_add_item(app->main_menu, "Charger code-barres", SelectBarcodeItem, submenu_callback, app);
     view_set_previous_callback(submenu_get_view(app->main_menu), exit_callback);
     view_dispatcher_add_view(app->view_dispatcher, MainMenuView, submenu_get_view(app->main_menu));
 
-    submenu_add_item(app->main_menu, "Edit Barcode", EditBarcodeItem, submenu_callback, app);
+    submenu_add_item(app->main_menu, "Editer code-barres", EditBarcodeItem, submenu_callback, app);
 
     NotificationApp* notifications = furi_record_open(RECORD_NOTIFICATION);
     // Save original brightness
@@ -345,7 +345,7 @@ int32_t barcode_main(void* p) {
      * Creating Create View
      ******************************/
     app->create_view = create_view_allocate(app);
-    submenu_add_item(app->main_menu, "Create Barcode", CreateBarcodeItem, submenu_callback, app);
+    submenu_add_item(app->main_menu, "Créer un code-barres", CreateBarcodeItem, submenu_callback, app);
     view_set_previous_callback(create_get_view(app->create_view), main_menu_callback);
     view_dispatcher_add_view(
         app->view_dispatcher, CreateBarcodeView, create_get_view(app->create_view));

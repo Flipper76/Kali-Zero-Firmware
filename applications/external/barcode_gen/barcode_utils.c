@@ -103,45 +103,45 @@ BarcodeTypeObj* get_type(FuriString* type_string) {
 const char* get_error_code_name(ErrorCode error_code) {
     switch(error_code) {
     case WrongNumberOfDigits:
-        return "Wrong Number Of Digits";
+        return "Mauvais nombre de chiffres";
     case InvalidCharacters:
-        return "Invalid Characters";
+        return "Caractères invalides";
     case UnsupportedType:
-        return "Unsupported Type";
+        return "Type non pris en charge";
     case FileOpening:
-        return "File Opening Error";
+        return "Impossible d'ouvrir fichier";
     case InvalidFileData:
-        return "Invalid File Data";
+        return "Données de fichier invalides";
     case MissingEncodingTable:
-        return "Missing Encoding Table";
+        return "Tableau d'encodage manquant";
     case EncodingTableError:
-        return "Encoding Table Error";
+        return "Erreur de table d'encodage";
     case OKCode:
         return "OK";
     default:
-        return "Unknown Code";
+        return "Code inconnu";
     };
 }
 
 const char* get_error_code_message(ErrorCode error_code) {
     switch(error_code) {
     case WrongNumberOfDigits:
-        return "Wrong # of characters";
+        return "Nombre caractères incorrect";
     case InvalidCharacters:
-        return "Invalid characters";
+        return "Caractères invalides";
     case UnsupportedType:
-        return "Unsupported barcode type";
+        return "Type non pris en charge";
     case FileOpening:
-        return "Could not open file";
+        return "Impossible d'ouvrir fichier";
     case InvalidFileData:
-        return "Invalid file data";
+        return "Données de fichier invalides";
     case MissingEncodingTable:
-        return "Missing encoding table";
+        return "Table d'encodage manquante";
     case EncodingTableError:
-        return "Encoding table error";
+        return "Erreur de table d'encodage";
     case OKCode:
         return "OK";
     default:
-        return "Could not read barcode data";
+        return "Lecture données impossible";
     };
 }

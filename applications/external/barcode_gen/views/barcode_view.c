@@ -419,28 +419,28 @@ static void barcode_draw_callback(Canvas* canvas, void* ctx) {
     } else {
         switch(data->reason) {
         case WrongNumberOfDigits:
-            draw_error_str(canvas, "Wrong # of characters");
+            draw_error_str(canvas, "Nombre caractères incorrect");
             break;
         case InvalidCharacters:
-            draw_error_str(canvas, "Invalid characters");
+            draw_error_str(canvas, "Caractères invalides");
             break;
         case UnsupportedType:
-            draw_error_str(canvas, "Unsupported barcode type");
+            draw_error_str(canvas, "Type non pris en charge");
             break;
         case FileOpening:
-            draw_error_str(canvas, "Could not open file");
+            draw_error_str(canvas, "Impossible d'ouvrir fichier");
             break;
         case InvalidFileData:
-            draw_error_str(canvas, "Invalid file data");
+            draw_error_str(canvas, "Données de fichier invalides");
             break;
         case MissingEncodingTable:
-            draw_error_str(canvas, "Missing encoding table");
+            draw_error_str(canvas, "Table d'encodage manquante");
             break;
         case EncodingTableError:
-            draw_error_str(canvas, "Encoding table error");
+            draw_error_str(canvas, "Erreur de table d'encodage");
             break;
         default:
-            draw_error_str(canvas, "Could not read barcode data");
+            draw_error_str(canvas, "Lecture données impossible");
             break;
         }
     }

@@ -1,6 +1,6 @@
 App(
     appid="barcode_app",
-    name="Barcode",
+    name="Code barres",
     apptype=FlipperAppType.EXTERNAL,
     entry_point="barcode_main",
     requires=["gui", "storage"],
@@ -12,5 +12,5 @@ App(
     fap_author="@Kingal1337",
     fap_weburl="https://github.com/Kingal1337/flipper-barcode-generator",
     fap_version="1.1",
-    fap_description="App allows you to display various barcodes on flipper screen",
+    fap_description="L'application vous permet d'afficher divers codes-barres sur l'\xE9cran du flipper",
 )
