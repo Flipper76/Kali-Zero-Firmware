@@ -14,7 +14,7 @@ App(
             name="crypto",
         ),
     ],
-    fap_category="Tools",
+    fap_category="Outils",
     fap_author="Struan Clark (xtruan)",
     fap_weburl="https://github.com/xtruan/FlipBIP",
     fap_version=(1, 14),
