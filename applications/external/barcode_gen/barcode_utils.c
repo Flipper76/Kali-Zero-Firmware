@@ -109,13 +109,13 @@ const char* get_error_code_name(ErrorCode error_code) {
     case UnsupportedType:
         return "Type non pris en charge";
     case FileOpening:
-        return "Impossible d'ouvrir fichier";
+        return "Impossible ouvrir fichier";
     case InvalidFileData:
-        return "Données de fichier invalides";
+        return "Données fichier invalides";
     case MissingEncodingTable:
-        return "Tableau d'encodage manquant";
+        return "Tableau encodage manquant";
     case EncodingTableError:
-        return "Erreur de table d'encodage";
+        return "Erreur table d'encodage";
     case OKCode:
         return "OK";
     default:
@@ -126,19 +126,19 @@ const char* get_error_code_name(ErrorCode error_code) {
 const char* get_error_code_message(ErrorCode error_code) {
     switch(error_code) {
     case WrongNumberOfDigits:
-        return "Nombre caractères incorrect";
+        return "Nbr caractères incorrect";
     case InvalidCharacters:
         return "Caractères invalides";
     case UnsupportedType:
         return "Type non pris en charge";
     case FileOpening:
-        return "Impossible d'ouvrir fichier";
+        return "Impossible ouvrir fichier";
     case InvalidFileData:
-        return "Données de fichier invalides";
+        return "Données fichier invalides";
     case MissingEncodingTable:
-        return "Table d'encodage manquante";
+        return "Table encodage manquante";
     case EncodingTableError:
-        return "Erreur de table d'encodage";
+        return "Erreur table d'encodage";
     case OKCode:
         return "OK";
     default:
