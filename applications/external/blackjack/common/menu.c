@@ -31,7 +31,7 @@ void move_menu(Menu* menu, int8_t direction) {
     for(int8_t i = 0; i < max; i++) {
         FURI_LOG_D(
             "MENU",
-            "Iteration %i, current %i, direction %i, state %i",
+            "Itération %i, actuel %i, direction %i, état %i",
             i,
             menu->current_menu,
             direction,
@@ -43,16 +43,16 @@ void move_menu(Menu* menu, int8_t direction) {
         }
         FURI_LOG_D(
             "MENU",
-            "After process current %i, direction %i, state %i",
+            "Après le processus %i actuel, direction %i, état %i",
             menu->current_menu,
             direction,
             menu->items[menu->current_menu].enabled ? 1 : 0);
         if(menu->items[menu->current_menu].enabled) {
-            FURI_LOG_D("MENU", "Next menu %i", menu->current_menu);
+            FURI_LOG_D("MENU", "Menu suivant %i", menu->current_menu);
             return;
         }
     }
-    FURI_LOG_D("MENU", "Not found, setting false");
+    FURI_LOG_D("MENU", "Introuvable, défini sur false");
     menu->enabled = false;
 }
 

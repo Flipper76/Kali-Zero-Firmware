@@ -94,42 +94,42 @@ void to_lose_state(const void* ctx, Canvas* const canvas) {
     const GameState* game_state = ctx;
     if(game_state->settings.message_duration == 0) return;
     popup_frame(canvas);
-    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "You lost");
+    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Tu as perdu");
 }
 
 void to_bust_state(const void* ctx, Canvas* const canvas) {
     const GameState* game_state = ctx;
     if(game_state->settings.message_duration == 0) return;
     popup_frame(canvas);
-    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Busted!");
+    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Éclatée!");
 }
 
 void to_draw_state(const void* ctx, Canvas* const canvas) {
     const GameState* game_state = ctx;
     if(game_state->settings.message_duration == 0) return;
     popup_frame(canvas);
-    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Draw");
+    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Tirer");
 }
 
 void to_dealer_turn(const void* ctx, Canvas* const canvas) {
     const GameState* game_state = ctx;
     if(game_state->settings.message_duration == 0) return;
     popup_frame(canvas);
-    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Dealers turn");
+    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Tour croupier");
 }
 
 void to_win_state(const void* ctx, Canvas* const canvas) {
     const GameState* game_state = ctx;
     if(game_state->settings.message_duration == 0) return;
     popup_frame(canvas);
-    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "You win");
+    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Tu Gagne");
 }
 
 void to_start(const void* ctx, Canvas* const canvas) {
     const GameState* game_state = ctx;
     if(game_state->settings.message_duration == 0) return;
     popup_frame(canvas);
-    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Round started");
+    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Nouveau tour");
 }
 
 void before_start(void* ctx) {
@@ -547,16 +547,16 @@ int32_t blackjack_app(void* p) {
     game_state->menu = malloc(sizeof(Menu));
     game_state->menu->menu_width = 40;
     init(game_state);
-    add_menu(game_state->menu, "Double", doubleAction);
-    add_menu(game_state->menu, "Hit", hitAction);
-    add_menu(game_state->menu, "Stay", stayAction);
+    add_menu(game_state->menu, "Doubler", doubleAction);
+    add_menu(game_state->menu, "Tirer", hitAction);
+    add_menu(game_state->menu, "Rester", stayAction);
     set_card_graphics(&I_card_graphics);
 
     game_state->state = GameStateStart;
 
     game_state->mutex = furi_mutex_alloc(FuriMutexTypeNormal);
     if(!game_state->mutex) {
-        FURI_LOG_E(APP_NAME, "cannot create mutex\r\n");
+        FURI_LOG_E(APP_NAME, "impossible de créer un mutex\r\n");
         return_code = 255;
         goto free_and_exit;
     }

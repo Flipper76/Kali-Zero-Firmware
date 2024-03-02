@@ -36,7 +36,7 @@ void popup_frame(Canvas* const canvas) {
 }
 
 void draw_play_menu(Canvas* const canvas, const GameState* game_state) {
-    const char* menus[3] = {"Double", "Hit", "Stay"};
+    const char* menus[3] = {"Doubler", "Tirer", "Rester"};
     for(uint8_t m = 0; m < 3; m++) {
         if(m == 0 &&
            (game_state->doubled || game_state->player_score < game_state->settings.round_price))
@@ -72,7 +72,7 @@ void draw_screen(Canvas* const canvas, const bool* points) {
 
 void draw_score(Canvas* const canvas, bool top, uint8_t amount) {
     char drawChar[20];
-    snprintf(drawChar, sizeof(drawChar), "Player score: %i", amount);
+    snprintf(drawChar, sizeof(drawChar), "Score joueur: %i", amount);
     if(top)
         canvas_draw_str_aligned(canvas, 64, 2, AlignCenter, AlignTop, drawChar);
     else
@@ -143,7 +143,7 @@ void settings_page(Canvas* const canvas, const GameState* gameState) {
     snprintf(drawChar, sizeof(drawChar), "%li", gameState->settings.starting_money);
     draw_menu(
         canvas,
-        "Start money",
+        "Argent départ",
         drawChar,
         0 * LINE_HEIGHT + startY,
         gameState->settings.starting_money > gameState->settings.round_price,
@@ -152,7 +152,7 @@ void settings_page(Canvas* const canvas, const GameState* gameState) {
     snprintf(drawChar, sizeof(drawChar), "%li", gameState->settings.round_price);
     draw_menu(
         canvas,
-        "Round price",
+        "Mise/manche",
         drawChar,
         1 * LINE_HEIGHT + startY,
         gameState->settings.round_price > 10,
@@ -162,7 +162,7 @@ void settings_page(Canvas* const canvas, const GameState* gameState) {
     snprintf(drawChar, sizeof(drawChar), "%li", gameState->settings.animation_duration);
     draw_menu(
         canvas,
-        "Anim. length",
+        "Anim. durée",
         drawChar,
         2 * LINE_HEIGHT + startY,
         gameState->settings.animation_duration > 0,
@@ -171,7 +171,7 @@ void settings_page(Canvas* const canvas, const GameState* gameState) {
     snprintf(drawChar, sizeof(drawChar), "%li", gameState->settings.message_duration);
     draw_menu(
         canvas,
-        "Popup time",
+        "Durée PopUp",
         drawChar,
         3 * LINE_HEIGHT + startY,
         gameState->settings.message_duration > 0,

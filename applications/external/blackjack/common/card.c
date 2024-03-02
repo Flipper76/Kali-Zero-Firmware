@@ -215,12 +215,12 @@ void init_hand(Hand* hand_ptr, uint8_t count) {
 }
 
 void free_hand(Hand* hand_ptr) {
-    FURI_LOG_D("CARD", "Freeing hand");
+    FURI_LOG_D("CARD", "Main libre");
     free(hand_ptr->cards);
 }
 
 void add_to_hand(Hand* hand_ptr, Card card) {
-    FURI_LOG_D("CARD", "Adding to hand");
+    FURI_LOG_D("CARD", "Ajouter à la main");
     if(hand_ptr->index < hand_ptr->max) {
         hand_ptr->cards[hand_ptr->index] = card;
         hand_ptr->index++;
@@ -314,7 +314,7 @@ void draw_hand_column(
 }
 
 Card remove_from_deck(uint16_t index, Deck* deck) {
-    FURI_LOG_D("CARD", "Removing from deck");
+    FURI_LOG_D("CARD", "Retrait du paquet");
     Card result = {0, 0, true, false};
     if(deck->card_count > 0) {
         deck->card_count--;
@@ -334,7 +334,7 @@ Card remove_from_deck(uint16_t index, Deck* deck) {
 }
 
 void extract_hand_region(Hand* hand, Hand* to, uint8_t start_index) {
-    FURI_LOG_D("CARD", "Extracting hand region");
+    FURI_LOG_D("CARD", "Extraction de la région de la main");
     if(start_index >= hand->index) return;
 
     for(uint8_t i = start_index; i < hand->index; i++) {
@@ -344,7 +344,7 @@ void extract_hand_region(Hand* hand, Hand* to, uint8_t start_index) {
 }
 
 void add_hand_region(Hand* to, Hand* from) {
-    FURI_LOG_D("CARD", "Adding hand region");
+    FURI_LOG_D("CARD", "Ajouter à la région de la main");
     if((to->index + from->index) <= to->max) {
         for(int i = 0; i < from->index; i++) {
             add_to_hand(to, from->cards[i]);
