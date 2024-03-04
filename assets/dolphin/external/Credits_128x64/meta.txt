@@ -3,7 +3,7 @@ Version: 1
 
 Width: 128
 Height: 64
-Passive frames: 6
+Passive frames: 1
 Active frames: 0
 Frames order: 0
 Active cycles: 0
