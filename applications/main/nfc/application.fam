@@ -129,15 +129,6 @@ App(
 )
 
 App(
-    appid="bip_parser",
-    apptype=FlipperAppType.PLUGIN,
-    entry_point="bip_plugin_ep",
-    targets=["f7"],
-    requires=["nfc"],
-    sources=["plugins/supported_cards/bip.c"],
-)
-
-App(
     appid="metromoney_parser",
     apptype=FlipperAppType.PLUGIN,
     entry_point="metromoney_plugin_ep",
@@ -162,6 +153,15 @@ App(
     targets=["f7"],
     requires=["nfc"],
     sources=["plugins/supported_cards/aime.c"],
+)
+
+App(
+    appid="bip_parser",
+    apptype=FlipperAppType.PLUGIN,
+    entry_point="bip_plugin_ep",
+    targets=["f7"],
+    requires=["nfc"],
+    sources=["plugins/supported_cards/bip.c"],
 )
 
 App(
