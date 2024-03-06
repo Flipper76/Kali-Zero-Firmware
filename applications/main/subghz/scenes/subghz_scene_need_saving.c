@@ -24,7 +24,7 @@ void subghz_scene_need_saving_on_enter(void* context) {
         AlignCenter,
         AlignCenter,
         FontSecondary,
-		"Toutes donnÃ©es \nnon enregistrÃ©es \nseront perdues");
+		"Toutes données \nnon enregistrées \nseront perdues");
 
     widget_add_button_element(
         subghz->widget, GuiButtonTypeRight, "Rester", subghz_scene_need_saving_callback, subghz);
