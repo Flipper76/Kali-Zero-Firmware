@@ -337,7 +337,7 @@ bool infrared_remote_move_signal(InfraredRemote* remote, size_t index, size_t ne
 }
 
 bool infrared_remote_create(InfraredRemote* remote, const char* path) {
-    FURI_LOG_I(TAG, "CrÃ©ation nouveau fichier: '%s'", path);
+    FURI_LOG_I(TAG, "Création nouveau fichier: '%s'", path);
 
     infrared_remote_reset(remote);
     infrared_remote_set_path(remote, path);
