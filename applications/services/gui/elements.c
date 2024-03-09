@@ -588,12 +588,24 @@ void elements_string_fit_width(Canvas* canvas, FuriString* string, uint8_t width
 
     uint16_t len_px = canvas_string_width(canvas, furi_string_get_cstr(string));
     if(len_px > width) {
-        width -= canvas_string_width(canvas, "...");
-        do {
-            furi_string_left(string, furi_string_size(string) - 1);
-            len_px = canvas_string_width(canvas, furi_string_get_cstr(string));
-        } while(len_px > width);
-        furi_string_cat(string, "...");
+        uint16_t ellipsis_width = canvas_string_width(canvas, "...");
+        if(width < ellipsis_width) {
+            furi_string_reset(string);
+        } else {
+            width -= ellipsis_width;
+            do {
+                size_t len = furi_string_size(string);
+                size_t offset = 1;
+
+                while((furi_string_get_char(string, len - offset) & 0xC0) == 0x80) {
+                    offset++;
+                }
+
+                furi_string_left(string, len - offset);
+                len_px = canvas_string_width(canvas, furi_string_get_cstr(string));
+            } while(len_px > width);
+            furi_string_cat(string, "...");
+        }
     }
 }
 
@@ -680,6 +692,8 @@ void elements_scrollable_text_line_centered(
         canvas, x, y, width, furi_string_get_cstr(string), scroll, ellipsis, centered);
 }
 
+// FuriString* textHex;  // Initialisez la chaîne vide
+
 void elements_text_box(
     Canvas* canvas,
     uint8_t x,
@@ -752,7 +766,7 @@ void elements_text_box(
                 canvas_set_font(canvas, FontKeyboard);
                 mono = !mono;
             }
-            if(text[i] == ELEMENTS_INVERSE_MARKER) {
+            if(text[i] == ELEMENTS_INVERSED_MARKER) {
                 inverse_present = true;
             }
             continue;
@@ -836,10 +850,30 @@ void elements_text_box(
     bold = false;
     mono = false;
     inverse = false;
-    for(uint8_t i = 0; i < line_num; i++) {
-        for(uint8_t j = 0; j < line[i].len; j++) {
-            // Process format symbols
-            if(line[i].text[j] == ELEMENTS_BOLD_MARKER) {
+    for (uint8_t i = 0; i < line_num; i++) {
+    size_t j = 0;
+    while (j < line[i].len) {
+        uint32_t unicode_value = 0;
+
+    // Process UTF-8 multibyte character
+    uint8_t first_byte = (uint8_t)line[i].text[j++];
+    int additional_bytes = 0;
+
+    // Determine the number of additional bytes
+    if ((first_byte & 0xE0) == 0xC0) {
+        additional_bytes = 1;
+    } else if ((first_byte & 0xF0) == 0xE0) {
+        additional_bytes = 2;
+    } else if ((first_byte & 0xF8) == 0xF0) {
+        additional_bytes = 3;
+    }
+
+    // Extract the rest of the bytes
+    unicode_value = (first_byte & (0xFF >> (additional_bytes + 1)));
+    for (int k = 0; k < additional_bytes; k++) {
+        unicode_value = (unicode_value << 6) | (line[i].text[j++] & 0x3F);
+    }
+            if(unicode_value == ELEMENTS_BOLD_MARKER) {
                 if(bold) {
                     current_font = FontSecondary;
                 } else {
@@ -849,7 +883,7 @@ void elements_text_box(
                 bold = !bold;
                 continue;
             }
-            if(line[i].text[j] == ELEMENTS_MONO_MARKER) {
+            if(unicode_value == ELEMENTS_MONO_MARKER) {
                 if(mono) {
                     current_font = FontSecondary;
                 } else {
@@ -859,7 +893,7 @@ void elements_text_box(
                 mono = !mono;
                 continue;
             }
-            if(line[i].text[j] == ELEMENTS_INVERSE_MARKER) {
+            if(unicode_value == ELEMENTS_INVERSED_MARKER) {
                 inverse = !inverse;
                 continue;
             }
@@ -868,22 +902,22 @@ void elements_text_box(
                     canvas,
                     line[i].x - 1,
                     line[i].y - line[i].height - 1,
-                    canvas_glyph_width(canvas, line[i].text[j]) + 1,
+                    canvas_glyph_width(canvas, unicode_value) + 1,
                     line[i].height + line[i].descender + 2);
                 canvas_invert_color(canvas);
-                canvas_draw_glyph(canvas, line[i].x, line[i].y, line[i].text[j]);
+                canvas_draw_glyph(canvas, line[i].x, line[i].y, unicode_value);
                 canvas_invert_color(canvas);
             } else {
-                if((i == line_num - 1) && strip_to_dots) {
-                    uint8_t next_symbol_width = canvas_glyph_width(canvas, line[i].text[j]);
-                    if(line[i].x + next_symbol_width + dots_width > x + width) {
-                        canvas_draw_str(canvas, line[i].x, line[i].y, "...");
-                        break;
-                    }
+            if ((i == line_num - 1) && strip_to_dots) {
+                uint8_t next_symbol_width = canvas_glyph_width(canvas, unicode_value);
+                if (line[i].x + next_symbol_width + dots_width > x + width) {
+                    canvas_draw_str(canvas, line[i].x, line[i].y, "...");
+                    break;
                 }
-                canvas_draw_glyph(canvas, line[i].x, line[i].y, line[i].text[j]);
             }
-            line[i].x += canvas_glyph_width(canvas, line[i].text[j]);
+            canvas_draw_glyph(canvas, line[i].x, line[i].y, unicode_value);
+        }
+        line[i].x += canvas_glyph_width(canvas, unicode_value);
         }
     }
     canvas_set_font(canvas, FontSecondary);
