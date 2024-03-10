@@ -35,11 +35,13 @@ class ElfManifestV1:
     icon: bytes = field(default=b"")
 
     def as_bytes(self):
+        encoded_string = self.name.encode('latin-1', errors='replace')
+  
         return struct.pack(
             "<hI32s?32s",
             self.stack_size,
             self.app_version,
-            bytes(self.name.encode("utf-8")),
+            encoded_string,
             bool(self.icon),
             self.icon,
         )

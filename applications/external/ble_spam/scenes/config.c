@@ -43,7 +43,7 @@ void scene_config_on_enter(void* _ctx) {
 
     variable_item_list_set_header(list, ctx->attack->title);
 
-    config_bool(list, "Random MAC", &ctx->attack->payload.random_mac);
+    config_bool(list, "MAC aléatoire", &ctx->attack->payload.random_mac);
 
     variable_item_list_set_enter_callback(list, config_callback, ctx);
     if(!ctx->attack->protocol) {
@@ -53,9 +53,9 @@ void scene_config_on_enter(void* _ctx) {
         ctx->attack->protocol->extra_config(ctx);
     }
 
-    config_bool(list, "LED Indicator", &ctx->led_indicator);
+    config_bool(list, "Indicateur LED", &ctx->led_indicator);
 
-    variable_item_list_add(list, "Lock Clavier", 0, NULL, NULL);
+    variable_item_list_add(list, "Verrou clavier", 0, NULL, NULL);
 
     variable_item_list_set_selected_item(
         list, scene_manager_get_scene_state(ctx->scene_manager, SceneConfig));

@@ -1,6 +1,6 @@
 App(
     appid="subghz_remote",
-    name="T\xE9l\xE9commande Sub-GHz",
+    name="Télécommande Sub-GHz",
     apptype=FlipperAppType.EXTERNAL,
     entry_point="subghz_remote_app",
     requires=[
