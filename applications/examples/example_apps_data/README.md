@@ -1,6 +1,10 @@
-# Apps Data folder Example
+# Apps Data folder Example {#example_app_data}
 
 This example demonstrates how to utilize the Apps Data folder to store data that is not part of the app itself, such as user data, configuration files, and so forth.
+
+## Source code
+
+Source code for this example can be found [here](https://github.com/Flipper76/Kali-Zero-Firmware/tree/main/applications/examples/example_apps_data).
 
 ## What is the Apps Data Folder?
 

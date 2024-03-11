@@ -1,5 +1,10 @@
-/* A simple plugin implementing example_plugins application's plugin interface */
-
+/**
+ * @file plugin1.c
+ * @brief Plugin example 1.
+ *
+ * A simple plugin implementing example_plugins application's plugin interface
+ */
+ 
 #include "plugin_interface.h"
 
 #include <flipper_application/flipper_application.h>

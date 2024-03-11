@@ -1,4 +1,4 @@
-# Assets Dolphin
+# Assets Dolphin {#dolphin_assets}
 
 Les actifs de Dolphin sont divisés en 3 parties :
 
