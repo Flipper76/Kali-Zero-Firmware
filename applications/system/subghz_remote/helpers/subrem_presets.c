@@ -104,7 +104,7 @@ SubRemLoadSubState subrem_sub_preset_load(
         }
 
         if(!strcmp(furi_string_get_cstr(temp_str), "CUSTOM")) {
-            //TODO FL-3551: add Custom_preset_module
+            //TODO Does this work properly?
             //delete preset if it already exists
             subghz_setting_delete_custom_preset(setting, furi_string_get_cstr(temp_str));
             //load custom preset from file
