@@ -25,7 +25,9 @@ void kali_zero_app_scene_start_on_enter(void* context) {
     item = variable_item_list_add(var_item_list, "Divers", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
-    variable_item_list_set_header(var_item_list, furi_string_get_cstr(app->version_tag));
+	char header[29]; 
+	snprintf(header, sizeof(header), "%s: %s", "KALI ZERO", app->device_name);
+	variable_item_list_set_header(var_item_list, header);
 
     variable_item_list_set_enter_callback(
         var_item_list, kali_zero_app_scene_start_var_item_list_callback, app);

@@ -67,7 +67,7 @@ void kali_zero_app_scene_protocols_on_enter(void* context) {
     variable_item_set_current_value_text(item, ">");
 
     item = variable_item_list_add(
-        var_item_list, "Éxtension SubGHz", 2, kali_zero_app_scene_protocols_subghz_extend_changed, app);
+        var_item_list, "Extension SubGHz", 2, kali_zero_app_scene_protocols_subghz_extend_changed, app);
     variable_item_set_current_value_index(item, app->subghz_extend);
     variable_item_set_current_value_text(item, app->subghz_extend ? "ON" : "OFF");
 
