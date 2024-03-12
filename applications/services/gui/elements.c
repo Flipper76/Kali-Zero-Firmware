@@ -635,21 +635,56 @@ void elements_scrollable_text_line_str(
         size_t scroll_size = furi_string_size(line);
         size_t right_width = 0;
         for(size_t i = scroll_size - 1; i > 0; i--) {
-            right_width += canvas_glyph_width(canvas, furi_string_get_char(line, i));
+            while((furi_string_get_char(line, i) & 0xC0) == 0x80) {
+                i--;
+            }
+			
+            FuriStringUTF8State state = FuriStringUTF8StateStarting;
+            FuriStringUnicodeValue value = 0;
+
+            size_t offset = i;
+            do {
+                furi_string_utf8_decode(furi_string_get_char(line, offset), &state, &value);
+                offset++;
+            } while(state != FuriStringUTF8StateStarting);
+
+
+            right_width += canvas_glyph_width(canvas, value);
             if(right_width > width) break;
             scroll_size--;
             if(!scroll_size) break;
         }
-        // Ensure that we have something to scroll
-        if(scroll_size) {
-            scroll_size += 3;
-            scroll = scroll % scroll_size;
-            furi_string_right(line, scroll);
-        }
+
+		// Ensure that we have something to scroll
+		if (scroll_size) {
+			scroll_size += 3;
+			scroll = scroll % scroll_size;
+
+				size_t offset = 0;
+				for(; scroll > 0; offset++) {
+					if((furi_string_get_char(line, offset) & 0xC0) != 0x80) {
+						scroll--;
+					}
+				}
+
+				// Step back to the end of the previous symbol
+				if(offset > 0){
+					offset--;
+				}
+            
+            furi_string_right(line, offset);
+		}
 
         len_px = canvas_string_width(canvas, furi_string_get_cstr(line));
         while(len_px > width) {
-            furi_string_left(line, furi_string_size(line) - 1);
+            size_t offset = 1;
+            size_t len = furi_string_size(line);
+
+            while((furi_string_get_char(line, len - offset) & 0xC0) == 0x80) {
+                offset++;
+            }
+
+            furi_string_left(line, len - offset);
             len_px = canvas_string_width(canvas, furi_string_get_cstr(line));
         }
 
@@ -691,8 +726,6 @@ void elements_scrollable_text_line_centered(
     elements_scrollable_text_line_str(
         canvas, x, y, width, furi_string_get_cstr(string), scroll, ellipsis, centered);
 }
-
-// FuriString* textHex;  // Initialisez la chaîne vide
 
 void elements_text_box(
     Canvas* canvas,
