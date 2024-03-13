@@ -7,6 +7,8 @@ static const char* names[] = {
     "Assquach💦",
     "Flipper 🐬",
     "iOS 17 🍎",
+	"Yo bro",
+	"Comment vas-tu?",
     "Kink💦",
     "👉👌",
     "🔵🦷",
@@ -85,11 +87,11 @@ static void extra_config(Ctx* ctx) {
     VariableItemList* list = ctx->variable_item_list;
     VariableItem* item;
 
-    item = variable_item_list_add(list, "Display Name", 0, NULL, NULL);
+    item = variable_item_list_add(list, "Nom d'affichage", 0, NULL, NULL);
     variable_item_set_current_value_text(
-        item, payload->mode == PayloadModeRandom ? "Random" : cfg->name);
+        item, payload->mode == PayloadModeRandom ? "Aléatoire" : cfg->name);
 
-    variable_item_list_add(list, "See in phone BT settings", 0, NULL, NULL);
+    variable_item_list_add(list, "Voir les paramètres BT", 0, NULL, NULL);
 
     variable_item_list_set_enter_callback(list, config_callback, ctx);
 }
@@ -119,7 +121,7 @@ void scene_nameflood_name_on_enter(void* _ctx) {
     NamefloodCfg* cfg = &payload->cfg.nameflood;
     TextInput* text_input = ctx->text_input;
 
-    text_input_set_header_text(text_input, "Press back for random");
+    text_input_set_header_text(text_input, "Retour pour aléatoire");
 
     text_input_set_result_callback(
         text_input, name_callback, ctx, cfg->name, sizeof(cfg->name), true);

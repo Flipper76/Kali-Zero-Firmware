@@ -78,11 +78,11 @@ static void extra_config(Ctx* ctx) {
     VariableItemList* list = ctx->variable_item_list;
     VariableItem* item;
 
-    item = variable_item_list_add(list, "Display Name", 0, NULL, NULL);
+    item = variable_item_list_add(list, "Afficher nom", 0, NULL, NULL);
     variable_item_set_current_value_text(
         item, payload->mode == PayloadModeRandom ? "Random" : cfg->name);
 
-    variable_item_list_add(list, "Requires enabling SwiftPair", 0, NULL, NULL);
+    variable_item_list_add(list, "Besoin: SwiftPair actif", 0, NULL, NULL);
 
     variable_item_list_set_enter_callback(list, config_callback, ctx);
 }
@@ -112,7 +112,7 @@ void scene_swiftpair_name_on_enter(void* _ctx) {
     SwiftpairCfg* cfg = &payload->cfg.swiftpair;
     TextInput* text_input = ctx->text_input;
 
-    text_input_set_header_text(text_input, "Press back for random");
+    text_input_set_header_text(text_input, "Appuie retour=Random");
 
     text_input_set_result_callback(
         text_input, name_callback, ctx, cfg->name, sizeof(cfg->name), true);
