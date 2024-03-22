@@ -115,7 +115,8 @@ bool nfc_scene_mf_classic_write_initial_on_event(void* context, SceneManagerEven
             nfc_scene_mf_classic_write_initial_setup_view(instance);
             consumed = true;
         } else if(event.event == NfcCustomEventWrongCard) {
-            scene_manager_next_scene(instance->scene_manager, NfcSceneMfClassicWrongCard);
+            scene_manager_next_scene(
+                instance->scene_manager, NfcSceneMfClassicWriteInitialWrongCard);
             consumed = true;
         } else if(event.event == NfcCustomEventPollerSuccess) {
             scene_manager_next_scene(
