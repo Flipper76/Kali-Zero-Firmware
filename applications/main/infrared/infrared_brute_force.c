@@ -67,7 +67,7 @@ bool infrared_brute_force_calculate_messages(InfraredBruteForce* brute_force) {
         while(infrared_signal_read_name(ff, signal_name)) {
             signals_valid = infrared_signal_read_body(signal, ff) &&
                             infrared_signal_is_valid(signal);
-            if(!signals_valid) break;	
+            if(!signals_valid) break;
 
             InfraredBruteForceRecord* record =
                 InfraredBruteForceRecordDict_get(brute_force->records, signal_name);

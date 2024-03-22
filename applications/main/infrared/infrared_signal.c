@@ -193,7 +193,7 @@ bool infrared_signal_read_body(InfraredSignal* signal, FlipperFormat* ff) {
             FURI_LOG_E(TAG, "Type de signal inconnu: %s", furi_string_get_cstr(tmp));
             break;
         }
-		
+
         success = true;
     } while(false);
 
