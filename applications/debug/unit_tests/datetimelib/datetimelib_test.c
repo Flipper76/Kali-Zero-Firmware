@@ -160,7 +160,7 @@ MU_TEST_SUITE(test_datetime_timestamp_to_datetime_suite) {
     MU_RUN_TEST(test_datetime_timestamp_to_datetime_min);
     MU_RUN_TEST(test_datetime_timestamp_to_datetime_max);
     MU_RUN_TEST(test_datetime_timestamp_to_datetime_to_timestamp);
-    MU_RUN_TEST(test_datetime_timestamp_to_datetime_weekday);	
+    MU_RUN_TEST(test_datetime_timestamp_to_datetime_weekday);
 }
 
 MU_TEST(test_datetime_datetime_to_timestamp_min) {
