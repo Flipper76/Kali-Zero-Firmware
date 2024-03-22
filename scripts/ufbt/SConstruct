@@ -298,10 +298,12 @@ elif len(runnable_apps) > 1:
     # more than 1 app - try to find one with matching id
     app_to_launch = appenv.subst("$APPID")
 
+
 def ambiguous_app_call(**kw):
     raise UserError(
         f"More than one app is runnable: {', '.join(app.appid for app in runnable_apps)}. Please specify an app with APPID=..."
     )
+
 
 if app_to_launch:
     appenv.AddAppLaunchTarget(app_to_launch, "launch")
@@ -338,7 +340,6 @@ dist_env.PhonyTarget(
 )
 
 # Linter
-
 dist_env.PhonyTarget(
     "lint",
     [

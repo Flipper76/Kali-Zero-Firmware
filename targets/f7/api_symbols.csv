@@ -2170,10 +2170,6 @@ Function,-,j1f,float,float
 Function,-,jn,double,"int, double"
 Function,-,jnf,float,"int, float"
 Function,-,jrand48,long,unsigned short[3]
-Function,+,kalizero_assets_free,void,
-Function,+,kalizero_assets_init,void,
-Function,-,kalizero_settings_load,void,
-Function,+,kalizero_settings_save,void,
 Function,+,keys_dict_add_key,_Bool,"KeysDict*, const uint8_t*, size_t"
 Function,+,keys_dict_alloc,KeysDict*,"const char*, KeysDictMode, size_t"
 Function,+,keys_dict_check_presence,_Bool,const char*
@@ -2555,6 +2551,7 @@ Function,+,mf_desfire_poller_read_file_settings_multi,MfDesfireError,"MfDesfireP
 Function,+,mf_desfire_poller_read_file_value,MfDesfireError,"MfDesfirePoller*, MfDesfireFileId, MfDesfireFileData*"
 Function,+,mf_desfire_poller_read_free_memory,MfDesfireError,"MfDesfirePoller*, MfDesfireFreeMemory*"
 Function,+,mf_desfire_poller_read_key_settings,MfDesfireError,"MfDesfirePoller*, MfDesfireKeySettings*"
+Function,+,mf_desfire_poller_read_key_version,MfDesfireError,"MfDesfirePoller*, uint8_t, MfDesfireKeyVersion*"
 Function,+,mf_desfire_poller_read_key_versions,MfDesfireError,"MfDesfirePoller*, SimpleArray*, uint32_t"
 Function,+,mf_desfire_poller_read_version,MfDesfireError,"MfDesfirePoller*, MfDesfireVersion*"
 Function,+,mf_desfire_poller_select_application,MfDesfireError,"MfDesfirePoller*, const MfDesfireApplicationId*"
@@ -3668,6 +3665,10 @@ Function,+,widget_alloc,Widget*,
 Function,+,widget_free,void,Widget*
 Function,+,widget_get_view,View*,Widget*
 Function,+,widget_reset,void,Widget*
+Function,+,kalizero_assets_free,void,
+Function,+,kalizero_assets_init,void,
+Function,-,kalizero_settings_load,void,
+Function,+,kalizero_settings_save,void,
 Function,-,y0,double,double
 Function,-,y0f,float,float
 Function,-,y1,double,double
@@ -3680,7 +3681,6 @@ Variable,+,A_125khz_14,Icon,
 Variable,+,A_BadKb_14,Icon,
 Variable,+,A_GPIO_14,Icon,
 Variable,+,A_Infrared_14,Icon,
-Variable,+,A_KaliZero_14,Icon,
 Variable,+,A_Levelup_128x64,Icon,
 Variable,+,A_Loading_24,Icon,
 Variable,+,A_NFC_14,Icon,
@@ -3689,6 +3689,7 @@ Variable,+,A_Round_loader_8x8,Icon,
 Variable,+,A_Settings_14,Icon,
 Variable,+,A_Sub1ghz_14,Icon,
 Variable,+,A_U2F_14,Icon,
+Variable,+,A_KaliZero_14,Icon,
 Variable,+,A_iButton_14,Icon,
 Variable,+,DOLPHIN_LEVELS,const uint32_t[],
 Variable,+,DOLPHIN_LEVEL_COUNT,const size_t,
@@ -3738,10 +3739,10 @@ Variable,+,I_ButtonUp_7x4,Icon,
 Variable,+,I_Button_18x18,Icon,
 Variable,+,I_CC_Bluetooth_16x16,Icon,
 Variable,+,I_CC_DarkMode_16x16,Icon,
-Variable,+,I_CC_KaliZero_16x16,Icon,
 Variable,+,I_CC_LefthandedMode_16x16,Icon,
 Variable,+,I_CC_Lock_16x16,Icon,
 Variable,+,I_CC_Settings_16x16,Icon,
+Variable,+,I_CC_KaliZero_16x16,Icon,
 Variable,+,I_Certification1_103x56,Icon,
 Variable,+,I_Certification2_46x33,Icon,
 Variable,+,I_CertificationChina0_121x41,Icon,
@@ -4031,8 +4032,6 @@ Variable,+,gpio_usb_dp,const GpioPin,
 Variable,+,gpio_vibro,const GpioPin,
 Variable,+,input_pins,const InputPin[],
 Variable,+,input_pins_count,const size_t,
-Variable,+,kalizero_assets,KaliZeroAssets,
-Variable,+,kalizero_settings,KaliZeroSettings,
 Variable,+,lfrfid_protocols,const ProtocolBase*[],
 Variable,+,message_blink_set_color_blue,const NotificationMessage,
 Variable,+,message_blink_set_color_cyan,const NotificationMessage,
@@ -4254,3 +4253,5 @@ Variable,+,usb_cdc_single,FuriHalUsbInterface,
 Variable,+,usb_hid,FuriHalUsbInterface,
 Variable,+,usb_hid_u2f,FuriHalUsbInterface,
 Variable,+,usbd_devfs,const usbd_driver,
+Variable,+,kalizero_assets,KaliZeroAssets,
+Variable,+,kalizero_settings,KaliZeroSettings,

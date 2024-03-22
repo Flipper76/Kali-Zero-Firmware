@@ -279,7 +279,7 @@ vars.AddVariables(
         "ARGS",
         "Extra arguments to pass to certain scripts supporting it",
         "",
-    ),	
+    ),
 )
 
 Return("vars")
