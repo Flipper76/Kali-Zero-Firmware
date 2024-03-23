@@ -61,6 +61,11 @@ Ouvrez le fichier JSON exporté dans un éditeur de texte et apportez les modifi
      - `privateKey` doit être remplacé par votre `Private Key`.
      - `oldestRelevantSymmetricKey` doit également utiliser la `Hashed adv key`.
 - De plus, mettez à jour les attributs suivants sur « true  » :
+- **Touches OHS gauche, droite de mon script ```generate_keys.py``` :**
+     - `symmetricKey` doit être défini sur la `Hashed adv key`.
+     - `privateKey` doit être remplacé par votre `Private Key`.
+     - `oldestRelevantSymmetricKey` doit également utiliser la `Hashed adv key`.
+- De plus, mettez à jour les attributs suivants sur « true  » :
     - `"isDeployed": true`
     - `"isActive": true`
 
