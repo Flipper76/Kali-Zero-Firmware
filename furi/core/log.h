@@ -51,7 +51,7 @@ void furi_log_init(void);
 
 /** Add log TX callback
  *
-* @param[in]  handler  The callback and its context
+ * @param[in]  handler  The callback and its context
  *
  * @return     true on success, false otherwise
  */
@@ -59,7 +59,7 @@ bool furi_log_add_handler(FuriLogHandler handler);
 
 /** Remove log TX callback
  *
-* @param[in]  handler  The callback and its context
+ * @param[in]  handler  The callback and its context
  *
  * @return     true on success, false otherwise
  */

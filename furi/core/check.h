@@ -66,7 +66,7 @@ FURI_NORETURN void __furi_halt_implementation();
 
 /** Halt system
  *
- * @param      ...optional  message (const char*)
+ * @param      ... optional  message (const char*)
  */
 #define furi_halt(...) M_APPLY(__furi_halt, M_IF_EMPTY(__VA_ARGS__)((NULL), (__VA_ARGS__)))
 

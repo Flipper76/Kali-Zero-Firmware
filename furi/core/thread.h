@@ -236,8 +236,6 @@ int32_t furi_thread_get_return_code(FuriThread* thread);
 
 /** Get FreeRTOS FuriThreadId for current thread
  *
- * @param      thread  FuriThread instance
- *
  * @return     FuriThreadId or NULL
  */
 FuriThreadId furi_thread_get_current_id();

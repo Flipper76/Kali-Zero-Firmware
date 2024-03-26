@@ -182,7 +182,7 @@ def generate(env):
                             "--stack_type=${COPRO_STACK_TYPE}",
                             "--stack_file=${COPRO_STACK_BIN}",
                             "--stack_addr=${COPRO_STACK_ADDR}",
-                        "${ARGS}",
+                            "${ARGS}",
                         ]
                     ],
                     "${COPROCOMSTR}",

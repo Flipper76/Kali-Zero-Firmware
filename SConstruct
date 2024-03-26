@@ -66,7 +66,7 @@ if GetOption("fullenv") or any(
 
     # Target for self-update package
     dist_basic_arguments = [
-        "${ARGS}",    
+        "${ARGS}",
         "--bundlever",
         "${UPDATE_VERSION_STRING}",
     ]
@@ -183,7 +183,7 @@ fap_deploy = distenv.PhonyTarget(
                 "send",
                 "${SOURCE}",
                 "/ext/apps",
-                "${ARGS}",                
+                "${ARGS}",
             ]
         ]
     ),
@@ -272,7 +272,7 @@ distenv.PhonyTarget(
 # Just start OpenOCD
 distenv.PhonyTarget(
     "openocd",
-    [["${OPENOCDCOM}", "${ARGS}"]],    
+    [["${OPENOCDCOM}", "${ARGS}"]],
 )
 
 # Linter
