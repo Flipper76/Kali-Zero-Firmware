@@ -374,6 +374,9 @@ static void loader_start_internal_app(
     const FlipperInternalApplication* app,
     const char* args) {
     FURI_LOG_I(TAG, "Starting %s", app->name);
+    LoaderEvent event;
+    event.type = LoaderEventTypeApplicationBeforeLoad;
+    furi_pubsub_publish(loader->pubsub, &event);
 
     // store args
     furi_assert(loader->app.args == NULL);
@@ -429,6 +432,9 @@ static LoaderStatus loader_start_external_app(
     FuriString* error_message,
     FlipperApplicationFlag flags) {
     LoaderStatus status = loader_make_success_status(error_message);
+	LoaderEvent event;
+    event.type = LoaderEventTypeApplicationBeforeLoad;
+    furi_pubsub_publish(loader->pubsub, &event);
 
     do {
         loader->app.fap = flipper_application_alloc(storage, firmware_api_interface);
@@ -456,7 +462,7 @@ static LoaderStatus loader_start_external_app(
         if(load_status != FlipperApplicationLoadStatusSuccess) {
             const char* err_msg = flipper_application_load_status_to_string(load_status);
             status = loader_make_status_error(
-                LoaderStatusErrorInternal, error_message, "Load failed %s: %s", path, err_msg);
+                LoaderStatusErrorInternal, error_message, "Load failed, %s: %s", path, err_msg);
             break;
         } else if(api_mismatch) {
             // Successful map, but found api mismatch -> warn user
@@ -517,6 +523,12 @@ static LoaderStatus loader_start_external_app(
 
     flipper_application_free(loader->app.fap);
     loader->app.fap = NULL;
+    if(status != LoaderStatusOk) {
+        flipper_application_free(loader->app.fap);
+        loader->app.fap = NULL;
+        event.type = LoaderEventTypeApplicationLoadFailed;
+        furi_pubsub_publish(loader->pubsub, &event);
+    }
 
     return status;
 }

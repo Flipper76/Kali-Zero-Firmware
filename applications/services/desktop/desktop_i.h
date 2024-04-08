@@ -20,6 +20,7 @@
 
 #include <loader/loader.h>
 #include <notification/notification_app.h>
+#include <toolbox/api_lock.h>
 
 #define STATUS_BAR_Y_SHIFT 13
 
@@ -84,6 +85,8 @@ struct Desktop {
 
     FuriPubSub* ascii_events_pubsub;
     FuriPubSubSubscription* ascii_events_subscription;
+
+    FuriApiLock animation_lock;
 };
 
 Desktop* desktop_alloc();

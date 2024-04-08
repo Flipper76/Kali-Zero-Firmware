@@ -86,7 +86,7 @@ bool desktop_scene_locked_on_event(void* context, SceneManagerEvent event) {
         switch(event.event) {
         case DesktopLockedEventOpenPowerOff: {
             if(kalizero_settings.lockscreen_poweroff) {
-                loader_start(desktop->loader, "Alimentation", "off", NULL);
+                loader_start_detached_with_gui_error(desktop->loader, "Alimentation", "off");
             }
             consumed = true;
             break;

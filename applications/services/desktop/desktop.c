@@ -33,12 +33,18 @@ static void desktop_loader_callback(const void* message, void* context) {
     Desktop* desktop = context;
     const LoaderEvent* event = message;
 
-    if(event->type == LoaderEventTypeApplicationStarted) {
+    if(event->type == LoaderEventTypeApplicationBeforeLoad) {
+        desktop->animation_lock = api_lock_alloc_locked();
         view_dispatcher_send_custom_event(desktop->view_dispatcher, DesktopGlobalBeforeAppStarted);
-    } else if(event->type == LoaderEventTypeApplicationStopped) {
+        api_lock_wait_unlock_and_free(desktop->animation_lock);
+        desktop->animation_lock = NULL;
+    } else if(
+        event->type == LoaderEventTypeApplicationLoadFailed ||
+        event->type == LoaderEventTypeApplicationStopped) {
         view_dispatcher_send_custom_event(desktop->view_dispatcher, DesktopGlobalAfterAppFinished);
     }
 }
+
 static void desktop_lock_icon_draw_callback(Canvas* canvas, void* context) {
     UNUSED(context);
     furi_assert(canvas);
@@ -115,8 +121,11 @@ static bool desktop_custom_event_callback(void* context, uint32_t event) {
 
     switch(event) {
     case DesktopGlobalBeforeAppStarted:
-        animation_manager_unload_and_stall_animation(desktop->animation_manager);
+        if(animation_manager_is_animation_loaded(desktop->animation_manager)) {
+            animation_manager_unload_and_stall_animation(desktop->animation_manager);
+        }
         desktop_auto_lock_inhibit(desktop);
+        api_lock_unlock(desktop->animation_lock);
         return true;
     case DesktopGlobalAfterAppFinished:
         animation_manager_load_and_continue_animation(desktop->animation_manager);
@@ -444,7 +453,7 @@ void desktop_run_keybind(Desktop* instance, InputType _type, InputKey _key) {
         view_dispatcher_send_custom_event(instance->view_dispatcher, DesktopMainEventOpenArchive);
     } else if(!strncmp(keybind, "Clock", MAX_KEYBIND_LENGTH)) {
         loader_start_detached_with_gui_error(
-            instance->loader, EXT_PATH("apps/Tools/nightstand.fap"), "");
+            instance->loader, EXT_PATH("apps/Outils/nightstand.fap"), "");
     } else if(!strncmp(keybind, "Device Info", MAX_KEYBIND_LENGTH)) {
         loader_start_detached_with_gui_error(instance->loader, "Alimentation", "about_battery");
     } else if(!strncmp(keybind, "Lock Menu", MAX_KEYBIND_LENGTH)) {
