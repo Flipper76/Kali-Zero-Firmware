@@ -4,6 +4,7 @@ enum VarItemListIndex {
     VarItemListIndexBroadcastInterval,
     VarItemListIndexTransmitPower,
     VarItemListIndexRegisterTag,
+    VarItemListIndexShowMac,
     VarItemListIndexAbout,
 };
 
@@ -26,6 +27,15 @@ void findmy_scene_config_transmit_power_changed(VariableItem* item) {
     variable_item_set_current_value_text(item, str);
     variable_item_set_current_value_index(item, app->state.transmit_power);
 }
+
+void findmy_scene_config_show_mac(VariableItem* item) {
+    FindMy* app = variable_item_get_context(item);
+    uint8_t index = variable_item_get_current_value_index(item);
+    findmy_toggle_show_mac(app, index);
+    variable_item_set_current_value_text(item, app->state.show_mac ? "Oui" : "Non");
+    variable_item_set_current_value_index(item, app->state.show_mac);
+} // I'll leave it toggled off by default, this can be seen as a debugging feature
+// While most may prefer it on, I'll leave it off for privacy reasons
 
 void findmy_scene_config_callback(void* context, uint32_t index) {
     furi_assert(context);
@@ -58,6 +68,10 @@ void findmy_scene_config_on_enter(void* context) {
     variable_item_set_current_value_text(item, power_str);
 
     item = variable_item_list_add(var_item_list, "Enregistrer Tag", 0, NULL, NULL);
+
+    item = variable_item_list_add(var_item_list, "Afficher MAC", 2, findmy_scene_config_show_mac, app);
+    variable_item_set_current_value_index(item, app->state.show_mac);
+    variable_item_set_current_value_text(item, app->state.show_mac ? "Oui" : "Non");
 
     variable_item_list_set_enter_callback(var_item_list, findmy_scene_config_callback, app);
 
