@@ -13,18 +13,18 @@
 
 #include "gui_extensions.h"
 
-#define BPM_STEP_SIZE_FINE 0.5d
+#define BPM_STEP_SIZE_FINE   0.5d
 #define BPM_STEP_SIZE_COARSE 10.0d
-#define BPM_BOUNDARY_LOW 10.0d
-#define BPM_BOUNDARY_HIGH 300.0d
-#define BEEP_DELAY_MS 50
+#define BPM_BOUNDARY_LOW     10.0d
+#define BPM_BOUNDARY_HIGH    300.0d
+#define BEEP_DELAY_MS        50
 
-#define wave_bitmap_left_width 4
+#define wave_bitmap_left_width  4
 #define wave_bitmap_left_height 14
 static uint8_t wave_bitmap_left_bits[] =
     {0x08, 0x0C, 0x06, 0x06, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x06, 0x06, 0x0C, 0x08};
 
-#define wave_bitmap_right_width 4
+#define wave_bitmap_right_width  4
 #define wave_bitmap_right_height 14
 static uint8_t wave_bitmap_right_bits[] =
     {0x01, 0x03, 0x06, 0x06, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x06, 0x06, 0x03, 0x01};
@@ -39,7 +39,11 @@ typedef struct {
     InputEvent input;
 } PluginEvent;
 
-enum OutputMode { Loud, Vibro, Silent };
+enum OutputMode {
+    Loud,
+    Vibro,
+    Silent
+};
 
 typedef struct {
     double bpm;
@@ -124,16 +128,21 @@ static void render_callback(Canvas* const canvas, void* ctx) {
     elements_button_top_right(canvas, "Hold");
 
     // draw progress bar
-    elements_progress_bar(
-        canvas, 8, 36, 112, (float)metronome_state->current_beat / metronome_state->beats_per_bar);
+    float current_progress = (float)metronome_state->current_beat / metronome_state->beats_per_bar;
+    if(!((current_progress >= 0.0f) && (current_progress <= 1.0f))) {
+        current_progress = 0.1f;
+    }
+
+    elements_progress_bar(canvas, 8, 36, 112, current_progress);
 
     // cleanup
     furi_string_free(tempStr);
     furi_mutex_release(metronome_state->mutex);
 }
 
-static void input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void input_callback(InputEvent* input_event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     PluginEvent event = {.type = EventTypeKey, .input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
@@ -301,7 +310,6 @@ int32_t metronome_app() {
         FuriStatus event_status = furi_message_queue_get(event_queue, &event, 100);
 
         furi_mutex_acquire(metronome_state->mutex, FuriWaitForever);
-
         if(event_status == FuriStatusOk) {
             if(event.type == EventTypeKey) {
                 if(event.input.type == InputTypeShort) {
@@ -380,7 +388,6 @@ int32_t metronome_app() {
                 }
             }
         }
-
         furi_mutex_release(metronome_state->mutex);
         view_port_update(view_port);
     }

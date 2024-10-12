@@ -229,7 +229,7 @@ void mbedtls_ctr_drbg_init(mbedtls_ctr_drbg_context *ctx);
  * The entropy nonce length is:
  * - \c 0 if the entropy length is at least 3/2 times the entropy length,
  *   which guarantees that the security strength is the maximum permitted
- *   by the key size and entropy length according to NIST SP 800-90A §10.2.1;
+ *   by the key size and entropy length according to NIST SP 800-90A ยง10.2.1;
  * - Half the entropy length otherwise.
  * You can override it by calling mbedtls_ctr_drbg_set_nonce_len().
  * With the default entropy length, the entropy nonce length is
@@ -237,10 +237,10 @@ void mbedtls_ctr_drbg_init(mbedtls_ctr_drbg_context *ctx);
  *
  * You can provide a nonce and personalization string in addition to the
  * entropy source, to make this instantiation as unique as possible.
- * See SP 800-90A §8.6.7 for more details about nonces.
+ * See SP 800-90A ยง8.6.7 for more details about nonces.
  *
  * The _seed_material_ value passed to the derivation function in
- * the CTR_DRBG Instantiate Process described in NIST SP 800-90A §10.2.1.3.2
+ * the CTR_DRBG Instantiate Process described in NIST SP 800-90A ยง10.2.1.3.2
  * is the concatenation of the following strings:
  * - A string obtained by calling \p f_entropy function for the entropy
  *   length.

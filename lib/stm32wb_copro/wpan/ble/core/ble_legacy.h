@@ -1,11 +1,11 @@
 /*****************************************************************************
  * @file    ble_legacy.h
- * @author  MDG
+ *
  * @brief   This file contains legacy definitions used for BLE.
  *****************************************************************************
  * @attention
  *
- * Copyright (c) 2018-2023 STMicroelectronics.
+ * Copyright (c) 2018-2024 STMicroelectronics.
  * All rights reserved.
  *
  * This software is licensed under terms that can be found in the LICENSE file
@@ -31,6 +31,8 @@
 #define BLE_STATUS_SEC_DB_FULL                     0x5DU
 #define BLE_STATUS_INSUFFICIENT_ENC_KEYSIZE        0x5FU
 #define BLE_STATUS_CHARAC_ALREADY_EXISTS           0x63U
+
+#define GAP_NAME_DISCOVERY_PROC                    0x04U
 
 /* Deprecated names for ACI/HCI commands and events
  */

@@ -56,7 +56,7 @@ void subbrute_scene_load_file_on_enter(void* context) {
                 }
                 // Ready to run!
                 FURI_LOG_I(TAG, "Ready to run");
-                res = true;
+                load_result = true;
             }
         }
 
@@ -91,5 +91,6 @@ void subbrute_scene_load_file_on_exit(void* context) {
 bool subbrute_scene_load_file_on_event(void* context, SceneManagerEvent event) {
     UNUSED(context);
     UNUSED(event);
+
     return false;
 }

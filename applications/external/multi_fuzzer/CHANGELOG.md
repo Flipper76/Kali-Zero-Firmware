@@ -1,3 +1,5 @@
+## v1.4
+- Fix worker being not in LFRFIDWorkerIdle before next key (limit TD to 0.1)
 ## v1.3
 - New systems in RFID Fuzzer:
     - IoProxXSF

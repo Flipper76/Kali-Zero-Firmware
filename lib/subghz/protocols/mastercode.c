@@ -57,10 +57,12 @@ const SubGhzProtocolDecoder subghz_protocol_mastercode_decoder = {
     .feed = subghz_protocol_decoder_mastercode_feed,
     .reset = subghz_protocol_decoder_mastercode_reset,
 
-    .get_hash_data = subghz_protocol_decoder_mastercode_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_mastercode_get_hash_data,
     .serialize = subghz_protocol_decoder_mastercode_serialize,
     .deserialize = subghz_protocol_decoder_mastercode_deserialize,
     .get_string = subghz_protocol_decoder_mastercode_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_mastercode_encoder = {
@@ -269,14 +271,14 @@ void subghz_protocol_decoder_mastercode_feed(void* context, bool level, uint32_t
             } else if(
                 DURATION_DIFF(duration, subghz_protocol_mastercode_const.te_short * 15) <
                 subghz_protocol_mastercode_const.te_delta * 15) {
-                if((DURATION_DIFF(
-                        instance->decoder.te_last, subghz_protocol_mastercode_const.te_short) <
-                    subghz_protocol_mastercode_const.te_delta)) {
+                if(DURATION_DIFF(
+                       instance->decoder.te_last, subghz_protocol_mastercode_const.te_short) <
+                   subghz_protocol_mastercode_const.te_delta) {
                     subghz_protocol_blocks_add_bit(&instance->decoder, 0);
-                } else if((DURATION_DIFF(
-                               instance->decoder.te_last,
-                               subghz_protocol_mastercode_const.te_long) <
-                           subghz_protocol_mastercode_const.te_delta * 8)) {
+                } else if(
+                    DURATION_DIFF(
+                        instance->decoder.te_last, subghz_protocol_mastercode_const.te_long) <
+                    subghz_protocol_mastercode_const.te_delta * 8) {
                     subghz_protocol_blocks_add_bit(&instance->decoder, 1);
                 } else {
                     instance->decoder.parser_step = MastercodeDecoderStepReset;

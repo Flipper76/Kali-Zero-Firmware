@@ -60,14 +60,13 @@ def get_details(event, args):
     data["commit_sha"] = data["commit_hash"][:8]
     data["branch_name"] = re.sub("refs/\w+/", "", ref)
     data["suffix"] = (
-        data["branch_name"].replace("/", "_")
-        + "-"
-        + current_time.strftime("%d%m%Y")
+        "kzfw-"
+        + data["branch_name"].removeprefix("kzfw-").replace("/", "-")
         + "-"
         + data["commit_sha"]
     )
     if ref.startswith("refs/tags/"):
-        data["suffix"] = data["branch_name"].replace("/", "_")
+        data["suffix"] = data["branch_name"].replace("/", "-")
     return data
 
 

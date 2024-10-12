@@ -12,6 +12,7 @@ struct STOP_EXTERNING_ME {};
 
 #include <furi_hal_cortex.h>
 #include <furi_hal_clock.h>
+#include <furi_hal_adc.h>
 #include <furi_hal_bus.h>
 #include <furi_hal_crypto.h>
 #include <furi_hal_debug.h>
@@ -49,20 +50,26 @@ extern "C" {
 void furi_hal_set_is_normal_boot(bool value);
 
 /** True if booting normally with all subsystems */
-bool furi_hal_is_normal_boot();
+bool furi_hal_is_normal_boot(void);
 
 /** Early FuriHal init, only essential subsystems */
-void furi_hal_init_early();
+void furi_hal_init_early(void);
 
 /** Early FuriHal deinit */
-void furi_hal_deinit_early();
+void furi_hal_deinit_early(void);
 
 /** Init FuriHal */
-void furi_hal_init();
+void furi_hal_init(void);
 
-/** Transfer execution to address
+/** Jump to the void*
  *
- * @param[in]  address  pointer to new executable
+ * Allow your code to transfer control to another firmware.
+ *
+ * @warning    This code doesn't reset system before jump. Call it only from
+ *             main thread, no kernel should be running. Ensure that no
+ *             peripheral blocks active and no interrupts are pending.
+ *
+ * @param      address  The System Vector address(start of your new firmware)
  */
 void furi_hal_switch(void* address);
 

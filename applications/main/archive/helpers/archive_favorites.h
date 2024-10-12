@@ -2,11 +2,10 @@
 
 #include <storage/storage.h>
 
-#define ARCHIVE_FAV_OLD_PATH EXT_PATH("favorites.txt")
-#define ARCHIVE_FAV_PATH CFG_PATH("favorites.txt")
-#define ARCHIVE_FAV_TEMP_PATH CFG_PATH("favorites.tmp")
+#define ARCHIVE_FAV_PATH      EXT_PATH("favorites.txt")
+#define ARCHIVE_FAV_TEMP_PATH EXT_PATH("favorites.tmp")
 
-uint16_t archive_favorites_count();
+uint16_t archive_favorites_count(void);
 bool archive_favorites_read(void* context);
 bool archive_favorites_delete(const char* format, ...) _ATTRIBUTE((__format__(__printf__, 1, 2)));
 bool archive_is_favorite(const char* format, ...) _ATTRIBUTE((__format__(__printf__, 1, 2)));

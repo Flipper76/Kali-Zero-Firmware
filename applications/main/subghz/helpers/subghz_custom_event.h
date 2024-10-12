@@ -8,6 +8,7 @@ typedef enum {
     //SubGhzCustomEvent
     SubGhzCustomEventSceneDeleteSuccess = 100,
     SubGhzCustomEventSceneDelete,
+    SubGhzCustomEventSceneDeleteBack,
     SubGhzCustomEventSceneDeleteRAW,
     SubGhzCustomEventSceneDeleteRAWBack,
 
@@ -15,7 +16,6 @@ typedef enum {
     SubGhzCustomEventSceneReceiverInfoTxStop,
     SubGhzCustomEventSceneReceiverInfoSave,
     SubGhzCustomEventSceneReceiverInfoSats,
-    SubGhzCustomEventSceneReceiverInfoBack,
     SubGhzCustomEventSceneSaveName,
     SubGhzCustomEventSceneSaveSuccess,
     SubGhzCustomEventSceneShowErrorBack,
@@ -91,6 +91,8 @@ typedef enum {
     SetTypeCenturion433,
     SetTypeSommer_FM_434,
     SetTypeSommer_FM_868,
+    SetTypeSommer_FM238_434,
+    SetTypeSommer_FM238_868,
     SetTypeStilmatic,
     SetTypeIronLogic,
     SetTypeDeaMio433,
@@ -101,6 +103,8 @@ typedef enum {
     SetTypeElmesElectronic,
     SetTypeNormstahl_433_92,
     SetTypeJCM_433_92,
+    SetTypeNovoferm_433_92,
+    SetTypeHormannEcoStar_433_92,
     SetTypeFAACRCXT_433_92,
     SetTypeFAACRCXT_868,
     SetTypeGeniusBravo433,
@@ -121,6 +125,9 @@ typedef enum {
     SetTypePricenton315,
     SetTypePricenton433,
     SetTypeBETT_433,
+    SetTypeGangQi_433,
+    SetTypeHollarm_433,
+    SetTypeMarantec24_868,
     SetTypeLinear_300_00,
     // SetTypeNeroSketch, //Deleted in OFW
     // SetTypeNeroRadio, //Deleted in OFW

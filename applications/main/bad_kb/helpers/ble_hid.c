@@ -9,12 +9,12 @@
 #include <usb_hid.h>
 #include <ble/ble.h>
 
-#define HID_INFO_BASE_USB_SPECIFICATION (0x0101)
-#define HID_INFO_COUNTRY_CODE (0x00)
-#define BLE_PROFILE_HID_INFO_FLAG_REMOTE_WAKE_MSK (0x01)
+#define HID_INFO_BASE_USB_SPECIFICATION                    (0x0101)
+#define HID_INFO_COUNTRY_CODE                              (0x00)
+#define BLE_PROFILE_HID_INFO_FLAG_REMOTE_WAKE_MSK          (0x01)
 #define BLE_PROFILE_HID_INFO_FLAG_NORMALLY_CONNECTABLE_MSK (0x02)
 
-#define BLE_PROFILE_HID_KB_MAX_KEYS (6)
+#define BLE_PROFILE_HID_KB_MAX_KEYS   (6)
 #define BLE_PROFILE_CONSUMER_MAX_KEYS (1)
 
 // Report ids cant be 0
@@ -373,6 +373,12 @@ bool ble_profile_hid_mouse_scroll(FuriHalBleProfileBase* profile, int8_t delta) 
     return state;
 }
 
+// AN5289: 4.7, in order to use flash controller interval must be at least 25ms + advertisement, which is 30 ms
+// Since we don't use flash controller anymore interval can be lowered to 7.5ms
+#define CONNECTION_INTERVAL_MIN (0x0006)
+// Up to 45 ms
+#define CONNECTION_INTERVAL_MAX (0x24)
+
 static GapConfig template_config = {
     .adv_service_uuid = HUMAN_INTERFACE_DEVICE_SERVICE_UUID,
     .appearance_char = GAP_APPEARANCE_KEYBOARD,
@@ -380,8 +386,8 @@ static GapConfig template_config = {
     .pairing_method = GapPairingPinCodeVerifyYesNo,
     .conn_param =
         {
-            .conn_int_min = 0x18, // 30 ms
-            .conn_int_max = 0x24, // 45 ms
+            .conn_int_min = CONNECTION_INTERVAL_MIN,
+            .conn_int_max = CONNECTION_INTERVAL_MAX,
             .slave_latency = 0,
             .supervisor_timeout = 0,
         },

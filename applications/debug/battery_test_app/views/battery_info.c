@@ -3,7 +3,7 @@
 #include <gui/elements.h>
 #include <assets_icons.h>
 
-#define LOW_CHARGE_THRESHOLD 10
+#define LOW_CHARGE_THRESHOLD         10
 #define HIGH_DRAIN_CURRENT_THRESHOLD 100
 
 struct BatteryInfo {
@@ -44,8 +44,8 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
 
     // Set text
     if(charge_current > 0) {
-        snprintf(emote, sizeof(emote), "%s", "Délicieux!");
-        snprintf(header, sizeof(header), "%s", "Chargement à);
+        snprintf(emote, sizeof(emote), "%s", "Yummy!");
+        snprintf(header, sizeof(header), "%s", "Charging at");
         snprintf(
             value,
             sizeof(value),
@@ -59,7 +59,7 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
             sizeof(emote),
             "%s",
             drain_current > HIGH_DRAIN_CURRENT_THRESHOLD ? "Oh no!" : "Om-nom-nom!");
-        snprintf(header, sizeof(header), "%s", "consommation est");
+        snprintf(header, sizeof(header), "%s", "Consumption is");
         snprintf(
             value,
             sizeof(value),
@@ -68,10 +68,10 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
             drain_current > HIGH_DRAIN_CURRENT_THRESHOLD ? "mA!" : "mA");
     } else if(drain_current != 0) {
         snprintf(header, 20, "...");
-    } else if(data->charging_voltage < 4.2) {
+    } else if(data->charging_voltage < 4.2f) {
         // Non-default battery charging limit, mention it
-        snprintf(emote, sizeof(emote), "Chargé!");
-        snprintf(header, sizeof(header), "Limité à);
+        snprintf(emote, sizeof(emote), "Charged!");
+        snprintf(header, sizeof(header), "Limited to");
         snprintf(
             value,
             sizeof(value),
@@ -79,7 +79,7 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
             (uint32_t)(data->charging_voltage),
             (uint32_t)(data->charging_voltage * 10) % 10);
     } else {
-        snprintf(header, sizeof(header), "Chargé!");
+        snprintf(header, sizeof(header), "Charged!");
     }
 
     canvas_draw_str_aligned(canvas, 92, y + 3, AlignCenter, AlignCenter, emote);
@@ -116,7 +116,7 @@ static void battery_info_draw_callback(Canvas* canvas, void* context) {
     draw_stat(canvas, 104, 42, &I_Health_16x16, health);
 }
 
-BatteryInfo* battery_info_alloc() {
+BatteryInfo* battery_info_alloc(void) {
     BatteryInfo* battery_info = malloc(sizeof(BatteryInfo));
     battery_info->view = view_alloc();
     view_set_context(battery_info->view, battery_info);

@@ -1,4 +1,5 @@
 #pragma once
+#define ASN_EMIT_DEBUG 0
 
 #include <stdlib.h> // malloc
 #include <stdint.h> // uint32_t
@@ -20,15 +21,13 @@
 #include <gui/modules/popup.h>
 #include <gui/modules/loading.h>
 #include <gui/modules/text_input.h>
+#include <gui/modules/text_box.h>
 #include <gui/modules/widget.h>
 
 #include <input/input.h>
 
 #include <lib/nfc/nfc.h>
-#include <lib/nfc/protocols/iso14443_3a/iso14443_3a.h>
-
 #include <nfc/nfc_poller.h>
-
 #include <nfc/nfc_device.h>
 #include <nfc/helpers/nfc_data_generator.h>
 
@@ -42,6 +41,11 @@
 #include <Payload.h>
 #include <FrameProtocol.h>
 
+#include "plugin/interface.h"
+#include <flipper_application/flipper_application.h>
+#include <flipper_application/plugins/plugin_manager.h>
+#include <loader/firmware_api/firmware_api.h>
+
 #include "protocol/picopass_poller.h"
 #include "scenes/seader_scene.h"
 
@@ -49,8 +53,11 @@
 #include "seader.h"
 #include "ccid.h"
 #include "uart.h"
+#include "lrc.h"
+#include "t_1.h"
 #include "seader_worker.h"
 #include "seader_credential.h"
+#include "apdu_log.h"
 
 #define WORKER_ALL_RX_EVENTS                                                      \
     (WorkerEvtStop | WorkerEvtRxDone | WorkerEvtCfgChange | WorkerEvtLineCfgSet | \
@@ -68,6 +75,7 @@ enum SeaderCustomEvent {
     SeaderCustomEventByteInputDone,
     SeaderCustomEventTextInputDone,
 
+    SeaderCustomEventPollerDetect,
     SeaderCustomEventPollerSuccess,
 };
 
@@ -84,6 +92,11 @@ typedef enum {
     WorkerEvtLineCfgSet = (1 << 6),
     WorkerEvtCtrlLineSet = (1 << 7),
 } WorkerEvtFlags;
+
+typedef struct {
+    uint16_t total_lines;
+    uint16_t current_line;
+} SeaderAPDURunnerContext;
 
 struct Seader {
     bool revert_power;
@@ -105,6 +118,7 @@ struct Seader {
     Popup* popup;
     Loading* loading;
     TextInput* text_input;
+    TextBox* text_box;
     Widget* widget;
 
     Nfc* nfc;
@@ -112,10 +126,17 @@ struct Seader {
     PicopassPoller* picopass_poller;
 
     NfcDevice* nfc_device;
+
+    PluginManager* plugin_manager;
+    PluginWiegand* plugin_wiegand;
+
+    APDULog* apdu_log;
+    SeaderAPDURunnerContext apdu_runner_ctx;
 };
 
 struct SeaderPollerContainer {
     Iso14443_4aPoller* iso14443_4a_poller;
+    MfClassicPoller* mfc_poller;
     PicopassPoller* picopass_poller;
 };
 
@@ -124,6 +145,7 @@ typedef enum {
     SeaderViewPopup,
     SeaderViewLoading,
     SeaderViewTextInput,
+    SeaderViewTextBox,
     SeaderViewWidget,
     SeaderViewUart,
 } SeaderView;

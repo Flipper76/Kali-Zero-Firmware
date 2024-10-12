@@ -17,7 +17,7 @@
 #define TAG "SubGhzProtocolNiceFlorS"
 
 #define NICE_ONE_COUNT_BIT 72
-#define NICE_ONE_NAME "Nice One"
+#define NICE_ONE_NAME      "Nice One"
 
 static const SubGhzBlockConst subghz_protocol_nice_flor_s_const = {
     .te_short = 500,
@@ -60,10 +60,12 @@ const SubGhzProtocolDecoder subghz_protocol_nice_flor_s_decoder = {
     .feed = subghz_protocol_decoder_nice_flor_s_feed,
     .reset = subghz_protocol_decoder_nice_flor_s_reset,
 
-    .get_hash_data = subghz_protocol_decoder_nice_flor_s_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_nice_flor_s_get_hash_data,
     .serialize = subghz_protocol_decoder_nice_flor_s_serialize,
     .deserialize = subghz_protocol_decoder_nice_flor_s_deserialize,
     .get_string = subghz_protocol_decoder_nice_flor_s_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_nice_flor_s_encoder = {
@@ -124,7 +126,7 @@ static void subghz_protocol_nice_one_get_data(uint8_t* p, uint8_t num_parcel, ui
  * Basic set | 0x1 | 0x2 | 0x4 | 0x8 |
  * @return Button code
  */
-static uint8_t subghz_protocol_nice_flor_s_get_btn_code();
+static uint8_t subghz_protocol_nice_flor_s_get_btn_code(void);
 
 /**
  * Generating an upload from data.
@@ -753,7 +755,7 @@ SubGhzProtocolStatus
     return ret;
 }
 
-static uint8_t subghz_protocol_nice_flor_s_get_btn_code() {
+static uint8_t subghz_protocol_nice_flor_s_get_btn_code(void) {
     uint8_t custom_btn_id = subghz_custom_btn_get();
     uint8_t original_btn_code = subghz_custom_btn_get_original();
     uint8_t btn = original_btn_code;

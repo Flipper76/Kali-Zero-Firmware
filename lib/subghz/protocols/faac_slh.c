@@ -24,7 +24,7 @@ static uint32_t temp_counter_backup = 0;
 static bool faac_prog_mode = false;
 static bool allow_zero_seed = false;
 
-void faac_slh_reset_prog_mode() {
+void faac_slh_reset_prog_mode(void) {
     temp_fix_backup = 0;
     temp_counter_backup = 0;
     faac_prog_mode = false;
@@ -65,10 +65,12 @@ const SubGhzProtocolDecoder subghz_protocol_faac_slh_decoder = {
     .feed = subghz_protocol_decoder_faac_slh_feed,
     .reset = subghz_protocol_decoder_faac_slh_reset,
 
-    .get_hash_data = subghz_protocol_decoder_faac_slh_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_faac_slh_get_hash_data,
     .serialize = subghz_protocol_decoder_faac_slh_serialize,
     .deserialize = subghz_protocol_decoder_faac_slh_deserialize,
     .get_string = subghz_protocol_decoder_faac_slh_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_faac_slh_encoder = {

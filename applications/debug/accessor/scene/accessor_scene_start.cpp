@@ -1,14 +1,13 @@
 #include "../accessor_app.h"
 #include "../accessor_view_manager.h"
 #include "../accessor_event.h"
-#include "callback_connector.h"
 #include "accessor_scene_start.h"
 
 void AccessorSceneStart::on_enter(AccessorApp* app) {
     AccessorAppViewManager* view_manager = app->get_view_manager();
     Popup* popup = view_manager->get_popup();
 
-    popup_set_header(popup, "App Accesseur", 64, 16, AlignCenter, AlignBottom);
+    popup_set_header(popup, "Accessor App", 64, 16, AlignCenter, AlignBottom);
     app->set_text_store("[??????]");
     popup_set_text(popup, app->get_text_store(), 64, 22, AlignCenter, AlignTop);
 

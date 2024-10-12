@@ -148,16 +148,16 @@ static void parse_ndef_vcard(FuriString* str, const uint8_t* payload, uint32_t p
 
 static void parse_ndef_wifi(FuriString* str, const uint8_t* payload, uint32_t payload_len) {
 // https://android.googlesource.com/platform/packages/apps/Nfc/+/refs/heads/main/src/com/android/nfc/NfcWifiProtectedSetup.java
-#define CREDENTIAL_FIELD_ID (0x100E)
-#define SSID_FIELD_ID (0x1045)
-#define NETWORK_KEY_FIELD_ID (0x1027)
-#define AUTH_TYPE_FIELD_ID (0x1003)
-#define AUTH_TYPE_EXPECTED_SIZE (2)
-#define AUTH_TYPE_OPEN (0x0001)
-#define AUTH_TYPE_WPA_PSK (0x0002)
-#define AUTH_TYPE_WPA_EAP (0x0008)
-#define AUTH_TYPE_WPA2_EAP (0x0010)
-#define AUTH_TYPE_WPA2_PSK (0x0020)
+#define CREDENTIAL_FIELD_ID        (0x100E)
+#define SSID_FIELD_ID              (0x1045)
+#define NETWORK_KEY_FIELD_ID       (0x1027)
+#define AUTH_TYPE_FIELD_ID         (0x1003)
+#define AUTH_TYPE_EXPECTED_SIZE    (2)
+#define AUTH_TYPE_OPEN             (0x0001)
+#define AUTH_TYPE_WPA_PSK          (0x0002)
+#define AUTH_TYPE_WPA_EAP          (0x0008)
+#define AUTH_TYPE_WPA2_EAP         (0x0010)
+#define AUTH_TYPE_WPA2_PSK         (0x0020)
 #define AUTH_TYPE_WPA_AND_WPA2_PSK (0x0022)
 #define MAX_NETWORK_KEY_SIZE_BYTES (64)
 
@@ -366,7 +366,9 @@ static bool ndef_parse(const NfcDevice* device, FuriString* parsed_data) {
         // Check card type can contain NDEF
         if(data->type != MfUltralightTypeNTAG203 && data->type != MfUltralightTypeNTAG213 &&
            data->type != MfUltralightTypeNTAG215 && data->type != MfUltralightTypeNTAG216 &&
-           data->type != MfUltralightTypeNTAGI2C1K && data->type != MfUltralightTypeNTAGI2C2K) {
+           data->type != MfUltralightTypeNTAGI2C1K && data->type != MfUltralightTypeNTAGI2C2K &&
+           data->type != MfUltralightTypeNTAGI2CPlus1K &&
+           data->type != MfUltralightTypeNTAGI2CPlus2K) {
             break;
         }
 
@@ -477,6 +479,6 @@ static const FlipperAppPluginDescriptor ndef_plugin_descriptor = {
 };
 
 /* Plugin entry point - must return a pointer to const descriptor  */
-const FlipperAppPluginDescriptor* ndef_plugin_ep() {
+const FlipperAppPluginDescriptor* ndef_plugin_ep(void) {
     return &ndef_plugin_descriptor;
 }

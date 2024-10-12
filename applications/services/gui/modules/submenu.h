@@ -21,7 +21,7 @@ typedef void (*SubmenuItemCallback)(void* context, uint32_t index);
  *
  * @return     Submenu instance
  */
-Submenu* submenu_alloc();
+Submenu* submenu_alloc(void);
 
 /** Deinitialize and free submenu
  *
@@ -73,28 +73,44 @@ void submenu_add_lockable_item(
     bool locked,
     const char* locked_message);
 
+/** Change label of an existing item
+ * 
+ * @param      submenu  Submenu instance
+ * @param      index    The index of the item
+ * @param      label    The new label
+ */
+void submenu_change_item_label(Submenu* submenu, uint32_t index, const char* label);
+
 /** Remove all items from submenu
  *
  * @param      submenu  Submenu instance
  */
 void submenu_reset(Submenu* submenu);
 
-/** Set submenu item selector
+/** Get submenu selected item index
  *
  * @param      submenu  Submenu instance
- * @param      index    The index
+ *
+ * @return     Index of the selected item
+ */
+uint32_t submenu_get_selected_item(Submenu* submenu);
+
+/** Set submenu selected item by index
+ *
+ * @param      submenu  Submenu instance
+ * @param      index    The index of the selected item
  */
 void submenu_set_selected_item(Submenu* submenu, uint32_t index);
 
 /** Set optional header for submenu
- * Must be called before adding items OR after adding items but also call set_selected_item() after set_header()
+ * Must be called before adding items OR after adding items and before set_selected_item()
  *
  * @param      submenu  Submenu instance
  * @param      header   header to set
  */
 void submenu_set_header(Submenu* submenu, const char* header);
 
-/** Set Orientation
+/** Set submenu orientation
  *
  * @param      submenu  Submenu instance
  * @param      orientation  either vertical or horizontal

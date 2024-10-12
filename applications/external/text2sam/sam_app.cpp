@@ -14,7 +14,8 @@
 #include "stm32_sam.h"
 
 #define TAG "SAM"
-#define SAM_SAVE_PATH APP_DATA_PATH("message.txt")
+
+#define SAM_SAVE_PATH    APP_DATA_PATH("message.txt")
 #define TEXT_BUFFER_SIZE 256
 STM32SAM voice;
 
@@ -121,8 +122,6 @@ extern "C" int32_t sam_app(void* p) {
     text_input_set_header_text(app_state->text_input, "Input");
 
     Gui* gui = (Gui*)furi_record_open(RECORD_GUI);
-
-    view_dispatcher_enable_queue(app_state->view_dispatcher);
 
     FURI_LOG_D(TAG, "Adding text input view to dispatcher");
     view_dispatcher_add_view(

@@ -154,13 +154,13 @@ static void draw_callback(Canvas* canvas, void* ctx) {
         canvas_set_font(canvas, FontPrimary);
 
         if(wincheck() == 0) {
-            canvas_draw_str(canvas, 30, 35, "Dessiner! O_o");
+            canvas_draw_str(canvas, 30, 35, "Draw! O_o");
         }
         if(wincheck() == 1) {
-            canvas_draw_str(canvas, 30, 35, "Le joueur X gagne!");
+            canvas_draw_str(canvas, 30, 35, "Player X win!");
         }
         if(wincheck() == 2) {
-            canvas_draw_str(canvas, 30, 35, "Le joueur O gagne!");
+            canvas_draw_str(canvas, 30, 35, "Player O win!");
         }
 
         furi_mutex_release(fourinrow_state->mutex);
@@ -190,10 +190,10 @@ static void draw_callback(Canvas* canvas, void* ctx) {
     canvas_draw_str(canvas, cursorx * 10 + 8, cursory * 10 + 10, "[ ]");
 
     if(player == 1) {
-        canvas_draw_str(canvas, 80, 10, "Tour: X");
+        canvas_draw_str(canvas, 80, 10, "Turn: X");
     }
     if(player == 2) {
-        canvas_draw_str(canvas, 80, 10, "Tour: O");
+        canvas_draw_str(canvas, 80, 10, "Turn: O");
     }
     char scX[1];
     intToStr(scoreX, scX);
@@ -229,7 +229,7 @@ int32_t four_in_row_app(void* p) {
 
     fourinrow_state->mutex = furi_mutex_alloc(FuriMutexTypeNormal); // Alloc Mutex
     if(!fourinrow_state->mutex) {
-        FURI_LOG_E("4inRow", "impossible de créer un mutex\r\n");
+        FURI_LOG_E("4inRow", "cannot create mutex\r\n");
         furi_message_queue_free(event_queue);
         free(fourinrow_state);
         return 255;

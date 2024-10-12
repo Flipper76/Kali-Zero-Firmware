@@ -8,6 +8,11 @@
 
 import os
 from fbt.util import open_browser_action
+import locale
+import sys
+
+# Force l'encodage UTF-8 pour tout le script
+locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
 
 DefaultEnvironment(tools=[])
 
@@ -42,10 +47,11 @@ distenv = coreenv.Clone(
         "openocd",
         "blackmagic",
         "jflash",
+        "doxygen",
+        "textfile",
     ],
     ENV=os.environ,
     UPDATE_BUNDLE_DIR="dist/${DIST_DIR}/f${TARGET_HW}-update-${DIST_SUFFIX}",
-    VSCODE_LANG_SERVER=ARGUMENTS.get("LANG_SERVER", "cpptools"),
 )
 
 firmware_env = distenv.AddFwProject(
@@ -229,16 +235,19 @@ firmware_debug = distenv.PhonyTarget(
     source=firmware_env["FW_ELF"],
     GDBOPTS="${GDBOPTS_BASE}",
     GDBREMOTE="${OPENOCD_GDB_PIPE}",
+    FBT_FAP_DEBUG_ELF_ROOT=firmware_env["FBT_FAP_DEBUG_ELF_ROOT"],
 )
 distenv.Depends(firmware_debug, firmware_flash)
 
-distenv.PhonyTarget(
+firmware_blackmagic = distenv.PhonyTarget(
     "blackmagic",
     "${GDBPYCOM}",
     source=firmware_env["FW_ELF"],
     GDBOPTS="${GDBOPTS_BASE} ${GDBOPTS_BLACKMAGIC}",
     GDBREMOTE="${BLACKMAGIC_ADDR}",
+    FBT_FAP_DEBUG_ELF_ROOT=firmware_env["FBT_FAP_DEBUG_ELF_ROOT"],
 )
+distenv.Depends(firmware_blackmagic, firmware_flash)
 
 # Debug alien elf
 debug_other_opts = [
@@ -319,7 +328,13 @@ firmware_env.Append(
         "SConstruct",
         "firmware.scons",
         "fbt_options.py",
-    ]
+    ],
+    IMG_LINT_SOURCES=[
+        # Image assets
+        "applications",
+        "!applications/external",
+        "assets",
+    ],
 )
 
 
@@ -355,6 +370,39 @@ distenv.PhonyTarget(
     PY_BLACK_ARGS=black_base_args,
     PY_LINT_SOURCES=firmware_env["PY_LINT_SOURCES"],
 )
+
+# Image assets linting
+distenv.PhonyTarget(
+    "lint_img",
+    [
+        [
+            "${PYTHON3}",
+            "${FBT_SCRIPT_DIR}/imglint.py",
+            "check",
+            "${IMG_LINT_SOURCES}",
+            "${ARGS}",
+        ]
+    ],
+    IMG_LINT_SOURCES=firmware_env["IMG_LINT_SOURCES"],
+)
+
+distenv.PhonyTarget(
+    "format_img",
+    [
+        [
+            "${PYTHON3}",
+            "${FBT_SCRIPT_DIR}/imglint.py",
+            "format",
+            "${IMG_LINT_SOURCES}",
+            "${ARGS}",
+        ]
+    ],
+    IMG_LINT_SOURCES=firmware_env["IMG_LINT_SOURCES"],
+)
+
+distenv.Alias("lint_all", ["lint", "lint_py", "lint_img"])
+distenv.Alias("format_all", ["format", "format_py", "format_img"])
+
 
 # Start Flipper CLI via PySerial's miniterm
 distenv.PhonyTarget(
@@ -400,14 +448,23 @@ distenv.PhonyTarget(
 )
 
 # Prepare vscode environment
-VSCODE_LANG_SERVER = cmd_environment["LANG_SERVER"]
 vscode_dist = distenv.Install(
     "#.vscode",
     [
-        distenv.Glob("#.vscode/example/*.json"),
-        distenv.Glob(f"#.vscode/example/{VSCODE_LANG_SERVER}/*.json"),
+        distenv.Glob("#.vscode/example/*.json", exclude="*.tmpl"),
+        distenv.Glob("#.vscode/example/${LANG_SERVER}/*.json"),
     ],
 )
+for template_file in distenv.Glob("#.vscode/example/*.tmpl"):
+    vscode_dist.append(
+        distenv.Substfile(
+            distenv.Dir("#.vscode").File(template_file.name.replace(".tmpl", "")),
+            template_file,
+            SUBST_DICT={
+                "@FBT_PLATFORM_EXECUTABLE_EXT@": ".exe" if os.name == "nt" else ""
+            },
+        )
+    )
 distenv.Precious(vscode_dist)
 distenv.NoClean(vscode_dist)
 distenv.Alias("vscode_dist", (vscode_dist, firmware_env["FW_CDB"]))
@@ -417,3 +474,18 @@ distenv.PhonyTarget(
     "env",
     "@echo $( ${FBT_SCRIPT_DIR.abspath}/toolchain/fbtenv.sh $)",
 )
+
+doxy_build = distenv.DoxyBuild(
+    "documentation/doxygen/build/html/index.html",
+    "documentation/doxygen/Doxyfile-awesome.cfg",
+    doxy_env_variables={
+        "DOXY_SRC_ROOT": Dir(".").abspath,
+        "DOXY_BUILD_DIR": Dir("documentation/doxygen/build").abspath,
+        "DOXY_CONFIG_DIR": "documentation/doxygen",
+    },
+)
+distenv.Alias("doxygen", doxy_build)
+distenv.AlwaysBuild(doxy_build)
+
+# Open generated documentation in browser
+distenv.PhonyTarget("doxy", open_browser_action, source=doxy_build)

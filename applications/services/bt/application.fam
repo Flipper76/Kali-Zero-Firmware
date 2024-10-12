@@ -14,7 +14,16 @@ App(
     ],
     stack_size=1 * 1024,
     order=1000,
-    sdk_headers=["bt_service/bt.h", "bt_settings.h"],
+    sdk_headers=["bt_service/bt.h", "bt_service/bt_keys_storage.h"],
+)
+
+App(
+    appid="bt_cli",
+    targets=["f7"],
+    apptype=FlipperAppType.PLUGIN,
+    entry_point="bt_cli_plugin_ep",
+    requires=["cli"],
+    sources=["bt_cli.c"],
 )
 
 App(

@@ -14,14 +14,8 @@ const uint32_t radio_device_value[RADIO_DEVICE_COUNT] = {
     SubGhzRadioDeviceTypeExternalCC1101,
 };
 
-#define TIMESTAMP_NAMES_COUNT 2
-const char* const timestamp_names_text[TIMESTAMP_NAMES_COUNT] = {
-    "OFF",
-    "ON",
-};
-
-#define EXT_MOD_POWER_AMP_COUNT 2
-const char* const ext_mod_power_amp_text[EXT_MOD_POWER_AMP_COUNT] = {
+#define ON_OFF_COUNT 2
+const char* const on_off_text[ON_OFF_COUNT] = {
     "OFF",
     "ON",
 };
@@ -104,27 +98,6 @@ static void subghz_scene_receiver_config_set_debug_counter(VariableItem* item) {
     furi_hal_subghz_set_rolling_counter_mult(debug_counter_val[index]);
 }
 
-static void subghz_scene_reciever_config_set_ext_mod_power_amp_text(VariableItem* item) {
-    SubGhz* subghz = variable_item_get_context(item);
-    uint8_t index = variable_item_get_current_value_index(item);
-
-    variable_item_set_current_value_text(item, ext_mod_power_amp_text[index]);
-
-    subghz->last_settings->external_module_power_amp = index == 1;
-
-    // Set globally in furi hal
-    furi_hal_subghz_set_ext_power_amp(subghz->last_settings->external_module_power_amp);
-
-    subghz_last_settings_save(subghz->last_settings);
-
-    // reinit external device
-    const SubGhzRadioDeviceType current = subghz_txrx_radio_device_get(subghz->txrx);
-    if(current != SubGhzRadioDeviceTypeInternal) {
-        subghz_txrx_radio_device_set(subghz->txrx, SubGhzRadioDeviceTypeInternal);
-        subghz_txrx_radio_device_set(subghz->txrx, current);
-    }
-}
-
 static void subghz_scene_receiver_config_set_gps(VariableItem* item) {
     SubGhz* subghz = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
@@ -153,12 +126,12 @@ static void subghz_scene_receiver_config_set_gps(VariableItem* item) {
     }
     subghz_last_settings_save(subghz->last_settings);
 
+    if(subghz->gps) {
+        subghz_gps_plugin_deinit(subghz->gps);
+        subghz->gps = NULL;
+    }
     if(subghz->last_settings->gps_baudrate != 0) {
-        subghz_gps_stop(subghz->gps);
-        subghz_gps_set_baudrate(subghz->gps, subghz->last_settings->gps_baudrate);
-        subghz_gps_start(subghz->gps);
-    } else {
-        subghz_gps_stop(subghz->gps);
+        subghz->gps = subghz_gps_plugin_init(subghz->last_settings->gps_baudrate);
     }
 }
 
@@ -166,7 +139,7 @@ static void subghz_scene_receiver_config_set_protocol_file_names(VariableItem* i
     SubGhz* subghz = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
 
-    variable_item_set_current_value_text(item, timestamp_names_text[index]);
+    variable_item_set_current_value_text(item, on_off_text[index]);
 
     subghz->last_settings->protocol_file_names = (index == 1);
     subghz_last_settings_save(subghz->last_settings);
@@ -196,17 +169,7 @@ void subghz_scene_radio_settings_on_enter(void* context) {
 
     item = variable_item_list_add(
         variable_item_list,
-        "Ampli de puissance ext.",
-        EXT_MOD_POWER_AMP_COUNT,
-        subghz_scene_reciever_config_set_ext_mod_power_amp_text,
-        subghz);
-    value_index = subghz->last_settings->external_module_power_amp ? 1 : 0;
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, ext_mod_power_amp_text[value_index]);
-
-    item = variable_item_list_add(
-        variable_item_list,
-        "Vitesse transm. GPS",
+        "GPS Baudrate",
         GPS_COUNT,
         subghz_scene_receiver_config_set_gps,
         subghz);
@@ -220,12 +183,12 @@ void subghz_scene_radio_settings_on_enter(void* context) {
     item = variable_item_list_add(
         variable_item_list,
         "Noms du protocole",
-        TIMESTAMP_NAMES_COUNT,
+        ON_OFF_COUNT,
         subghz_scene_receiver_config_set_protocol_file_names,
         subghz);
     value_index = subghz->last_settings->protocol_file_names;
     variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, timestamp_names_text[value_index]);
+    variable_item_set_current_value_text(item, on_off_text[value_index]);
 
     item = variable_item_list_add(
         variable_item_list,
@@ -252,7 +215,12 @@ void subghz_scene_radio_settings_on_enter(void* context) {
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, debug_pin_text[value_index]);
     variable_item_set_locked(
-        item, !furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug), "Activer\nDebug!");
+        item,
+        !furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug),
+        "Enable\n"
+        "Settings >\n"
+        "System >\n"
+        "Debug");
 
     view_dispatcher_switch_to_view(subghz->view_dispatcher, SubGhzViewIdVariableItemList);
 }

@@ -44,40 +44,40 @@ void avr_isp_chip_detect_view_draw(Canvas* canvas, AvrIspChipDetectViewModel* mo
 
     switch(model->state) {
     case AvrIspChipDetectViewStateDetected:
-        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Puce AVR détectée!");
+        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "AVR chip detected!");
         canvas_draw_icon(canvas, 29, 14, &I_chip_long_70x22);
         canvas_set_font(canvas, FontSecondary);
         snprintf(str_buf, sizeof(str_buf), "%ld Kb", model->flash_size / 1024);
         canvas_draw_str_aligned(canvas, 64, 25, AlignCenter, AlignCenter, str_buf);
         canvas_draw_str_aligned(canvas, 64, 45, AlignCenter, AlignCenter, model->name_chip);
-        elements_button_right(canvas, "Suivant");
+        elements_button_right(canvas, "Next");
         break;
     case AvrIspChipDetectViewStateErrorOccured:
         canvas_draw_str_aligned(
-            canvas, 64, 5, AlignCenter, AlignCenter, "Erreur, réessayez!");
+            canvas, 64, 5, AlignCenter, AlignCenter, "Error occured, try again!");
         canvas_draw_icon(canvas, 29, 14, &I_chip_error_70x22);
         canvas_set_font(canvas, FontSecondary);
         canvas_draw_str_aligned(
-            canvas, 64, 45, AlignCenter, AlignCenter, "Vérifie câblage et retente");
+            canvas, 64, 45, AlignCenter, AlignCenter, "Check the wiring and retry");
         break;
     case AvrIspChipDetectViewStateErrorVerification:
         canvas_draw_str_aligned(
-            canvas, 64, 5, AlignCenter, AlignCenter, "Échec vérification de données");
+            canvas, 64, 5, AlignCenter, AlignCenter, "Data verification failed");
         canvas_draw_icon(canvas, 29, 14, &I_chip_error_70x22);
         canvas_set_font(canvas, FontSecondary);
         canvas_draw_str_aligned(
-            canvas, 64, 45, AlignCenter, AlignCenter, "Retente le processus");
+            canvas, 64, 45, AlignCenter, AlignCenter, "Try to restart the process");
         break;
 
     default:
         //AvrIspChipDetectViewStateNoDetect
-        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Puce AVR introuvable!");
+        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "AVR chip not found!");
         canvas_draw_icon(canvas, 29, 12, &I_chif_not_found_83x37);
 
         break;
     }
     canvas_set_font(canvas, FontSecondary);
-    elements_button_left(canvas, "Retenter");
+    elements_button_left(canvas, "Retry");
 }
 
 bool avr_isp_chip_detect_view_input(InputEvent* event, void* context) {

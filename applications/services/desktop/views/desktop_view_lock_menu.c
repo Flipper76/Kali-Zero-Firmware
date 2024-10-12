@@ -1,7 +1,7 @@
 #include <furi.h>
 #include <gui/elements.h>
 #include <assets_icons.h>
-#include <xtreme/xtreme.h>
+#include <kalizero/kalizero.h>
 #include <furi_hal_rtc.h>
 
 #include "../desktop_i.h"
@@ -20,7 +20,7 @@ typedef enum {
     DesktopLockMenuIndexDarkMode,
     DesktopLockMenuIndexLock,
     DesktopLockMenuIndexBluetooth,
-    DesktopLockMenuIndexXtreme,
+    DesktopLockMenuIndexKaliZero,
     DesktopLockMenuIndexBrightness,
     DesktopLockMenuIndexVolume,
 
@@ -43,7 +43,7 @@ void desktop_lock_menu_set_pin_state(DesktopLockMenuView* lock_menu, bool pin_is
         DesktopLockMenuViewModel * model,
         {
             model->pin_is_set = pin_is_set;
-            model->pin_lock = pin_is_set;
+            model->lock_popup_index = pin_is_set; // Select with PIN by default if set
         },
         true);
 }
@@ -110,7 +110,7 @@ void desktop_lock_menu_draw_callback(Canvas* canvas, void* model) {
             icon = &I_CC_Bluetooth_16x16;
             enabled = m->lock_menu->bt->bt_settings.enabled;
             break;
-        case DesktopLockMenuIndexXtreme:
+        case DesktopLockMenuIndexKaliZero:
             icon = &I_CC_KaliZero_16x16;
             break;
         case DesktopLockMenuIndexBrightness:
@@ -166,13 +166,13 @@ void desktop_lock_menu_draw_callback(Canvas* canvas, void* model) {
         }
     }
 
-    if(m->show_lock_menu) {
+    if(m->show_lock_popup) {
         canvas_set_font(canvas, FontSecondary);
         elements_bold_rounded_frame(canvas, 24, 4, 80, 56);
-        canvas_draw_str_aligned(canvas, 64, 16, AlignCenter, AlignCenter, "Verrou. clavier");
-        canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignCenter, "Verrou. code PIN");
-        canvas_draw_str_aligned(canvas, 64, 48, AlignCenter, AlignCenter, "Verrou. PIN+OFF");
-        elements_frame(canvas, 28, 8 + m->pin_lock * 16, 72, 15);
+        canvas_draw_str_aligned(canvas, 64, 16, AlignCenter, AlignCenter, "Keypad Lock");
+        canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignCenter, "PIN Code Lock");
+        canvas_draw_str_aligned(canvas, 64, 48, AlignCenter, AlignCenter, "PIN Lock + OFF");
+        elements_frame(canvas, 28, 8 + m->lock_popup_index * 16, 72, 15);
     }
 }
 
@@ -187,8 +187,8 @@ bool desktop_lock_menu_input_callback(InputEvent* event, void* context) {
 
     DesktopLockMenuView* lock_menu = context;
     uint8_t idx = 0;
-    int pin_lock = 0;
-    bool show_lock_menu = false;
+    bool show_lock_popup = false;
+    DesktopLockMenuPopupIndex lock_popup_index = 0;
     bool stealth_mode = false;
     bool consumed = true;
 
@@ -196,26 +196,28 @@ bool desktop_lock_menu_input_callback(InputEvent* event, void* context) {
         lock_menu->view,
         DesktopLockMenuViewModel * model,
         {
-            show_lock_menu = model->show_lock_menu;
+            show_lock_popup = model->show_lock_popup;
             stealth_mode = model->stealth_mode;
             if((event->type == InputTypeShort) || (event->type == InputTypeRepeat)) {
-                if(model->show_lock_menu) {
+                if(model->show_lock_popup) {
                     if(event->key == InputKeyUp) {
-                        model->pin_lock--;
-                        if(model->pin_lock < 0) {
-                            model->pin_lock = 2;
+                        if(model->lock_popup_index == 0) {
+                            model->lock_popup_index = DesktopLockMenuPopupIndexMAX - 1;
+                        } else {
+                            model->lock_popup_index--;
                         }
                     } else if(event->key == InputKeyDown) {
-                        model->pin_lock++;
-                        if(model->pin_lock > 2) {
-                            model->pin_lock = 0;
+                        if(model->lock_popup_index == DesktopLockMenuPopupIndexMAX - 1) {
+                            model->lock_popup_index = 0;
+                        } else {
+                            model->lock_popup_index++;
                         }
                     } else if(event->key == InputKeyBack || event->key == InputKeyOk) {
-                        model->show_lock_menu = false;
+                        model->show_lock_popup = false;
                     }
                 } else {
                     if(model->idx == DesktopLockMenuIndexLock && event->key == InputKeyOk) {
-                        model->show_lock_menu = true;
+                        model->show_lock_popup = true;
                     } else if(model->idx < 6) {
                         if(event->key == InputKeyUp || event->key == InputKeyDown) {
                             if(model->idx % 2) {
@@ -250,21 +252,21 @@ bool desktop_lock_menu_input_callback(InputEvent* event, void* context) {
                 }
             }
             idx = model->idx;
-            pin_lock = model->pin_lock;
+            lock_popup_index = model->lock_popup_index;
         },
         true);
 
     DesktopEvent desktop_event = 0;
-    if(show_lock_menu) {
+    if(show_lock_popup) {
         if(event->key == InputKeyOk && event->type == InputTypeShort) {
-            switch(pin_lock) {
-            case 0:
+            switch(lock_popup_index) {
+            case DesktopLockMenuPopupIndexKeypad:
                 desktop_event = DesktopLockMenuEventLockKeypad;
                 break;
-            case 1:
+            case DesktopLockMenuPopupIndexPinCode:
                 desktop_event = DesktopLockMenuEventLockPinCode;
                 break;
-            case 2:
+            case DesktopLockMenuPopupIndexPinOff:
                 desktop_event = DesktopLockMenuEventLockPinOff;
                 break;
             default:
@@ -288,7 +290,7 @@ bool desktop_lock_menu_input_callback(InputEvent* event, void* context) {
                 break;
             case DesktopLockMenuIndexDarkMode:
                 kalizero_settings.dark_mode = !kalizero_settings.dark_mode;
-                lock_menu->save_xtreme = true;
+                lock_menu->save_kalizero = true;
                 break;
             case DesktopLockMenuIndexBluetooth:
                 lock_menu->bt->bt_settings.enabled = !lock_menu->bt->bt_settings.enabled;
@@ -299,8 +301,8 @@ bool desktop_lock_menu_input_callback(InputEvent* event, void* context) {
                 }
                 lock_menu->save_bt = true;
                 break;
-            case DesktopLockMenuIndexXtreme:
-                desktop_event = DesktopLockMenuEventXtreme;
+            case DesktopLockMenuIndexKaliZero:
+                desktop_event = DesktopLockMenuEventKaliZero;
                 break;
             case DesktopLockMenuIndexVolume:
                 desktop_event = stealth_mode ? DesktopLockMenuEventStealthModeOff :
@@ -346,7 +348,7 @@ bool desktop_lock_menu_input_callback(InputEvent* event, void* context) {
     return consumed;
 }
 
-DesktopLockMenuView* desktop_lock_menu_alloc() {
+DesktopLockMenuView* desktop_lock_menu_alloc(void) {
     DesktopLockMenuView* lock_menu = malloc(sizeof(DesktopLockMenuView));
     lock_menu->bt = furi_record_open(RECORD_BT);
     lock_menu->notification = furi_record_open(RECORD_NOTIFICATION);

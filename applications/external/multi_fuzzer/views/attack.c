@@ -5,8 +5,8 @@
 #include <gui/elements.h>
 
 #define ATTACK_SCENE_MAX_UID_LENGTH 25
-#define UID_MAX_DISPLAYED_LEN (8U)
-#define LEFT_RIGHT_OFFSET (3U)
+#define UID_MAX_DISPLAYED_LEN       (8U)
+#define LEFT_RIGHT_OFFSET           (3U)
 
 #define LINE_1_Y (12U)
 #define LINE_2_Y (24U)
@@ -438,7 +438,7 @@ FuzzerViewAttack* fuzzer_view_attack_alloc() {
         FuzzerViewAttackModel * model,
         {
             model->time_delay = fuzzer_proto_get_def_idle_time();
-            model->time_delay_min = 0; // model->time_delay;
+            model->time_delay_min = 1; // model->time_delay;
 
             model->emu_time = fuzzer_proto_get_def_emu_time();
 

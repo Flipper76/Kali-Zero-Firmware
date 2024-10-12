@@ -1959,7 +1959,7 @@ M_BEGIN_PROTECTED_CODE
 
 /* Maximum number of characters of an internal identifier (field name)
    including final null char. Bigger than 
-   63 significant initial characters of C11 standard (§5.2.4.1)
+   63 significant initial characters of C11 standard (ยง5.2.4.1)
    Can be overloaded by user if needed.
    NOTE: Used by variant & serial JSON to translate a field name into 
    a structure offset.
@@ -2286,7 +2286,7 @@ M_PARSE_DEFAULT_TYPE_DEF(m_core_parse_ldouble, long double, strtold, )
 /* Cast 'n' of type 'type*' into 'type const*'.
    This is like (type const*)p but safer as the type of 'n' is checked,
    and more robust for double arrays type.
-   NOTE: Compliant with the C standard as in §6.2.5 Types:
+   NOTE: Compliant with the C standard as in ยง6.2.5 Types:
    "Similarly, pointers to qualified or unqualified versions
    of compatible types shall have the same representation and
    alignment requirements."

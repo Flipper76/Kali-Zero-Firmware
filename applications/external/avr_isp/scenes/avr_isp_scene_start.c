@@ -18,14 +18,14 @@ void avr_isp_scene_start_on_enter(void* context) {
         submenu, "Flash AVR", SubmenuIndexAvrIspWriter, avr_isp_scene_start_submenu_callback, app);
     submenu_add_item(
         submenu,
-        "Programmeur ISP",
+        "ISP Programmer",
         SubmenuIndexAvrIspProgrammer,
         avr_isp_scene_start_submenu_callback,
         app);
     submenu_add_item(
-        submenu, "Câblage", SubmenuIndexAvrIsWiring, avr_isp_scene_start_submenu_callback, app);
+        submenu, "Wiring", SubmenuIndexAvrIsWiring, avr_isp_scene_start_submenu_callback, app);
     submenu_add_item(
-        submenu, "À propos", SubmenuIndexAvrIspAbout, avr_isp_scene_start_submenu_callback, app);
+        submenu, "About", SubmenuIndexAvrIspAbout, avr_isp_scene_start_submenu_callback, app);
 
     submenu_set_selected_item(
         submenu, scene_manager_get_scene_state(app->scene_manager, AvrIspSceneStart));

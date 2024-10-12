@@ -6,17 +6,12 @@
 #define TAG "SeaderWorker"
 
 #define APDU_HEADER_LEN 5
-#define ASN1_PREFIX 6
-#define ASN1_DEBUG true
+#define ASN1_PREFIX     6
+#define ASN1_DEBUG      true
 
 #define RFAL_PICOPASS_TXRX_FLAGS                                                    \
     (FURI_HAL_NFC_LL_TXRX_FLAGS_CRC_TX_MANUAL | FURI_HAL_NFC_LL_TXRX_FLAGS_AGC_ON | \
      FURI_HAL_NFC_LL_TXRX_FLAGS_PAR_RX_REMV | FURI_HAL_NFC_LL_TXRX_FLAGS_CRC_RX_KEEP)
-
-// TODO: const
-uint8_t GET_RESPONSE[] = {0x00, 0xc0, 0x00, 0x00, 0xff};
-
-char display[SEADER_UART_RX_BUF_SIZE * 2 + 1] = {0};
 
 // Forward declaration
 void seader_send_card_detected(SeaderUartBridge* seader_uart, CardDetails_t* cardDetails);
@@ -114,22 +109,28 @@ bool seader_process_success_response(Seader* seader, uint8_t* apdu, size_t len) 
     return true;
 }
 
-bool seader_worker_process_sam_message(Seader* seader, CCID_Message* message) {
-    size_t len = message->dwLength;
-    uint8_t* apdu = message->payload;
+bool seader_worker_process_sam_message(Seader* seader, uint8_t* apdu, uint32_t len) {
     SeaderWorker* seader_worker = seader->worker;
     SeaderUartBridge* seader_uart = seader_worker->uart;
     if(len < 2) {
         return false;
     }
-    memset(display, 0, sizeof(display));
+
+    if(seader_worker->state == SeaderWorkerStateAPDURunner) {
+        return seader_apdu_runner_response(seader, apdu, len);
+    }
+
+    char* display = malloc(len * 2 + 1);
+    memset(display, 0, len * 2 + 1);
     for(uint8_t i = 0; i < len; i++) {
         snprintf(display + (i * 2), sizeof(display), "%02x", apdu[i]);
     }
-    // FURI_LOG_I(TAG, "APDU: %s", display);
+    FURI_LOG_I(TAG, "APDU: %s", display);
+    free(display);
 
     uint8_t SW1 = apdu[len - 2];
     uint8_t SW2 = apdu[len - 1];
+    uint8_t GET_RESPONSE[] = {0x00, 0xc0, 0x00, 0x00, 0xff};
 
     switch(SW1) {
     case 0x61:
@@ -138,13 +139,15 @@ bool seader_worker_process_sam_message(Seader* seader, CCID_Message* message) {
         seader_ccid_XfrBlock(seader_uart, GET_RESPONSE, sizeof(GET_RESPONSE));
         return true;
         break;
-
     case 0x90:
         if(SW2 == 0x00) {
             if(len > 2) {
                 return seader_process_success_response(seader, apdu, len - 2);
             }
         }
+        break;
+    default:
+        FURI_LOG_W(TAG, "Unknown SW %02x%02x", SW1, SW2);
         break;
     }
 
@@ -212,6 +215,10 @@ int32_t seader_worker_task(void* context) {
     } else if(seader_worker->state == SeaderWorkerStateVirtualCredential) {
         FURI_LOG_D(TAG, "Virtual Credential");
         seader_worker_virtual_credential(seader);
+    } else if(seader_worker->state == SeaderWorkerStateAPDURunner) {
+        FURI_LOG_D(TAG, "APDU Runner");
+        seader_apdu_runner_init(seader);
+        return 0;
     }
     seader_worker_change_state(seader_worker, SeaderWorkerStateReady);
 
@@ -265,6 +272,9 @@ NfcCommand seader_worker_poller_callback_iso14443_4a(NfcGenericEvent event, void
 
     if(iso14443_4a_event->type == Iso14443_4aPollerEventTypeReady) {
         if(seader_worker->stage == SeaderPollerEventTypeCardDetect) {
+            view_dispatcher_send_custom_event(
+                seader->view_dispatcher, SeaderCustomEventPollerDetect);
+
             nfc_device_set_data(
                 seader->nfc_device, NfcProtocolIso14443_4a, nfc_poller_get_data(seader->poller));
 
@@ -285,7 +295,66 @@ NfcCommand seader_worker_poller_callback_iso14443_4a(NfcGenericEvent event, void
             seader_worker_poller_conversation(seader, &spc);
         } else if(seader_worker->stage == SeaderPollerEventTypeComplete) {
             ret = NfcCommandStop;
+        } else if(seader_worker->stage == SeaderPollerEventTypeFail) {
+            ret = NfcCommandStop;
+            view_dispatcher_send_custom_event(
+                seader->view_dispatcher, SeaderCustomEventWorkerExit);
+            FURI_LOG_W(TAG, "SeaderPollerEventTypeFail");
         }
+    } else if(iso14443_4a_event->type == Iso14443_4aPollerEventTypeError) {
+        Iso14443_4aPollerEventData* data = iso14443_4a_event->data;
+        Iso14443_4aError error = data->error;
+        FURI_LOG_W(TAG, "Iso14443_4aError %i", error);
+        // I was hoping to catch MFC here, but it seems to be treated the same (None) as no card being present.
+        switch(error) {
+        case Iso14443_4aErrorNone:
+            break;
+        case Iso14443_4aErrorNotPresent:
+            break;
+        case Iso14443_4aErrorProtocol:
+            ret = NfcCommandStop;
+            break;
+        case Iso14443_4aErrorTimeout:
+            break;
+        default:
+            break;
+        }
+    }
+
+    return ret;
+}
+
+NfcCommand seader_worker_poller_callback_mfc(NfcGenericEvent event, void* context) {
+    furi_assert(event.protocol == NfcProtocolMfClassic);
+    NfcCommand ret = NfcCommandContinue;
+
+    Seader* seader = context;
+    SeaderWorker* seader_worker = seader->worker;
+
+    MfClassicPollerEvent* mfc_event = event.event_data;
+    SeaderPollerContainer spc = {.mfc_poller = event.instance};
+
+    if(mfc_event->type == MfClassicPollerEventTypeSuccess) {
+        if(seader_worker->stage == SeaderPollerEventTypeCardDetect) {
+            view_dispatcher_send_custom_event(
+                seader->view_dispatcher, SeaderCustomEventPollerDetect);
+
+            const MfClassicData* mfc_data = nfc_poller_get_data(seader->poller);
+            uint8_t sak = iso14443_3a_get_sak(mfc_data->iso14443_3a_data);
+            size_t uid_len = 0;
+            const uint8_t* uid = mf_classic_get_uid(mfc_data, &uid_len);
+            seader_worker_card_detect(seader, sak, NULL, uid, uid_len, NULL, 0);
+            furi_thread_set_current_priority(FuriThreadPriorityLowest);
+            seader_worker->stage = SeaderPollerEventTypeConversation;
+        } else if(seader_worker->stage == SeaderPollerEventTypeConversation) {
+            seader_worker_poller_conversation(seader, &spc);
+        } else if(seader_worker->stage == SeaderPollerEventTypeComplete) {
+            ret = NfcCommandStop;
+        } else if(seader_worker->stage == SeaderPollerEventTypeFail) {
+            ret = NfcCommandStop;
+        }
+    } else if(mfc_event->type == MfClassicPollerEventTypeFail) {
+        ret = NfcCommandStop;
     }
 
     return ret;
@@ -305,6 +374,8 @@ NfcCommand seader_worker_poller_callback_picopass(PicopassPollerEvent event, voi
         seader_worker->stage = SeaderPollerEventTypeCardDetect;
     } else if(event.type == PicopassPollerEventTypeSuccess) {
         if(seader_worker->stage == SeaderPollerEventTypeCardDetect) {
+            view_dispatcher_send_custom_event(
+                seader->view_dispatcher, SeaderCustomEventPollerDetect);
             uint8_t* csn = picopass_poller_get_csn(instance);
             seader_worker_card_detect(seader, 0, NULL, csn, sizeof(PicopassSerialNum), NULL, 0);
             furi_thread_set_current_priority(FuriThreadPriorityLowest);

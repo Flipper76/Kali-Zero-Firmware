@@ -28,137 +28,203 @@ static void flipper_print_version(const char* target, const Version* version) {
             version_get_dirty_flag(version) ? " (dirty)" : "",
             version_get_gitbranch(version));
     } else {
-        FURI_LOG_I(TAG, "Aucune information \nde build pour %s", target);
+        FURI_LOG_I(TAG, "No build info for %s", target);
     }
 }
 
 #ifndef FURI_RAM_EXEC
-#include <bt/bt_settings.h>
-#include <bt/bt_service/bt_i.h>
-#include <power/power_settings.h>
-#include <desktop/desktop_settings.h>
-#include <notification/notification_app.h>
-#include <dolphin/helpers/dolphin_state.h>
-#include <applications/main/u2f/u2f_data.h>
-#include <expansion/expansion_settings_filename.h>
+#include <furi_hal.h>
+#include <assets_icons.h>
+#include  <kalizero/asset_packs.h>
+#include  <kalizero/namespoof.h>
+#include  <kalizero/settings_i.h>
+
 #include <applications/main/archive/helpers/archive_favorites.h>
-#include <xtreme/namespoof.h>
-#include <xtreme/xtreme.h>
+#include <bt/bt_service/bt_keys_filename.h>
+#include <bt/bt_settings_filename.h>
+#include <desktop/desktop_keybinds_filename.h>
+#include <desktop/desktop_settings_filename.h>
+#include <dolphin/helpers/dolphin_state_filename.h>
+#include <expansion/expansion_settings_filename.h>
+#include <loader/loader_menu.h>
+#include <notification/notification_settings_filename.h>
+#include <power/power_settings_filename.h>
+#include <drivers/rgb_backlight_filename.h>
+#include <applications/main/infrared/infrared_app.h>
+#include <applications/main/u2f/u2f_data.h>
 
 void flipper_migrate_files() {
     Storage* storage = furi_record_open(RECORD_STORAGE);
 
     // Revert cringe
-    FURI_LOG_I(TAG, "Migration : supprimer les \nfichiers inutilisés");
+    FURI_LOG_I(TAG, "Migrate: Remove unused files");
     storage_common_remove(storage, INT_PATH(".passport.settings"));
-    storage_common_remove(storage, INT_PATH(".region_data"));
 
-    // Migrate files (use copy+remove to not overwrite dst but still delete src)
-    FURI_LOG_I(TAG, "Migration: Renomme en externe");
-    storage_common_copy(storage, ARCHIVE_FAV_OLD_PATH, ARCHIVE_FAV_PATH);
-    storage_common_remove(storage, ARCHIVE_FAV_OLD_PATH);
-    storage_common_copy(storage, DESKTOP_KEYBINDS_OLD_PATH, DESKTOP_KEYBINDS_PATH);
-    storage_common_remove(storage, DESKTOP_KEYBINDS_OLD_PATH);
-    // Int -> Ext
-    FURI_LOG_I(TAG, "Migration: Interne vers ext");
-    storage_common_copy(storage, BT_SETTINGS_OLD_PATH, BT_SETTINGS_PATH);
-    storage_common_remove(storage, BT_SETTINGS_OLD_PATH);
-    storage_common_copy(storage, DOLPHIN_STATE_OLD_PATH, DOLPHIN_STATE_PATH);
-    storage_common_remove(storage, DOLPHIN_STATE_OLD_PATH);
-    storage_common_copy(storage, POWER_SETTINGS_OLD_PATH, POWER_SETTINGS_PATH);
-    storage_common_remove(storage, POWER_SETTINGS_OLD_PATH);
-    storage_common_copy(storage, BT_KEYS_STORAGE_OLD_PATH, BT_KEYS_STORAGE_PATH);
-    storage_common_remove(storage, BT_KEYS_STORAGE_OLD_PATH);
-    storage_common_copy(storage, EXPANSION_SETTINGS_OLD_PATH, EXPANSION_SETTINGS_PATH);
-    storage_common_remove(storage, EXPANSION_SETTINGS_OLD_PATH);
-    // storage_common_copy(storage, NOTIFICATION_SETTINGS_OLD_PATH, NOTIFICATION_SETTINGS_PATH); // Not compatible anyway
-    storage_common_remove(storage, NOTIFICATION_SETTINGS_OLD_PATH);
-    // Ext -> Int
-    FURI_LOG_I(TAG, "Migration: Ext vers interne");
-    storage_common_copy(storage, DESKTOP_SETTINGS_OLD_PATH, DESKTOP_SETTINGS_PATH);
-    storage_common_remove(storage, DESKTOP_SETTINGS_OLD_PATH);
-
-    // Special care for U2F
-    FURI_LOG_I(TAG, "Migration: U2F");
-    FileInfo file_info;
-    if(storage_common_stat(storage, U2F_CNT_OLD_FILE, &file_info) == FSE_OK &&
-       file_info.size > 200) { // Is on Int and has content
-        storage_common_rename(storage, U2F_CNT_OLD_FILE, U2F_CNT_FILE); // Int -> Ext
+    // Migrate files
+    FURI_LOG_I(TAG, "Migrate: Rename old paths");
+    // If multiple have same destination, first match that exists is kept and others deleted
+    const struct {
+        const char* src;
+        const char* dst;
+    } renames[] = {
+        // Renames on Ext
+        {EXT_PATH(".config/favorites.txt"), ARCHIVE_FAV_PATH}, // Adapt to OFW/UL
+        // Ext -> "Int"
+        {EXT_PATH(".config/bt.keys"), BT_KEYS_STORAGE_PATH},
+        {EXT_PATH(".config/bt.settings"), BT_SETTINGS_PATH},
+        {EXT_PATH(".config/desktop.keybinds"), DESKTOP_KEYBINDS_PATH_MIGRATE},
+        {EXT_PATH(".config/.desktop.keybinds"), DESKTOP_KEYBINDS_PATH_MIGRATE}, // Old naming
+        {EXT_PATH(".config/desktop.settings"), DESKTOP_SETTINGS_PATH},
+        {EXT_PATH(".config/dolphin.state"), DOLPHIN_STATE_PATH},
+        {EXT_PATH(".config/expansion.settings"), EXPANSION_SETTINGS_PATH},
+        {EXT_PATH(".config/mainmenu_apps.txt"), MAINMENU_APPS_PATH},
+        {EXT_PATH(".config/xtreme_menu.txt"), MAINMENU_APPS_PATH},
+        {EXT_PATH(".config/kalizero_settings.txt"), kalizero_settings_PATH},
+        {EXT_PATH(".config/xtreme_settings.txt"), kalizero_settings_PATH},
+        {EXT_PATH(".config/notification.settings"), NOTIFICATION_SETTINGS_PATH},
+        {EXT_PATH(".config/power.settings"), POWER_SETTINGS_PATH},
+        {EXT_PATH(".config/rgb_backlight.settings"), RGB_BACKLIGHT_SETTINGS_PATH},
+        {EXT_PATH("dolphin/name.txt"), NAMESPOOF_PATH}, // Adapt to UL
+        {EXT_PATH("infrared/.infrared.settings"), INFRARED_SETTINGS_PATH}, // Adapt to OFW
+    };
+    for(size_t i = 0; i < COUNT_OF(renames); ++i) {
+        // Use copy+remove to not overwrite dst but still delete src
+        storage_common_copy(storage, renames[i].src, renames[i].dst);
+        storage_common_remove(storage, renames[i].src);
     }
-    storage_common_copy(storage, U2F_KEY_OLD_FILE, U2F_KEY_FILE); // Ext -> Int
 
-    FURI_LOG_I(TAG, "Migration: Packs ressources");
-    storage_common_migrate(storage, KALIZERO_ASSETS_OLD_PATH, KALIZERO_ASSETS_PATH);
+    // Int -> Ext for U2F
+    FURI_LOG_I(TAG, "Migrate: U2F");
+    if(storage_common_exists(storage, INT_PATH(".cnt.u2f"))) {
+        const char* cnt_dst = storage_common_exists(storage, U2F_CNT_FILE) ? U2F_CNT_FILE ".old" :
+                                                                             U2F_CNT_FILE;
+        storage_common_rename(storage, INT_PATH(".cnt.u2f"), cnt_dst);
+    }
+    if(storage_common_exists(storage, INT_PATH(".key.u2f"))) {
+        const char* key_dst = storage_common_exists(storage, U2F_KEY_FILE) ? U2F_KEY_FILE ".old" :
+                                                                             U2F_KEY_FILE;
+        storage_common_rename(storage, INT_PATH(".key.u2f"), key_dst);
+    }
+
+    // Remove obsolete .config folder after migration
+    if(!storage_simply_remove(storage, EXT_PATH(".config"))) {
+        FURI_LOG_W(TAG, "Can't remove /ext/.config/, probably not empty");
+    }
+
+    // Asset packs migrate, merges together
+    FURI_LOG_I(TAG, "Migrate: Asset Packs");
+    storage_common_migrate(storage, EXT_PATH("dolphin_custom"), ASSET_PACKS_PATH);
 
     furi_record_close(RECORD_STORAGE);
 }
 
-static void flipper_boot_status(Canvas* canvas, const char* text) {
-    FURI_LOG_I(TAG, text);
-    canvas_reset(canvas);
-    canvas_draw_str_aligned(canvas, 64, 40, AlignCenter, AlignCenter, text);
-    canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str_aligned(canvas, 64, 24, AlignCenter, AlignCenter, "Kali Zero démarre");
-    canvas_commit(canvas);
+// Cannot use pubsub to schedule on SD insert like other services because
+// we want migration to happen before others load settings and new pubsub
+// subscriptions are put first in callback list so migration would be last
+// Also we cannot block the pubsub by loading files as it means storage
+// service is deadlocked processing pubsub and cannot process file operations
+// So instead storage runs this function in background thread and then
+// dispatches the pubsub event to everyone else
+bool skip_double_mount = false;
+void flipper_mount_callback(const void* message, void* context) {
+    UNUSED(context);
+    const StorageEvent* event = message;
+
+    if(event->type == StorageEventTypeCardMount) {
+        // Workaround to avoid double load on boot but also have animated boot screen
+        if(skip_double_mount) {
+            skip_double_mount = false;
+            return;
+        }
+
+        // Migrate locations before other services load on SD insert
+        flipper_migrate_files();
+
+        // TODO: Need to restart services that already applied previous name
+        namespoof_init();
+
+        // TODO: If new SD doesn't contain all current settings IDs, values
+        // from previous SD are kept for these settings
+        kalizero_settings_load();
+
+        // TODO: Could lock kernel on free to avoid GUI using assets while being free'd
+        asset_packs_free();
+        asset_packs_init();
+    }
 }
 #endif
 
 void flipper_start_service(const FlipperInternalApplication* service) {
-    FURI_LOG_D(TAG, "Démarrage du service %s", service->name);
+    FURI_LOG_D(TAG, "Starting service %s", service->name);
 
     FuriThread* thread =
-        furi_thread_alloc_ex(service->name, service->stack_size, service->app, NULL);
-    furi_thread_mark_as_service(thread);
+        furi_thread_alloc_service(service->name, service->stack_size, service->app, NULL);
     furi_thread_set_appid(thread, service->appid);
 
     furi_thread_start(thread);
 }
 
-void flipper_init() {
+void flipper_init(void) {
     furi_hal_light_sequence("rgb WB");
     flipper_print_version("Firmware", furi_hal_version_get_firmware_version());
     FURI_LOG_I(TAG, "Boot mode %d", furi_hal_rtc_get_boot_mode());
+
 #ifndef FURI_RAM_EXEC
     Canvas* canvas = canvas_init();
+    canvas_draw_icon(canvas, 33, 16, &I_Updating_Logo_62x15);
+    if(furi_hal_is_normal_boot()) {
+        canvas_draw_icon(canvas, 19, 44, &I_SDcardMounted_11x8);
+    }
+    canvas_commit(canvas);
+#endif
 
     // Start storage service first, thanks OFW :/
-    flipper_boot_status(canvas, "Initialisation du stockage");
-#endif
     flipper_start_service(&FLIPPER_SERVICES[0]);
 
 #ifndef FURI_RAM_EXEC
     if(furi_hal_is_normal_boot()) {
         // Wait for storage record
-        furi_record_open(RECORD_STORAGE);
+        Storage* storage = furi_record_open(RECORD_STORAGE);
+        if(storage_sd_status(storage) != FSE_OK) {
+            FURI_LOG_D(TAG, "SD Card not ready, skipping early init");
+            // Init on SD insert done by storage using flipper_mount_callback()
+        } else {
+            // Workaround to avoid double load on boot but also have animated boot screen
+            skip_double_mount = true;
+
+            canvas_draw_icon(canvas, 39, 43, &I_dir_10px);
+            canvas_commit(canvas);
+            flipper_migrate_files();
+
+            canvas_draw_icon(canvas, 59, 42, &I_Apps_10px);
+            canvas_commit(canvas);
+            namespoof_init();
+
+            canvas_draw_icon(canvas, 79, 44, &I_Rpc_active_7x8);
+            canvas_commit(canvas);
+            kalizero_settings_load();
+
+            furi_hal_light_sequence("rgb RB");
+            canvas_draw_icon(canvas, 99, 44, &I_Hidden_window_9x8);
+            canvas_commit(canvas);
+            asset_packs_init();
+        }
         furi_record_close(RECORD_STORAGE);
-
-        flipper_boot_status(canvas, "Migration de fichiers");
-        flipper_migrate_files();
-
-        flipper_boot_status(canvas, "Démarrage usurpation de nom");
-        namespoof_init();
-
-        flipper_boot_status(canvas, "Chargement param. Kali Zero");
-        kalizero_settings_load();
-        furi_hal_light_sequence("rgb RB");
-
-        flipper_boot_status(canvas, "Chargement actifs Kali Zero");
-        kalizero_assets_init();
     } else {
-        FURI_LOG_I(TAG, "Démarrage spécial, exclus option");
+        FURI_LOG_I(TAG, "Special boot, skipping optional components");
     }
-	flipper_boot_status(canvas, "Initialisation des services");
 #endif
 
     // Everything else
     for(size_t i = 1; i < FLIPPER_SERVICES_COUNT; i++) {
         flipper_start_service(&FLIPPER_SERVICES[i]);
     }
+
 #ifndef FURI_RAM_EXEC
     canvas_free(canvas);
 #endif
 
-    FURI_LOG_I(TAG, "Démarrage terminé");
+    FURI_LOG_I(TAG, "Startup complete");
 }
 
 void vApplicationGetIdleTaskMemory(

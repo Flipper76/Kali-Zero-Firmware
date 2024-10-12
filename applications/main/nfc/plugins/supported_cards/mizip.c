@@ -6,9 +6,10 @@
 #include <bit_lib.h>
 
 #define TAG "MiZIP"
-#define KEY_LENGTH 6
+
+#define KEY_LENGTH       6
 #define MIZIP_KEY_TO_GEN 5
-#define UID_LENGTH 4
+#define UID_LENGTH       4
 
 typedef struct {
     uint64_t a;
@@ -206,15 +207,15 @@ static bool mizip_parse(const NfcDevice* device, FuriString* parsed_data) {
 
         //Get credit
         uint8_t credit_pointer = 0x08;
-        uint8_t previus_credit_pointer = 0x09;
+        uint8_t previous_credit_pointer = 0x09;
         if(data->block[10].data[0] == 0x55) {
             credit_pointer = 0x09;
-            previus_credit_pointer = 0x08;
+            previous_credit_pointer = 0x08;
         }
         uint16_t balance = (data->block[credit_pointer].data[2] << 8) |
                            (data->block[credit_pointer].data[1]);
-        uint16_t previus_balance = (data->block[previus_credit_pointer].data[2] << 8) |
-                                   (data->block[previus_credit_pointer].data[1]);
+        uint16_t previous_balance = (data->block[previous_credit_pointer].data[2] << 8) |
+                                    (data->block[previous_credit_pointer].data[1]);
 
         //parse data
         furi_string_cat_printf(parsed_data, "\e#MiZIP Card\n");
@@ -226,9 +227,9 @@ static bool mizip_parse(const NfcDevice* device, FuriString* parsed_data) {
             parsed_data, "\nCurrent Credit: %d.%02d E \n", balance / 100, balance % 100);
         furi_string_cat_printf(
             parsed_data,
-            "Previus Credit: %d.%02d E \n",
-            previus_balance / 100,
-            previus_balance % 100);
+            "Previous Credit: %d.%02d E \n",
+            previous_balance / 100,
+            previous_balance % 100);
 
         parsed = true;
     } while(false);
@@ -252,6 +253,6 @@ static const FlipperAppPluginDescriptor mizip_plugin_descriptor = {
 };
 
 /* Plugin entry point - must return a pointer to const descriptor  */
-const FlipperAppPluginDescriptor* mizip_plugin_ep() {
+const FlipperAppPluginDescriptor* mizip_plugin_ep(void) {
     return &mizip_plugin_descriptor;
 }

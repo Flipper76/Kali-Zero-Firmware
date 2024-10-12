@@ -72,7 +72,6 @@ struct BadKbApp {
 
     Bt* bt;
     bool is_bt;
-    bool bt_remember;
     BadKbConfig config; // User options
     BadKbConfig id_config; // ID and BT_ID values
 
@@ -102,6 +101,8 @@ typedef enum {
 
 void bad_kb_app_show_loading_popup(BadKbApp* app, bool show);
 
+void bad_kb_load_settings(BadKbApp* app);
+
 int32_t bad_kb_conn_apply(BadKbApp* app);
 
 void bad_kb_conn_reset(BadKbApp* app);
@@ -109,5 +110,3 @@ void bad_kb_conn_reset(BadKbApp* app);
 void bad_kb_config_refresh(BadKbApp* app);
 
 void bad_kb_config_adjust(BadKbConfig* cfg);
-
-void bad_kb_load_settings(BadKbApp* app);

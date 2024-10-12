@@ -1,17 +1,17 @@
 #include "../kali_zero_app.h"
 
-enum TextInputResult {
-    TextInputResultOk,
-    TextInputResultError,
+enum NumberInputResult {
+    NumberInputResultOk,
+    NumberInputResultError,
 };
 
-static void kali_zero_app_scene_protocols_freqs_add_text_input_callback(void* context) {
+static void
+    kali_zero_app_scene_protocols_freqs_add_number_input_callback(void* context, int32_t number) {
     KaliZeroApp* app = context;
 
-    char* end;
-    uint32_t value = strtol(app->subghz_freq_buffer, &end, 0) * 1000;
-    if(*end || !furi_hal_subghz_is_frequency_valid(value)) {
-        view_dispatcher_send_custom_event(app->view_dispatcher, TextInputResultError);
+    uint32_t value = number * 1000;
+    if(!furi_hal_subghz_is_frequency_valid(value)) {
+        view_dispatcher_send_custom_event(app->view_dispatcher, NumberInputResultError);
         return;
     }
     bool is_hopper =
@@ -22,31 +22,29 @@ static void kali_zero_app_scene_protocols_freqs_add_text_input_callback(void* co
         FrequencyList_push_back(app->subghz_static_freqs, value);
     }
     app->save_subghz_freqs = true;
-    view_dispatcher_send_custom_event(app->view_dispatcher, TextInputResultOk);
+    view_dispatcher_send_custom_event(app->view_dispatcher, NumberInputResultOk);
 }
 
 void kali_zero_app_scene_protocols_freqs_add_on_enter(void* context) {
     KaliZeroApp* app = context;
-    TextInput* text_input = app->text_input;
+    NumberInput* number_input = app->number_input;
 
-    text_input_set_header_text(text_input, "Ex: 123456 pour 123.456 MHz");
+    number_input_set_header_text(number_input, "Use kHz values, like 433920");
 
-    strlcpy(app->subghz_freq_buffer, "", kalizero_SUBGHZ_FREQ_BUFFER_SIZE);
-
-    text_input_set_result_callback(
-        text_input,
-        kali_zero_app_scene_protocols_freqs_add_text_input_callback,
+    number_input_set_result_callback(
+        number_input,
+        kali_zero_app_scene_protocols_freqs_add_number_input_callback,
         app,
-        app->subghz_freq_buffer,
-        kalizero_SUBGHZ_FREQ_BUFFER_SIZE,
-        true);
+        0,
+        100000,
+        999999);
 
-    view_dispatcher_switch_to_view(app->view_dispatcher, KaliZeroAppViewTextInput);
+    view_dispatcher_switch_to_view(app->view_dispatcher, KaliZeroAppViewNumberInput);
 }
 
 void callback_return(void* context) {
     KaliZeroApp* app = context;
-    scene_manager_previous_scene(app->scene_manager);
+    view_dispatcher_switch_to_view(app->view_dispatcher, KaliZeroAppViewNumberInput);
 }
 
 bool kali_zero_app_scene_protocols_freqs_add_on_event(void* context, SceneManagerEvent event) {
@@ -56,13 +54,19 @@ bool kali_zero_app_scene_protocols_freqs_add_on_event(void* context, SceneManage
     if(event.type == SceneManagerEventTypeCustom) {
         consumed = true;
         switch(event.event) {
-        case TextInputResultOk:
+        case NumberInputResultOk:
             scene_manager_previous_scene(app->scene_manager);
             break;
-        case TextInputResultError:
-            popup_set_header(app->popup, "Valeur invalide!", 64, 26, AlignCenter, AlignCenter);
+        case NumberInputResultError:
+            popup_set_header(app->popup, "Invalid frequency!", 64, 18, AlignCenter, AlignCenter);
             popup_set_text(
-                app->popup, "La fréquence n'a pas été ajoutée...", 64, 40, AlignCenter, AlignCenter);
+                app->popup,
+                "Must be 281-361,\n"
+                "378-481, 749-962 MHz",
+                64,
+                40,
+                AlignCenter,
+                AlignCenter);
             popup_set_callback(app->popup, callback_return);
             popup_set_context(app->popup, app);
             popup_set_timeout(app->popup, 1000);
@@ -79,5 +83,6 @@ bool kali_zero_app_scene_protocols_freqs_add_on_event(void* context, SceneManage
 
 void kali_zero_app_scene_protocols_freqs_add_on_exit(void* context) {
     KaliZeroApp* app = context;
-    text_input_reset(app->text_input);
+    number_input_set_result_callback(app->number_input, NULL, NULL, 0, 0, 0);
+    number_input_set_header_text(app->number_input, "");
 }

@@ -1,4 +1,4 @@
-#include "protocol_items.h"
+#include "protocol_items.h" // IWYU pragma: keep
 
 const SubGhzProtocol* subghz_protocol_registry_items[] = {
     &subghz_protocol_gate_tx,
@@ -51,23 +51,34 @@ const SubGhzProtocol* subghz_protocol_registry_items[] = {
     &ws_protocol_acurite_606tx,
     &ws_protocol_acurite_609txc,
     &ws_protocol_acurite_986,
+    &ws_protocol_bresser_3ch, // Should be before lacrosse
     &ws_protocol_lacrosse_tx,
     &ws_protocol_lacrosse_tx141thbv2,
     &ws_protocol_oregon2,
     &ws_protocol_oregon3,
     &ws_protocol_acurite_592txr,
     &ws_protocol_ambient_weather,
+    &ws_protocol_solight_te44, // Should be before auriol
     &ws_protocol_auriol_th,
     &ws_protocol_oregon_v1,
     &ws_protocol_tx_8300,
     &ws_protocol_wendox_w6726,
     &ws_protocol_auriol_ahfl,
     &ws_protocol_kedsum_th,
+    &ws_protocol_emose601x,
+    &ws_protocol_acurite_5n1,
     &subghz_protocol_pocsag,
     &tpms_protocol_schrader_gg4,
     &subghz_protocol_bin_raw,
     &subghz_protocol_mastercode,
     &subghz_protocol_x10,
+    &subghz_protocol_hormann_bisecur,
+    &subghz_protocol_legrand,
+    &subghz_protocol_dickert_mahs,
+    &subghz_protocol_gangqi,
+    &subghz_protocol_marantec24,
+    &subghz_protocol_hollarm,
+    &subghz_protocol_hay21,
 };
 
 const SubGhzProtocolRegistry subghz_protocol_registry = {

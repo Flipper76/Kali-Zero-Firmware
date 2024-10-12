@@ -163,7 +163,7 @@ This is a library integration, so there is no owner. The key file identifier is 
 
 The library integration and the PSA platform integration use different sets of file names. This is annoyingly non-uniform. For example, if we want to store non-key files, we have room in different ranges (0 through 0xffffffff on a PSA platform, 0xffff0000 through 0xffffffffffffffff in a library integration).
 
-It would simplify things to always have a 32-bit owner, with a nonzero value, and thus reserve the range 0–0xffffffff for internal library use.
+It would simplify things to always have a 32-bit owner, with a nonzero value, and thus reserve the range 0â€“0xffffffff for internal library use.
 
 Mbed Crypto 1.1.0
 -----------------

@@ -1,19 +1,23 @@
-
 #include "sam_api.h"
 #include <toolbox/path.h>
+#include <toolbox/version.h>
+#include <bit_lib/bit_lib.h>
+
+//#define ASN1_DEBUG                      true
 
 #define TAG "SAMAPI"
 
-#define APDU_HEADER_LEN 5
-#define ASN1_PREFIX 6
-#define ASN1_DEBUG true
+#define ASN1_PREFIX                     6
 #define SEADER_ICLASS_SR_SIO_BASE_BLOCK 10
-#define SEADER_SERIAL_FILE_NAME "sam_serial"
+#define SEADER_SERIAL_FILE_NAME         "sam_serial"
 
 const uint8_t picopass_iclass_key[] = {0xaf, 0xa7, 0x85, 0xa7, 0xda, 0xb3, 0x33, 0x78};
 
 static char display[SEADER_UART_RX_BUF_SIZE * 2 + 1] = {0};
+
+#ifdef ASN1_DEBUG
 char asn1_log[SEADER_UART_RX_BUF_SIZE] = {0};
+#endif
 
 uint8_t read4Block6[] = {RFAL_PICOPASS_CMD_READ4, 0x06, 0x45, 0x56};
 uint8_t read4Block9[] = {RFAL_PICOPASS_CMD_READ4, 0x09, 0xB2, 0xAE};
@@ -32,7 +36,7 @@ void* calloc(size_t count, size_t size) {
 }
 
 // Forward declarations
-void seader_send_nfc_rx(SeaderUartBridge* seader_uart, uint8_t* buffer, size_t len);
+void seader_send_nfc_rx(Seader* seader, uint8_t* buffer, size_t len);
 
 PicopassError seader_worker_fake_epurse_update(BitBuffer* tx_buffer, BitBuffer* rx_buffer) {
     const uint8_t* buffer = bit_buffer_get_data(tx_buffer);
@@ -54,9 +58,6 @@ PicopassError seader_worker_fake_epurse_update(BitBuffer* tx_buffer, BitBuffer* 
 }
 
 void seader_picopass_state_machine(Seader* seader, uint8_t* buffer, size_t len) {
-    SeaderWorker* seader_worker = seader->worker;
-    SeaderUartBridge* seader_uart = seader_worker->uart;
-
     BitBuffer* tx_buffer = bit_buffer_alloc(len);
     bit_buffer_append_bytes(tx_buffer, buffer, len);
     BitBuffer* rx_buffer = bit_buffer_alloc(SEADER_POLLER_MAX_BUFFER_SIZE);
@@ -129,7 +130,7 @@ void seader_picopass_state_machine(Seader* seader, uint8_t* buffer, size_t len) 
         }
 
         seader_send_nfc_rx(
-            seader_uart,
+            seader,
             (uint8_t*)bit_buffer_get_data(rx_buffer),
             bit_buffer_get_size_bytes(rx_buffer));
 
@@ -138,37 +139,66 @@ void seader_picopass_state_machine(Seader* seader, uint8_t* buffer, size_t len) 
     bit_buffer_free(rx_buffer);
 }
 
+uint8_t APDU_HEADER_LEN = 5;
 bool seader_send_apdu(
-    SeaderUartBridge* seader_uart,
+    Seader* seader,
     uint8_t CLA,
     uint8_t INS,
     uint8_t P1,
     uint8_t P2,
     uint8_t* payload,
-    uint8_t length) {
-    if(APDU_HEADER_LEN + length > SEADER_UART_RX_BUF_SIZE) {
-        FURI_LOG_E(TAG, "Cannot send message, too long: %d", APDU_HEADER_LEN + length);
+    uint8_t payloadLen) {
+    SeaderWorker* seader_worker = seader->worker;
+    SeaderUartBridge* seader_uart = seader_worker->uart;
+
+    if(seader_uart->T == 1) {
+        APDU_HEADER_LEN = 7;
+    }
+
+    if(APDU_HEADER_LEN + payloadLen > SEADER_UART_RX_BUF_SIZE) {
+        FURI_LOG_E(TAG, "Cannot send message, too long: %d", APDU_HEADER_LEN + payloadLen);
         return false;
     }
 
-    uint8_t apdu[SEADER_UART_RX_BUF_SIZE];
+    uint8_t length = APDU_HEADER_LEN + payloadLen;
+    uint8_t* apdu = malloc(length);
+    if(!apdu) {
+        FURI_LOG_E(TAG, "Failed to allocate memory for apdu in seader_send_apdu");
+        return false;
+    }
+
     apdu[0] = CLA;
     apdu[1] = INS;
     apdu[2] = P1;
     apdu[3] = P2;
-    apdu[4] = length;
-    memcpy(apdu + APDU_HEADER_LEN, payload, length);
+
+    if(seader_uart->T == 1) {
+        apdu[4] = 0x00;
+        apdu[5] = 0x00;
+        apdu[6] = payloadLen;
+    } else {
+        apdu[4] = payloadLen;
+    }
+
+    memcpy(apdu + APDU_HEADER_LEN, payload, payloadLen);
 
     memset(display, 0, sizeof(display));
-    for(uint8_t i = 0; i < APDU_HEADER_LEN + length; i++) {
+    for(uint8_t i = 0; i < length; i++) {
         snprintf(display + (i * 2), sizeof(display), "%02x", apdu[i]);
     }
     FURI_LOG_D(TAG, "seader_send_apdu %s", display);
 
-    seader_ccid_XfrBlock(seader_uart, apdu, APDU_HEADER_LEN + length);
+    if(seader_uart->T == 1) {
+        seader_send_t1(seader_uart, apdu, length);
+    } else {
+        seader_ccid_XfrBlock(seader_uart, apdu, length);
+    }
+    free(apdu);
+
     return true;
 }
 
+#ifdef ASN1_DEBUG
 static int seader_print_struct_callback(const void* buffer, size_t size, void* app_key) {
     if(app_key) {
         char* str = (char*)app_key;
@@ -180,9 +210,17 @@ static int seader_print_struct_callback(const void* buffer, size_t size, void* a
     }
     return 0;
 }
+#else
+static int seader_print_struct_callback(const void* buffer, size_t size, void* app_key) {
+    UNUSED(buffer);
+    UNUSED(size);
+    UNUSED(app_key);
+    return 0;
+}
+#endif
 
 void seader_send_payload(
-    SeaderUartBridge* seader_uart,
+    Seader* seader,
     Payload_t* payload,
     uint8_t to,
     uint8_t from,
@@ -212,11 +250,11 @@ void seader_send_payload(
     rBuffer[1] = from;
     rBuffer[2] = replyTo;
 
-    seader_send_apdu(seader_uart, 0xA0, 0xDA, 0x02, 0x63, rBuffer, 6 + er.encoded);
+    seader_send_apdu(seader, 0xA0, 0xDA, 0x02, 0x63, rBuffer, 6 + er.encoded);
 }
 
 void seader_send_response(
-    SeaderUartBridge* seader_uart,
+    Seader* seader,
     Response_t* response,
     uint8_t to,
     uint8_t from,
@@ -228,15 +266,12 @@ void seader_send_response(
     payload->present = Payload_PR_response;
     payload->choice.response = *response;
 
-    seader_send_payload(seader_uart, payload, to, from, replyTo);
+    seader_send_payload(seader, payload, to, from, replyTo);
 
     ASN_STRUCT_FREE(asn_DEF_Payload, payload);
 }
 
 void seader_send_request_pacs(Seader* seader) {
-    SeaderWorker* seader_worker = seader->worker;
-    SeaderUartBridge* seader_uart = seader_worker->uart;
-
     RequestPacs_t* requestPacs = 0;
     requestPacs = calloc(1, sizeof *requestPacs);
     assert(requestPacs);
@@ -259,17 +294,14 @@ void seader_send_request_pacs(Seader* seader) {
     payload->present = Payload_PR_samCommand;
     payload->choice.samCommand = *samCommand;
 
-    seader_send_payload(seader_uart, payload, 0x44, 0x0a, 0x44);
+    seader_send_payload(seader, payload, 0x44, 0x0a, 0x44);
 
-    ASN_STRUCT_FREE(asn_DEF_RequestPacs, requestPacs);
-    ASN_STRUCT_FREE(asn_DEF_SamCommand, samCommand);
     ASN_STRUCT_FREE(asn_DEF_Payload, payload);
+    ASN_STRUCT_FREE(asn_DEF_SamCommand, samCommand);
+    ASN_STRUCT_FREE(asn_DEF_RequestPacs, requestPacs);
 }
 
 void seader_worker_send_serial_number(Seader* seader) {
-    SeaderWorker* seader_worker = seader->worker;
-    SeaderUartBridge* seader_uart = seader_worker->uart;
-
     SamCommand_t* samCommand = 0;
     samCommand = calloc(1, sizeof *samCommand);
     assert(samCommand);
@@ -284,16 +316,13 @@ void seader_worker_send_serial_number(Seader* seader) {
     payload->present = Payload_PR_samCommand;
     payload->choice.samCommand = *samCommand;
 
-    seader_send_payload(seader_uart, payload, 0x44, 0x0a, 0x44);
+    seader_send_payload(seader, payload, 0x44, 0x0a, 0x44);
 
-    ASN_STRUCT_FREE(asn_DEF_SamCommand, samCommand);
     ASN_STRUCT_FREE(asn_DEF_Payload, payload);
+    ASN_STRUCT_FREE(asn_DEF_SamCommand, samCommand);
 }
 
 void seader_worker_send_version(Seader* seader) {
-    SeaderWorker* seader_worker = seader->worker;
-
-    SeaderUartBridge* seader_uart = seader_worker->uart;
     SamCommand_t* samCommand = 0;
     samCommand = calloc(1, sizeof *samCommand);
     assert(samCommand);
@@ -308,15 +337,13 @@ void seader_worker_send_version(Seader* seader) {
     payload->present = Payload_PR_samCommand;
     payload->choice.samCommand = *samCommand;
 
-    seader_send_payload(seader_uart, payload, 0x44, 0x0a, 0x44);
+    seader_send_payload(seader, payload, 0x44, 0x0a, 0x44);
 
-    ASN_STRUCT_FREE(asn_DEF_SamCommand, samCommand);
     ASN_STRUCT_FREE(asn_DEF_Payload, payload);
+    ASN_STRUCT_FREE(asn_DEF_SamCommand, samCommand);
 }
 
 void seader_send_card_detected(Seader* seader, CardDetails_t* cardDetails) {
-    SeaderWorker* seader_worker = seader->worker;
-    SeaderUartBridge* seader_uart = seader_worker->uart;
     CardDetected_t* cardDetected = 0;
     cardDetected = calloc(1, sizeof *cardDetected);
     assert(cardDetected);
@@ -338,7 +365,7 @@ void seader_send_card_detected(Seader* seader, CardDetails_t* cardDetails) {
     payload->present = Payload_PR_samCommand;
     payload->choice.samCommand = *samCommand;
 
-    seader_send_payload(seader_uart, payload, 0x44, 0x0a, 0x44);
+    seader_send_payload(seader, payload, 0x44, 0x0a, 0x44);
 
     ASN_STRUCT_FREE(asn_DEF_Payload, payload);
     ASN_STRUCT_FREE(asn_DEF_SamCommand, samCommand);
@@ -400,16 +427,16 @@ bool seader_unpack_pacs(Seader* seader, uint8_t* buf, size_t size) {
 //    800201298106683d052026b6820101
 //300F800201298106683D052026B6820101
 bool seader_parse_version(SeaderWorker* seader_worker, uint8_t* buf, size_t size) {
-    SamVersion_t* version = 0;
-    version = calloc(1, sizeof *version);
-    assert(version);
-
     bool rtn = false;
     if(size > 30) {
         // Too large to handle now
         FURI_LOG_W(TAG, "Version of %d is to long to parse", size);
         return false;
     }
+    SamVersion_t* version = 0;
+    version = calloc(1, sizeof *version);
+    assert(version);
+
     // Add sequence prefix
     uint8_t seq[32] = {0x30};
     seq[1] = (uint8_t)size;
@@ -568,7 +595,7 @@ bool seader_parse_response(Seader* seader, Response_t* response) {
     return false;
 }
 
-void seader_send_nfc_rx(SeaderUartBridge* seader_uart, uint8_t* buffer, size_t len) {
+void seader_send_nfc_rx(Seader* seader, uint8_t* buffer, size_t len) {
     OCTET_STRING_t rxData = {.buf = buffer, .size = len};
     uint8_t status[] = {0x00, 0x00};
     RfStatus_t rfStatus = {.buf = status, .size = 2};
@@ -594,7 +621,7 @@ void seader_send_nfc_rx(SeaderUartBridge* seader_uart, uint8_t* buffer, size_t l
     response->present = Response_PR_nfcResponse;
     response->choice.nfcResponse = *nfcResponse;
 
-    seader_send_response(seader_uart, response, 0x14, 0x0a, 0x0);
+    seader_send_response(seader, response, 0x14, 0x0a, 0x0);
 
     ASN_STRUCT_FREE(asn_DEF_NFCRx, nfcRx);
     ASN_STRUCT_FREE(asn_DEF_NFCResponse, nfcResponse);
@@ -637,12 +664,7 @@ void seader_iso15693_transmit(
     PicopassPoller* picopass_poller,
     uint8_t* buffer,
     size_t len) {
-    UNUSED(seader);
-    UNUSED(buffer);
-    UNUSED(len);
-
     SeaderWorker* seader_worker = seader->worker;
-    SeaderUartBridge* seader_uart = seader_worker->uart;
 
     BitBuffer* tx_buffer = bit_buffer_alloc(len);
     BitBuffer* rx_buffer = bit_buffer_alloc(SEADER_POLLER_MAX_BUFFER_SIZE);
@@ -669,7 +691,7 @@ void seader_iso15693_transmit(
 
         seader_capture_sio(tx_buffer, rx_buffer, seader->credential);
         seader_send_nfc_rx(
-            seader_uart,
+            seader,
             (uint8_t*)bit_buffer_get_data(rx_buffer),
             bit_buffer_get_size_bytes(rx_buffer));
 
@@ -694,7 +716,6 @@ void seader_iso14443a_transmit(
     furi_assert(buffer);
     furi_assert(iso14443_4a_poller);
     SeaderWorker* seader_worker = seader->worker;
-    SeaderUartBridge* seader_uart = seader_worker->uart;
     SeaderCredential* credential = seader->credential;
 
     BitBuffer* tx_buffer = bit_buffer_alloc(len);
@@ -719,7 +740,161 @@ void seader_iso14443a_transmit(
 
         seader_capture_sio(tx_buffer, rx_buffer, credential);
         seader_send_nfc_rx(
-            seader_uart,
+            seader,
+            (uint8_t*)bit_buffer_get_data(rx_buffer),
+            bit_buffer_get_size_bytes(rx_buffer));
+
+    } while(false);
+    bit_buffer_free(tx_buffer);
+    bit_buffer_free(rx_buffer);
+}
+
+/* Assumes this is called in the context of the NFC API callback */
+#define MF_CLASSIC_FWT_FC (60000)
+void seader_mfc_transmit(
+    Seader* seader,
+    MfClassicPoller* mfc_poller,
+    uint8_t* buffer,
+    size_t len,
+    uint16_t timeout,
+    uint8_t format[3]) {
+    UNUSED(timeout);
+
+    furi_assert(seader);
+    furi_assert(buffer);
+    furi_assert(mfc_poller);
+    SeaderWorker* seader_worker = seader->worker;
+
+    BitBuffer* tx_buffer = bit_buffer_alloc(len);
+    BitBuffer* rx_buffer = bit_buffer_alloc(SEADER_POLLER_MAX_BUFFER_SIZE);
+
+    do {
+        if(format[0] == 0x00 && format[1] == 0xC0 && format[2] == 0x00) {
+            bit_buffer_append_bytes(tx_buffer, buffer, len);
+            MfClassicError error =
+                mf_classic_poller_send_frame(mfc_poller, tx_buffer, rx_buffer, MF_CLASSIC_FWT_FC);
+            if(error != MfClassicErrorNone) {
+                FURI_LOG_W(TAG, "mf_classic_poller_send_frame error %d", error);
+                seader_worker->stage = SeaderPollerEventTypeFail;
+                break;
+            }
+        } else if(
+            (format[0] == 0x00 && format[1] == 0x00 && format[2] == 0x40) ||
+            (format[0] == 0x00 && format[1] == 0x00 && format[2] == 0x24) ||
+            (format[0] == 0x00 && format[1] == 0x00 && format[2] == 0x44)) {
+            memset(display, 0, sizeof(display));
+            for(uint8_t i = 0; i < len; i++) {
+                snprintf(display + (i * 2), sizeof(display), "%02x", buffer[i]);
+            }
+            FURI_LOG_D(TAG, "NFC Send with parity %d: %s", len, display);
+
+            // Only handles message up to 8 data bytes
+            uint8_t tx_parity = 0;
+            uint8_t len_without_parity = len - 1;
+
+            // Don't forget to swap the bits of buffer[8]
+            for(size_t i = 0; i < len; i++) {
+                bit_lib_reverse_bits(buffer + i, 0, 8);
+            }
+
+            // Pull out parity bits
+            for(size_t i = 0; i < len_without_parity; i++) {
+                bool val = bit_lib_get_bit(buffer + i + 1, i);
+                bit_lib_set_bit(&tx_parity, i, val);
+            }
+
+            for(size_t i = 0; i < len_without_parity; i++) {
+                buffer[i] = (buffer[i] << i) | (buffer[i + 1] >> (8 - i));
+            }
+            bit_buffer_append_bytes(tx_buffer, buffer, len_without_parity);
+
+            for(size_t i = 0; i < len_without_parity; i++) {
+                bit_lib_reverse_bits(buffer + i, 0, 8);
+                bit_buffer_set_byte_with_parity(
+                    tx_buffer, i, buffer[i], bit_lib_get_bit(&tx_parity, i));
+            }
+
+            memset(display, 0, sizeof(display));
+            for(uint8_t i = 0; i < bit_buffer_get_size_bytes(tx_buffer); i++) {
+                snprintf(
+                    display + (i * 2), sizeof(display), "%02x", bit_buffer_get_byte(tx_buffer, i));
+            }
+            FURI_LOG_D(
+                TAG,
+                "NFC Send without parity %d: %s [%02x]",
+                bit_buffer_get_size_bytes(tx_buffer),
+                display,
+                tx_parity);
+
+            MfClassicError error = mf_classic_poller_send_custom_parity_frame(
+                mfc_poller, tx_buffer, rx_buffer, MF_CLASSIC_FWT_FC);
+            if(error != MfClassicErrorNone) {
+                FURI_LOG_W(TAG, "mf_classic_poller_send_encrypted_frame error %d", error);
+                seader_worker->stage = SeaderPollerEventTypeFail;
+                break;
+            }
+
+            size_t length = bit_buffer_get_size_bytes(rx_buffer);
+            const uint8_t* rx_parity = bit_buffer_get_parity(rx_buffer);
+
+            memset(display, 0, sizeof(display));
+            for(uint8_t i = 0; i < length; i++) {
+                snprintf(
+                    display + (i * 2), sizeof(display), "%02x", bit_buffer_get_byte(rx_buffer, i));
+            }
+            FURI_LOG_D(
+                TAG, "NFC Response without parity %d: %s [%02x]", length, display, rx_parity[0]);
+
+            uint8_t with_parity[SEADER_POLLER_MAX_BUFFER_SIZE];
+            memset(with_parity, 0, sizeof(with_parity));
+
+            for(size_t i = 0; i < length; i++) {
+                uint8_t b = bit_buffer_get_byte(rx_buffer, i);
+                bit_lib_reverse_bits(&b, 0, 8);
+                bit_buffer_set_byte(rx_buffer, i, b);
+            }
+
+            length = length + (length / 8) + 1;
+
+            uint8_t parts = 1 + length / 9;
+            for(size_t p = 0; p < parts; p++) {
+                uint8_t doffset = p * 9;
+                uint8_t soffset = p * 8;
+
+                for(size_t i = 0; i < 9; i++) {
+                    with_parity[i + doffset] = bit_buffer_get_byte(rx_buffer, i + soffset) >> i;
+                    if(i > 0) {
+                        with_parity[i + doffset] |= bit_buffer_get_byte(rx_buffer, i + soffset - 1)
+                                                    << (9 - i);
+                    }
+
+                    if(i > 0) {
+                        bool val = bit_lib_get_bit(rx_parity, i - 1);
+                        bit_lib_set_bit(with_parity + i, i - 1, val);
+                    }
+                }
+            }
+
+            for(size_t i = 0; i < length; i++) {
+                bit_lib_reverse_bits(with_parity + i, 0, 8);
+            }
+
+            bit_buffer_copy_bytes(rx_buffer, with_parity, length);
+
+            memset(display, 0, sizeof(display));
+            for(uint8_t i = 0; i < length; i++) {
+                snprintf(
+                    display + (i * 2), sizeof(display), "%02x", bit_buffer_get_byte(rx_buffer, i));
+            }
+            FURI_LOG_D(
+                TAG, "NFC Response with parity %d: %s [%02x]", length, display, rx_parity[0]);
+
+        } else {
+            FURI_LOG_W(TAG, "UNHANDLED FORMAT");
+        }
+
+        seader_send_nfc_rx(
+            seader,
             (uint8_t*)bit_buffer_get_data(rx_buffer),
             bit_buffer_get_size_bytes(rx_buffer));
 
@@ -757,21 +932,30 @@ void seader_parse_nfc_command_transmit(
         seader_iso15693_transmit(
             seader, spc->picopass_poller, nfcSend->data.buf, nfcSend->data.size);
     } else if(frameProtocol == FrameProtocol_nfc) {
-        seader_iso14443a_transmit(
-            seader,
-            spc->iso14443_4a_poller,
-            nfcSend->data.buf,
-            nfcSend->data.size,
-            (uint16_t)timeOut,
-            nfcSend->format->buf);
+        if(spc->iso14443_4a_poller) {
+            seader_iso14443a_transmit(
+                seader,
+                spc->iso14443_4a_poller,
+                nfcSend->data.buf,
+                nfcSend->data.size,
+                (uint16_t)timeOut,
+                nfcSend->format->buf);
+        } else if(spc->mfc_poller) {
+            seader_mfc_transmit(
+                seader,
+                spc->mfc_poller,
+                nfcSend->data.buf,
+                nfcSend->data.size,
+                (uint16_t)timeOut,
+                nfcSend->format->buf);
+        }
     } else {
         FURI_LOG_W(TAG, "unknown frame protocol %lx", frameProtocol);
     }
 }
 
-void seader_parse_nfc_off(SeaderUartBridge* seader_uart) {
+void seader_parse_nfc_off(Seader* seader) {
     FURI_LOG_D(TAG, "Set Field Off");
-
     NFCResponse_t* nfcResponse = 0;
     nfcResponse = calloc(1, sizeof *nfcResponse);
     assert(nfcResponse);
@@ -785,21 +969,19 @@ void seader_parse_nfc_off(SeaderUartBridge* seader_uart) {
     response->present = Response_PR_nfcResponse;
     response->choice.nfcResponse = *nfcResponse;
 
-    seader_send_response(seader_uart, response, 0x44, 0x0a, 0);
+    seader_send_response(seader, response, 0x44, 0x0a, 0);
 
-    ASN_STRUCT_FREE(asn_DEF_Response, response);
-    ASN_STRUCT_FREE(asn_DEF_NFCResponse, nfcResponse);
+    free(response);
+    free(nfcResponse);
 }
 
 void seader_parse_nfc_command(Seader* seader, NFCCommand_t* nfcCommand, SeaderPollerContainer* spc) {
-    SeaderWorker* seader_worker = seader->worker;
-    SeaderUartBridge* seader_uart = seader_worker->uart;
     switch(nfcCommand->present) {
     case NFCCommand_PR_nfcSend:
         seader_parse_nfc_command_transmit(seader, &nfcCommand->choice.nfcSend, spc);
         break;
     case NFCCommand_PR_nfcOff:
-        seader_parse_nfc_off(seader_uart);
+        seader_parse_nfc_off(seader);
         seader->worker->stage = SeaderPollerEventTypeComplete;
         break;
     default:
@@ -817,17 +999,19 @@ bool seader_worker_state_machine(
 
     switch(payload->present) {
     case Payload_PR_response:
+        FURI_LOG_D(TAG, "Payload_PR_response");
         seader_parse_response(seader, &payload->choice.response);
         processed = true;
         break;
     case Payload_PR_nfcCommand:
+        FURI_LOG_D(TAG, "Payload_PR_nfcCommand");
         if(online) {
             seader_parse_nfc_command(seader, &payload->choice.nfcCommand, spc);
             processed = true;
         }
         break;
     case Payload_PR_errorResponse:
-        FURI_LOG_W(TAG, "Error Response");
+        FURI_LOG_W(TAG, "Payload_PR_errorResponse");
         processed = true;
         view_dispatcher_send_custom_event(seader->view_dispatcher, SeaderCustomEventWorkerExit);
         break;
@@ -855,14 +1039,24 @@ bool seader_process_success_response_i(
     if(rval.code == RC_OK) {
 #ifdef ASN1_DEBUG
         if(online == false) {
+            memset(display, 0, sizeof(display));
+            for(uint8_t i = 0; i < len - 6; i++) {
+                snprintf(display + (i * 2), sizeof(display), "%02x", apdu[i + 6]);
+            }
+            FURI_LOG_D(TAG, "incoming APDU %s", display);
+
             char payloadDebug[384] = {0};
             memset(payloadDebug, 0, sizeof(payloadDebug));
             (&asn_DEF_Payload)
                 ->op->print_struct(
                     &asn_DEF_Payload, payload, 1, seader_print_struct_callback, payloadDebug);
             if(strlen(payloadDebug) > 0) {
-                FURI_LOG_D(TAG, "Payload: %s", payloadDebug);
+                FURI_LOG_D(TAG, "Received Payload: %s", payloadDebug);
+            } else {
+                FURI_LOG_D(TAG, "Received empty Payload");
             }
+        } else {
+            FURI_LOG_D(TAG, "Online mode");
         }
 #endif
 
@@ -905,18 +1099,22 @@ NfcCommand seader_worker_card_detect(
     OCTET_STRING_t atqa_string = {.buf = atqa, .size = 2};
     uint8_t protocol_bytes[] = {0x00, 0x00};
 
-    if(sak == 0 && atqa == NULL) {
+    if(sak == 0 && atqa == NULL) { // picopass
         protocol_bytes[1] = FrameProtocol_iclass;
         OCTET_STRING_fromBuf(
             &cardDetails->protocol, (const char*)protocol_bytes, sizeof(protocol_bytes));
         memcpy(credential->diversifier, uid, uid_len);
         credential->diversifier_len = uid_len;
         credential->isDesfire = false;
-    } else {
+    } else if(atqa == 0) { // MFC
         protocol_bytes[1] = FrameProtocol_nfc;
         OCTET_STRING_fromBuf(
             &cardDetails->protocol, (const char*)protocol_bytes, sizeof(protocol_bytes));
-
+        cardDetails->sak = &sak_string;
+    } else { // type 4
+        protocol_bytes[1] = FrameProtocol_nfc;
+        OCTET_STRING_fromBuf(
+            &cardDetails->protocol, (const char*)protocol_bytes, sizeof(protocol_bytes));
         cardDetails->sak = &sak_string;
         cardDetails->atqa = &atqa_string;
         credential->isDesfire = seader_mf_df_check_card_type(atqa[0], atqa[1], sak);
@@ -927,7 +1125,15 @@ NfcCommand seader_worker_card_detect(
     }
 
     seader_send_card_detected(seader, cardDetails);
+    // Print version information for app and firmware for later review in log
+    const Version* version = version_get();
+    FURI_LOG_I(
+        TAG,
+        "Firmware origin: %s firmware version: %s app version: %s",
+        version_get_firmware_origin(version),
+        version_get_version(version),
+        FAP_VERSION);
 
-    ASN_STRUCT_FREE(asn_DEF_CardDetails, cardDetails);
+    free(cardDetails);
     return NfcCommandContinue;
 }

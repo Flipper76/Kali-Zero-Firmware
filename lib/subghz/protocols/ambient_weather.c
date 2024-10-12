@@ -31,8 +31,8 @@
  * and on decoding also 0xffd45
  */
 
-#define AMBIENT_WEATHER_PACKET_HEADER_1 0xFFD440000000000 //0xffd45 .. 0xffd46
-#define AMBIENT_WEATHER_PACKET_HEADER_2 0x001440000000000 //0x00145 .. 0x00146
+#define AMBIENT_WEATHER_PACKET_HEADER_1    0xFFD440000000000 //0xffd45 .. 0xffd46
+#define AMBIENT_WEATHER_PACKET_HEADER_2    0x001440000000000 //0x00145 .. 0x00146
 #define AMBIENT_WEATHER_PACKET_HEADER_MASK 0xFFFFC0000000000
 
 static const SubGhzBlockConst ws_protocol_ambient_weather_const = {
@@ -65,10 +65,12 @@ const SubGhzProtocolDecoder ws_protocol_ambient_weather_decoder = {
     .feed = ws_protocol_decoder_ambient_weather_feed,
     .reset = ws_protocol_decoder_ambient_weather_reset,
 
-    .get_hash_data = ws_protocol_decoder_ambient_weather_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = ws_protocol_decoder_ambient_weather_get_hash_data,
     .serialize = ws_protocol_decoder_ambient_weather_serialize,
     .deserialize = ws_protocol_decoder_ambient_weather_deserialize,
     .get_string = ws_protocol_decoder_ambient_weather_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder ws_protocol_ambient_weather_encoder = {
@@ -253,22 +255,5 @@ SubGhzProtocolStatus
 void ws_protocol_decoder_ambient_weather_get_string(void* context, FuriString* output) {
     furi_assert(context);
     WSProtocolDecoderAmbient_Weather* instance = context;
-    bool locale_is_metric = furi_hal_rtc_get_locale_units() == FuriHalRtcLocaleUnitsMetric;
-    furi_string_cat_printf(
-        output,
-        "%s\r\n%dbit\r\n"
-        "Key:0x%lX%08lX\r\n"
-        "Sn:0x%lX Ch:%d  Bat:%d\r\n"
-        "Temp:%3.1f %c Hum:%d%%",
-        instance->generic.protocol_name,
-        instance->generic.data_count_bit,
-        (uint32_t)(instance->generic.data >> 32),
-        (uint32_t)(instance->generic.data),
-        instance->generic.id,
-        instance->generic.channel,
-        instance->generic.battery_low,
-        (double)(locale_is_metric ? instance->generic.temp :
-                                    locale_celsius_to_fahrenheit(instance->generic.temp)),
-        locale_is_metric ? 'C' : 'F',
-        instance->generic.humidity);
+    ws_block_generic_get_string(&instance->generic, output);
 }

@@ -6,22 +6,22 @@
 #include <notification/notification.h>
 #include <notification/notification_messages.h>
 
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
+#define SCREEN_WIDTH           128
+#define SCREEN_HEIGHT          64
 #define PLAYER_INIT_LOCATION_X 20
-#define PLAYER_INIT_AIM 45
-#define PLAYER_INIT_POWER 50
-#define ENEMY_INIT_LOCATION_X 108
-#define TANK_BARREL_LENGTH 8
-#define GRAVITY_FORCE (double)0.5
-#define MIN_GROUND_HEIGHT 35
-#define MAX_GROUND_HEIGHT 55
-#define MAX_FIRE_POWER 100
-#define MIN_FIRE_POWER 0
-#define TANK_COLLIDER_SIZE 3
-#define MAX_WIND 10
-#define MAX_PLAYER_DIFF_X 20
-#define MAX_ENEMY_DIFF_X 20
+#define PLAYER_INIT_AIM        45
+#define PLAYER_INIT_POWER      50
+#define ENEMY_INIT_LOCATION_X  108
+#define TANK_BARREL_LENGTH     8
+#define GRAVITY_FORCE          (double)0.5
+#define MIN_GROUND_HEIGHT      35
+#define MAX_GROUND_HEIGHT      55
+#define MAX_FIRE_POWER         100
+#define MIN_FIRE_POWER         0
+#define TANK_COLLIDER_SIZE     3
+#define MAX_WIND               10
+#define MAX_PLAYER_DIFF_X      20
+#define MAX_ENEMY_DIFF_X       20
 
 // That's a filthy workaround but sin(player.aimAngle) breaks it all... If you're able to fix it, please do create a PR!
 double scorched_tanks_sin[91] = {
@@ -350,15 +350,17 @@ static void scorched_tanks_render_callback(Canvas* const canvas, void* ctx) {
     furi_mutex_release(game_state->mutex);
 }
 
-static void scorched_tanks_input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void scorched_tanks_input_callback(InputEvent* input_event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     ScorchedTanksEvent event = {.type = EventTypeKey, .input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
 }
 
-static void scorched_tanks_update_timer_callback(FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void scorched_tanks_update_timer_callback(void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     ScorchedTanksEvent event = {.type = EventTypeTick};
     furi_message_queue_put(event_queue, &event, 0);

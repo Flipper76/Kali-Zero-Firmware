@@ -3,12 +3,12 @@
 #include <applications.h>
 #include <assets_icons.h>
 #include <loader/loader.h>
+#include <toolbox/run_parallel.h>
 
 #include "../desktop_i.h"
 #include "../views/desktop_events.h"
 #include "../views/desktop_view_main.h"
 #include "desktop_scene.h"
-#include "desktop_scene_i.h"
 
 #define TAG "DesktopSrv"
 
@@ -120,7 +120,8 @@ bool desktop_scene_main_on_event(void* context, SceneManagerEvent event) {
             break;
 
         case DesktopMainEventOpenPowerOff: {
-			loader_start_detached_with_gui_error(desktop->loader, "Alimentation", "off");
+            // Workaround for shutdown when app can't be opened
+            run_parallel(desktop_shutdown, desktop, 512);
             consumed = true;
             break;
         }

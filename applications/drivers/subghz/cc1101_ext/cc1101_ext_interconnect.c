@@ -7,7 +7,7 @@
 static bool subghz_device_cc1101_ext_interconnect_is_frequency_valid(uint32_t frequency) {
     bool ret = subghz_device_cc1101_ext_is_frequency_valid(frequency);
     if(!ret) {
-        furi_crash("SubGhz: fréquence incorrecte.");
+        furi_crash("SubGhz: Incorrect frequency.");
     }
     return ret;
 }
@@ -92,6 +92,8 @@ const SubGhzDeviceInterconnect subghz_device_cc1101_ext_interconnect = {
     .is_rx_data_crc_valid = subghz_device_cc1101_ext_is_rx_data_crc_valid,
     .read_packet = subghz_device_cc1101_ext_read_packet,
     .write_packet = subghz_device_cc1101_ext_write_packet,
+
+    .check_tx = subghz_device_cc1101_ext_check_tx,
 };
 
 const SubGhzDevice subghz_device_cc1101_ext = {
@@ -105,6 +107,6 @@ static const FlipperAppPluginDescriptor subghz_device_cc1101_ext_descriptor = {
     .entry_point = &subghz_device_cc1101_ext,
 };
 
-const FlipperAppPluginDescriptor* subghz_device_cc1101_ext_ep() {
+const FlipperAppPluginDescriptor* subghz_device_cc1101_ext_ep(void) {
     return &subghz_device_cc1101_ext_descriptor;
 }

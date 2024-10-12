@@ -8,20 +8,7 @@
 #include <ibutton/ibutton_worker.h>
 #include <ibutton/ibutton_protocols.h>
 
-static void ibutton_cli(Cli* cli, FuriString* args, void* context);
-
-// app cli function
-void ibutton_on_system_start() {
-#ifdef SRV_CLI
-    Cli* cli = furi_record_open(RECORD_CLI);
-    cli_add_command(cli, "ikey", CliCommandFlagDefault, ibutton_cli, cli);
-    furi_record_close(RECORD_CLI);
-#else
-    UNUSED(ibutton_cli);
-#endif
-}
-
-static void ibutton_cli_print_usage() {
+static void ibutton_cli_print_usage(void) {
     printf("Usage:\r\n");
     printf("ikey read\r\n");
     printf("ikey emulate <key_type> <key_data>\r\n");
@@ -156,7 +143,7 @@ void ibutton_cli_write(Cli* cli, FuriString* args) {
         }
 
         if(!(ibutton_protocols_get_features(protocols, ibutton_key_get_protocol_id(key)) &
-             iButtonProtocolFeatureWriteBlank)) {
+             iButtonProtocolFeatureWriteId)) {
             ibutton_cli_print_usage();
             break;
         }
@@ -165,7 +152,7 @@ void ibutton_cli_write(Cli* cli, FuriString* args) {
         ibutton_cli_print_key(protocols, key);
         printf("Press Ctrl+C to abort\r\n");
 
-        ibutton_worker_write_blank_start(worker, key);
+        ibutton_worker_write_id_start(worker, key);
         while(true) {
             uint32_t flags = furi_event_flag_wait(
                 write_context.event, EVENT_FLAG_IBUTTON_COMPLETE, FuriFlagWaitAny, 100);
@@ -251,4 +238,17 @@ void ibutton_cli(Cli* cli, FuriString* args, void* context) {
     }
 
     furi_string_free(cmd);
+}
+
+#include <flipper_application/flipper_application.h>
+#include <cli/cli_i.h>
+
+static const FlipperAppPluginDescriptor plugin_descriptor = {
+    .appid = CLI_PLUGIN_APP_ID,
+    .ep_api_version = CLI_PLUGIN_API_VERSION,
+    .entry_point = &ibutton_cli,
+};
+
+const FlipperAppPluginDescriptor* ibutton_cli_plugin_ep(void) {
+    return &plugin_descriptor;
 }

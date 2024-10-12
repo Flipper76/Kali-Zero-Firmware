@@ -1068,7 +1068,7 @@ typedef struct {
 
 typedef struct {
   /*! addressing mode used */
-  uint8_t addr_mode; // Valid Range: 0x02 – 0x03
+  uint8_t addr_mode; // Valid Range: 0x02 â€“ 0x03
   /*! Poll requester address */
   MAC_addr_t request_address;
 } MAC_pollInd_t;

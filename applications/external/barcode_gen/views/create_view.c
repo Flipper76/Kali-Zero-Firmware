@@ -2,8 +2,8 @@
 #include "create_view.h"
 #include <math.h>
 
-#define LINE_HEIGHT 16
-#define TEXT_PADDING 4
+#define LINE_HEIGHT      16
+#define TEXT_PADDING     4
 #define TOTAL_MENU_ITEMS 5
 
 typedef enum {
@@ -111,7 +111,7 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
 
     draw_menu_item(
         canvas,
-        "Nom",
+        "Name",
         furi_string_empty(create_view_model->file_name) ?
             "--" :
             furi_string_get_cstr(create_view_model->file_name),
@@ -122,7 +122,7 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
 
     draw_menu_item(
         canvas,
-        "Donnée",
+        "Data",
         furi_string_empty(create_view_model->barcode_data) ?
             "--" :
             furi_string_get_cstr(create_view_model->barcode_data),
@@ -133,14 +133,14 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
 
     draw_button(
         canvas,
-        "Enregistrer",
+        "Save",
         SaveMenuButton * LINE_HEIGHT + startY,
         selected_menu_item == SaveMenuButton);
 
     if(create_view_model->mode == EditMode) {
         draw_button(
             canvas,
-            "Supprimer",
+            "Delete",
             DeleteMenuButton * LINE_HEIGHT + startY,
             selected_menu_item == DeleteMenuButton);
     }
@@ -232,7 +232,7 @@ static bool app_input_callback(InputEvent* input_event, void* ctx) {
                     //clear default text
                     false);
                 text_input_set_header_text(
-                    create_view_object->barcode_app->text_input, "Nom du fichier");
+                    create_view_object->barcode_app->text_input, "File Name");
 
                 view_dispatcher_switch_to_view(
                     create_view_object->barcode_app->view_dispatcher, TextInputView);
@@ -255,7 +255,7 @@ static bool app_input_callback(InputEvent* input_event, void* ctx) {
                     //clear default text
                     false);
                 text_input_set_header_text(
-                    create_view_object->barcode_app->text_input, "Données du code-barres");
+                    create_view_object->barcode_app->text_input, "Barcode Data");
 
                 view_dispatcher_switch_to_view(
                     create_view_object->barcode_app->view_dispatcher, TextInputView);
@@ -330,21 +330,21 @@ void remove_barcode(CreateView* create_view_object) {
         create_view_object->view,
         CreateViewModel * model,
         {
-            FURI_LOG_I(TAG, "Tentative de suppression du fichier");
+            FURI_LOG_I(TAG, "Attempting to remove file");
             if(model->file_path != NULL) {
-                FURI_LOG_I(TAG, "Suppression du fichier: %s", furi_string_get_cstr(model->file_path));
+                FURI_LOG_I(TAG, "Removing File: %s", furi_string_get_cstr(model->file_path));
                 if(storage_simply_remove(storage, furi_string_get_cstr(model->file_path))) {
                     FURI_LOG_I(
                         TAG,
-                        "Fichier: \"%s\" a été supprimé avec succès",
+                        "File: \"%s\" was successfully removed",
                         furi_string_get_cstr(model->file_path));
                     success = true;
                 } else {
-                    FURI_LOG_E(TAG, "Impossible de supprimer le fichier!");
+                    FURI_LOG_E(TAG, "Unable to remove file!");
                     success = false;
                 }
             } else {
-                FURI_LOG_E(TAG, "Impossible de supprimer le fichier de code-barres");
+                FURI_LOG_E(TAG, "Could not remove barcode file");
                 success = false;
             }
         },
@@ -356,9 +356,9 @@ void remove_barcode(CreateView* create_view_object) {
         MessageViewModel * model,
         {
             if(success) {
-                model->message = "Fichier supprimé";
+                model->message = "File Deleted";
             } else {
-                model->message = "Impossible de supprimer le fichier";
+                model->message = "Could not delete file";
             }
         },
         true);
@@ -387,15 +387,15 @@ void save_barcode(CreateView* create_view_object) {
         true);
 
     if(file_name == NULL || furi_string_empty(file_name)) {
-        FURI_LOG_E(TAG, "Le nom du fichier ne peut pas être vide");
+        FURI_LOG_E(TAG, "File Name cannot be empty");
         return;
     }
     if(barcode_data == NULL || furi_string_empty(barcode_data)) {
-        FURI_LOG_E(TAG, "Les données du code-barres ne peuvent pas être vides");
+        FURI_LOG_E(TAG, "Barcode Data cannot be empty");
         return;
     }
     if(barcode_type == NULL) {
-        FURI_LOG_E(TAG, "Type non défini");
+        FURI_LOG_E(TAG, "Type not defined");
         return;
     }
 
@@ -416,9 +416,9 @@ void save_barcode(CreateView* create_view_object) {
                     furi_string_get_cstr(file_path),
                     furi_string_get_cstr(full_file_path));
                 if(error != FSE_OK) {
-                    FURI_LOG_E(TAG, "Erreur de renommage: %s", storage_error_get_desc(error));
+                    FURI_LOG_E(TAG, "Rename error: %s", storage_error_get_desc(error));
                 } else {
-                    FURI_LOG_I(TAG, "Renommer avec succès");
+                    FURI_LOG_I(TAG, "Rename Success");
                 }
             }
         }
@@ -426,7 +426,7 @@ void save_barcode(CreateView* create_view_object) {
 
     FlipperFormat* ff = flipper_format_file_alloc(storage);
 
-    FURI_LOG_I(TAG, "Enregistrer le code-barres dans: %s", furi_string_get_cstr(full_file_path));
+    FURI_LOG_I(TAG, "Saving Barcode to: %s", furi_string_get_cstr(full_file_path));
 
     bool file_opened_status = false;
     if(mode == NewMode) {
@@ -457,7 +457,7 @@ void save_barcode(CreateView* create_view_object) {
 
         success = true;
     } else {
-        FURI_LOG_E(TAG, "Erreur d'enregistrement");
+        FURI_LOG_E(TAG, "Save error");
         success = false;
     }
     furi_string_free(full_file_path);
@@ -469,9 +469,9 @@ void save_barcode(CreateView* create_view_object) {
         MessageViewModel * model,
         {
             if(success) {
-                model->message = "Fichier enregistré!";
+                model->message = "File Saved!";
             } else {
-                model->message = "Une erreur s'est produite";
+                model->message = "A saving error has occurred";
             }
         },
         true);

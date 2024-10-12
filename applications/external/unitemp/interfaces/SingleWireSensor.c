@@ -217,9 +217,11 @@ UnitempStatus unitemp_singlewire_update(Sensor* sensor) {
         for(uint8_t b = 7; b != 255; b--) {
             uint16_t hT = 0, lT = 0;
             //Пока линия в низком уровне, инкремент переменной lT
-            while(!furi_hal_gpio_read(instance->gpio->pin) && lT != 65535) lT++;
+            while(!furi_hal_gpio_read(instance->gpio->pin) && lT != 65535)
+                lT++;
             //Пока линия в высоком уровне, инкремент переменной hT
-            while(furi_hal_gpio_read(instance->gpio->pin) && hT != 65535) hT++;
+            while(furi_hal_gpio_read(instance->gpio->pin) && hT != 65535)
+                hT++;
             //Если hT больше lT, то пришла единица
             if(hT > lT) data[a] |= (1 << b);
         }

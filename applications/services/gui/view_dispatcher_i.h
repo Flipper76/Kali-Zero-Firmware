@@ -5,17 +5,19 @@
 
 #pragma once
 
-#include <furi.h>
 #include <m-dict.h>
 
 #include "view_dispatcher.h"
 #include "view_i.h"
 #include "gui_i.h"
 
-DICT_DEF2(ViewDict, uint32_t, M_DEFAULT_OPLIST, View*, M_PTR_OPLIST)
+DICT_DEF2(ViewDict, uint32_t, M_DEFAULT_OPLIST, View*, M_PTR_OPLIST) // NOLINT
 
 struct ViewDispatcher {
-    FuriMessageQueue* queue;
+    FuriEventLoop* event_loop;
+    FuriMessageQueue* input_queue;
+    FuriMessageQueue* event_queue;
+
     Gui* gui;
     ViewPort* view_port;
     ViewDict_t views;
@@ -30,23 +32,9 @@ struct ViewDispatcher {
     ViewDispatcherTickEventCallback tick_event_callback;
     uint32_t tick_period;
     void* event_context;
+
+    FuriMessageQueue* ascii_queue;
 };
-
-typedef enum {
-    ViewDispatcherMessageTypeInput,
-    ViewDispatcherMessageTypeAscii,
-    ViewDispatcherMessageTypeCustomEvent,
-    ViewDispatcherMessageTypeStop,
-} ViewDispatcherMessageType;
-
-typedef struct {
-    ViewDispatcherMessageType type;
-    union {
-        InputEvent input;
-        AsciiEvent ascii;
-        uint32_t custom_event;
-    };
-} ViewDispatcherMessage;
 
 /** ViewPort Draw Callback */
 void view_dispatcher_draw_callback(Canvas* canvas, void* context);
@@ -64,7 +52,7 @@ void view_dispatcher_handle_input(ViewDispatcher* view_dispatcher, InputEvent* e
 void view_dispatcher_handle_ascii(ViewDispatcher* view_dispatcher, AsciiEvent* event);
 
 /** Tick handler */
-void view_dispatcher_handle_tick_event(ViewDispatcher* view_dispatcher);
+void view_dispatcher_handle_tick_event(void* context);
 
 /** Custom event handler */
 void view_dispatcher_handle_custom_event(ViewDispatcher* view_dispatcher, uint32_t event);
@@ -74,3 +62,12 @@ void view_dispatcher_set_current_view(ViewDispatcher* view_dispatcher, View* vie
 
 /** ViewDispatcher update event */
 void view_dispatcher_update(View* view, void* context);
+
+/** ViewDispatcher run event loop event callback */
+bool view_dispatcher_run_event_callback(FuriEventLoopObject* object, void* context);
+
+/** ViewDispatcher run event loop input callback */
+bool view_dispatcher_run_input_callback(FuriEventLoopObject* object, void* context);
+
+/** ViewDispatcher run event loop ascii callback */
+bool view_dispatcher_run_ascii_callback(FuriEventLoopObject* object, void* context);

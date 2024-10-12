@@ -22,15 +22,15 @@ static const SubGhzBlockConst pocsag2400_const = {
 };
 
 // Minimal amount of sync bits (interleaving zeros and ones)
-#define POCSAG_MIN_SYNC_BITS 24
-#define POCSAG_CW_BITS 32
-#define POCSAG_CW_MASK 0xFFFFFFFF
+#define POCSAG_MIN_SYNC_BITS   24
+#define POCSAG_CW_BITS         32
+#define POCSAG_CW_MASK         0xFFFFFFFF
 #define POCSAG_FRAME_SYNC_CODE 0x7CD215D8
-#define POCSAG_IDLE_CODE_WORD 0x7A89C197
+#define POCSAG_IDLE_CODE_WORD  0x7A89C197
 
-#define POCSAG_FUNC_NUM 0
-#define POCSAG_FUNC_ALERT1 1
-#define POCSAG_FUNC_ALERT2 2
+#define POCSAG_FUNC_NUM      0
+#define POCSAG_FUNC_ALERT1   1
+#define POCSAG_FUNC_ALERT2   2
 #define POCSAG_FUNC_ALPHANUM 3
 
 static const char* func_msg[] = {"\e#Num:\e# ", "\e#Alert\e#", "\e#Alert:\e# ", "\e#Msg:\e# "};
@@ -420,10 +420,12 @@ const SubGhzProtocolDecoder subghz_protocol_pocsag_decoder = {
     .free = subghz_protocol_decoder_pocsag_free,
     .reset = subghz_protocol_decoder_pocsag_reset,
     .feed = subghz_protocol_decoder_pocsag_feed,
-    .get_hash_data = subghz_protocol_decoder_pocsag_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_pocsag_get_hash_data,
     .serialize = subghz_protocol_decoder_pocsag_serialize,
     .deserialize = subghz_protocol_decoder_pocsag_deserialize,
     .get_string = subhz_protocol_decoder_pocsag_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_pocsag_encoder = {

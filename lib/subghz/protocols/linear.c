@@ -49,10 +49,12 @@ const SubGhzProtocolDecoder subghz_protocol_linear_decoder = {
     .feed = subghz_protocol_decoder_linear_feed,
     .reset = subghz_protocol_decoder_linear_reset,
 
-    .get_hash_data = subghz_protocol_decoder_linear_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_linear_get_hash_data,
     .serialize = subghz_protocol_decoder_linear_serialize,
     .deserialize = subghz_protocol_decoder_linear_deserialize,
     .get_string = subghz_protocol_decoder_linear_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_linear_encoder = {
@@ -243,8 +245,8 @@ void subghz_protocol_decoder_linear_feed(void* context, bool level, uint32_t dur
             if(duration >= (subghz_protocol_linear_const.te_short * 5)) {
                 instance->decoder.parser_step = LinearDecoderStepReset;
                 //checking that the duration matches the guardtime
-                if((DURATION_DIFF(duration, subghz_protocol_linear_const.te_short * 42) >
-                    subghz_protocol_linear_const.te_delta * 20)) {
+                if(DURATION_DIFF(duration, subghz_protocol_linear_const.te_short * 42) >
+                   subghz_protocol_linear_const.te_delta * 20) {
                     break;
                 }
                 if(DURATION_DIFF(instance->decoder.te_last, subghz_protocol_linear_const.te_short) <

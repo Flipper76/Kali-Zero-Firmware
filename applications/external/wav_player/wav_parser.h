@@ -3,12 +3,10 @@
 
 #include <furi.h>
 #include <furi_hal.h>
-#include <cli/cli.h>
 #include <gui/gui.h>
-#include <stm32wbxx_ll_dma.h>
 #include <dialogs/dialogs.h>
 #include <notification/notification_messages.h>
-#include <gui/view_dispatcher.h>
+#include <gui/view_holder.h>
 #include <toolbox/stream/file_stream.h>
 
 #include "wav_player_view.h"
@@ -50,7 +48,7 @@ typedef struct {
     Storage* storage;
     Stream* stream;
     WavParser* parser;
-    uint16_t* sample_buffer;
+    uint8_t* sample_buffer;
     uint8_t* tmp_buffer;
 
     uint32_t sample_rate;
@@ -67,9 +65,11 @@ typedef struct {
     bool play;
 
     WavPlayerView* view;
-    ViewDispatcher* view_dispatcher;
+    ViewHolder* view_holder;
     Gui* gui;
     NotificationApp* notification;
+
+    FuriString* path;
 } WavPlayerApp;
 
 WavParser* wav_parser_alloc();

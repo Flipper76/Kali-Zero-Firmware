@@ -1,69 +1,70 @@
-# Assets Dolphin {#dolphin_assets}
+# Dolphin assets {#dolphin_assets}
 
-Les actifs de Dolphin sont divisés en 3 parties :
+Dolphin assets are split into 3 parts:
 
-- blocking  - Animations essentielles utilisées pour bloquer les notifications du système. Ils sont regroupés dans `assets_dolphin_blocking.[h,c]`.
-- internal - Animations internes utilisées pour l'animation des dauphins inactifs. Converti en `assets_dolphin_internal.[h,c]`.
-- external - Animations externes utilisées pour l'animation des dauphins inactifs. Emballé dans le dossier de ressources et placé sur la carte SD.
+- blocking  - Essential animations that are used for blocking system notifications. They are packed to `assets_dolphin_blocking.[h,c]`.
+- internal  - Internal animations that are used for idle dolphin animation. Converted to `assets_dolphin_internal.[h,c]`.
+- external  - External animations that are used for idle dolphin animation. Packed to resource folder and placed on SD card.
 
-# Les Fichiers
+# Files
 
-- `manifest.txt` - contient une énumération d'animations utilisée pour la sélection aléatoire d'animations. Point de départ pour Dolphin.
-- `meta.txt` - contient des données qui décrivent comment l'animation est dessinée.
-- `frame_X.png` - cadre d'animation.
+- `manifest.txt` - contains animations enumeration that is used for random animation selection. Starting point for Dolphin.
+- `meta.txt`     - contains data that describes how animation is drawn.
+- `frame_X.png`  - animation frame.
 
-## Fichier manifest.txt
+## File manifest.txt
 
-Fichier au format Flipper avec clés ordonnées.
+Flipper Format File with ordered keys.
 
-Entête:
+Header:
 
 ```
 Filetype: Flipper Animation Manifest
-Version 1
+Version: 1
 ```
 
-- `Name` - nom de l'animation. Doit être le nom exact du répertoire d'animation.
-- `Min butthurt`, `Max butthurt` - gamme de fesses de dauphin pour cette animation.
-- `Min level`, `Max level` - plage de niveaux du dauphin pour cette animation. Si 0, cette animation ne participe pas à la sélection aléatoire des animations inactives et ne peut être sélectionnée que par son nom exact.
-- `Weight` - chance que cette animation soit choisie lors d'une sélection d'animation aléatoire.
+- `Name` - name of animation. Must be exact animation directory name.
+- `Min butthurt`, `Max butthurt` - range of dolphin's butthurt for this animation.
+- `Min level`, `Max level` - range of dolphin's level for this animation. If 0, this animation doesn't participate in random idle animation selection and can only be selected by exact name.
+- `Weight` - chance of this animation to be chosen at random animation selection.
 
-Certaines animations peuvent être exclues de la participation à la sélection aléatoire d'animations, comme « L1_NoSd_128x49 ».
+Some animations can be excluded from participation in random animation selection, such as `L1_NoSd_128x49`.
 
-## Fichier meta.txt
+## File meta.txt
 
-Fichier au format Flipper avec clés ordonnées.
+Flipper Format File with ordered keys.
 
-Entête:
+Header:
 
 ```
 Filetype: Flipper Animation
 Version: 1
 ```
 
-- `Width` - largeur de l'animation en px (<= 128)
-- `Height` - hauteur de l'animation en px (<= 64)
-- `Passive frames` - nombre d'images bitmap pour l'état d'animation passive
-- `Active frames` - nombre d'images bitmap pour l'état d'animation actif (peut être 0)
-- `Frames order` - ordre des images bitmap où les N premières images sont passives et les M suivantes sont actives. Chaque numéro X dans l'ordre fait référence à une image bitmap, avec le nom frame\_X.bm. Ce fichier doit exister. N'importe quel nombre X peut être répété pour faire référence à la même image dans l'animation.
-- `Active cycles` - cycles pour répéter N images actives pendant une période active complète. Par exemple. si les images pour les cycles actifs sont 6 et 7, et les cycles actifs sont 3, donc la période active complète joue 6 7 6 7 6 7. Les périodes complètes de période passive + active sont appelées *période totale*.
-- `Frame rate` - nombre d'images à lire pendant 1 seconde.
-- `Duration` - nombre total de secondes pour lire 1 animation.
-- `Active cooldown` - nombre de secondes (après le mode passif) à passer avant d'entrer dans le prochain mode actif.
+- `Width` - animation width in px (<= 128)
+- `Height` - animation height in px (<= 64)
+  > Note: Animations are aligned to bottom left, you can save a few bytes by trimming white borders on top and right of your animations (internal and blocking ones do this to save some precious DFU space)
+- `Passive frames` - number of bitmap frames for passive animation state
+- `Active frames` - number of bitmap frames for active animation state (can be 0)
+- `Frames order` - order of bitmap frames where first N frames are passive and following M are active. Each X number in order refers to bitmap frame, with name frame\_X.bm. This file must exist. Any X number can be repeated to refer same frame in animation.
+- `Active cycles` - cycles to repeat of N active frames for full active period. E.g. if frames for active cycles are 6 and 7, and active cycles is 3, so full active period plays 6 7 6 7 6 7. Full period of passive + active period are called *total period*.
+- `Frame rate` - number of frames to play for 1 second.
+- `Duration` - total amount of seconds to play 1 animation.
+- `Active cooldown` - amount of seconds (after passive mode) to pass before entering next active mode.
 
-- `Bubble slots` - nombre de séquences de bulles.
-- Toute séquence de bulles joue toute la séquence en mode actif. Il peut y avoir de nombreuses séquences de bulles et bulles à l'intérieur. Les bulles d’une séquence de bulles doivent résider dans 1 emplacement. L’ordre des bulles dans une séquence de bulles est déterminé par leur occurrence dans le fichier. Dès que l'index d'image sort de l'index EndFrame de la bulle, la bulle d'animation suivante est choisie. Il peut également y avoir des cadres sans bulles entre 2 bulles.
+- `Bubble slots` - amount of bubble sequences.
+- Any bubble sequence plays whole sequence during active mode. There can be many bubble sequences and bubbles inside it. Bubbles in 1 bubble sequence have to reside in 1 slot. Bubbles order in 1 bubble sequence is determined by occurrence in file. As soon as frame index goes out of EndFrame index of bubble - next animation bubble is chosen. There can also be free of bubbles frames between 2 bubbles.
 
-- `Slot` - numéro pour unir les bulles pour la même séquence.
-- `X`, `Y` - sont les coordonnées du coin supérieur gauche de la bulle.
-- `Text` - texte dans une bulle. La nouvelle ligne est `\n`
-- `AlignH` - emplacement horizontal du coin de la bulle (Gauche, Centre, Droite)
-- `AlignV` - emplacement vertical du coin de la bulle (Haut, Centre, Bas)
-- `StartFrame`, `EndFrame` - plage d'index de trame dans toute la période pour afficher la bulle.
+- `Slot` - number to unite bubbles for same sequence.
+- `X`, `Y` - are coordinates of left top corner of bubble.
+- `Text` - text in bubble. New line is `\n`
+- `AlignH` - horizontal place of bubble corner (Left, Center, Right)
+- `AlignV` - vertical place of bubble corner (Top, Center, Bottom)
+- `StartFrame`, `EndFrame` - frame index range inside whole period to show bubble.
 
-### Compréhension des index de trame
+### Understanding of frame indexes
 
-Par exemple nous avons
+For example we have
 
 ```
 Passive frames: 6
@@ -72,7 +73,7 @@ Frames order: 0 1 2 3 4 5 6 7
 Active cycles: 4
 ```
 
-Ensuite, nous avons des index
+Then we have indexes
 
 ```
                         passive(6)            active (2 * 4)

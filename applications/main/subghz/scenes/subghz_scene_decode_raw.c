@@ -1,16 +1,19 @@
 #include "../subghz_i.h"
 
 #define TAG "SubGhzDecodeRaw"
+
 #define SAMPLES_TO_READ_PER_TICK 400
 
 static void subghz_scene_receiver_update_statusbar(void* context) {
     SubGhz* subghz = context;
     FuriString* history_stat_str = furi_string_alloc();
+    bool show_sats = subghz->gps && furi_hal_rtc_get_timestamp() % 2;
     if(!subghz_history_get_text_space_left(
            subghz->history,
            history_stat_str,
-           subghz->gps->satellites,
-           subghz->last_settings->delete_old_signals)) {
+           subghz->last_settings->delete_old_signals,
+           show_sats,
+           show_sats ? subghz->gps->satellites : 0)) {
         FuriString* frequency_str = furi_string_alloc();
         FuriString* modulation_str = furi_string_alloc();
 
@@ -24,6 +27,7 @@ static void subghz_scene_receiver_update_statusbar(void* context) {
             furi_string_get_cstr(history_stat_str),
             subghz_txrx_hopper_get_state(subghz->txrx) != SubGhzHopperStateOFF,
             READ_BIT(subghz->filter, SubGhzProtocolFlag_BinRAW) > 0,
+            show_sats,
             subghz->repeater);
 
         furi_string_free(frequency_str);
@@ -36,6 +40,7 @@ static void subghz_scene_receiver_update_statusbar(void* context) {
             "",
             subghz_txrx_hopper_get_state(subghz->txrx) != SubGhzHopperStateOFF,
             READ_BIT(subghz->filter, SubGhzProtocolFlag_BinRAW) > 0,
+            show_sats,
             subghz->repeater);
     }
     furi_string_free(history_stat_str);
@@ -57,8 +62,13 @@ static void subghz_scene_add_to_history_callback(
     FuriString* item_time = furi_string_alloc();
     uint16_t idx = subghz_history_get_item(subghz->history);
     SubGhzRadioPreset preset = subghz_txrx_get_preset(subghz->txrx);
-    preset.latitude = subghz->gps->latitude;
-    preset.longitude = subghz->gps->longitude;
+    if(subghz->gps) {
+        preset.latitude = subghz->gps->latitude;
+        preset.longitude = subghz->gps->longitude;
+    } else {
+        preset.latitude = 0;
+        preset.longitude = 0;
+    }
 
     if(subghz->last_settings->delete_old_signals && subghz_history_full(subghz->history)) {
         subghz_view_receiver_disable_draw_callback(subghz->subghz_receiver);

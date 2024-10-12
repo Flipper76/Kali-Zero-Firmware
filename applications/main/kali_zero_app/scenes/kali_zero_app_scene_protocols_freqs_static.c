@@ -6,7 +6,9 @@ enum VarItemListIndex {
     VarItemListIndexAddStaticFreq,
 };
 
-void kali_zero_app_scene_protocols_freqs_static_var_item_list_callback(void* context, uint32_t index) {
+void kali_zero_app_scene_protocols_freqs_static_var_item_list_callback(
+    void* context,
+    uint32_t index) {
     KaliZeroApp* app = context;
     view_dispatcher_send_custom_event(app->view_dispatcher, index);
 }

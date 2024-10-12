@@ -17,19 +17,45 @@
 
 #include "../helpers/camera_suite_custom_event.h"
 
+#ifdef FW_ORIGIN_Xtreme
+/**
+ * Enable the following line for "Xtreme Firmware" & "Xtreme Apps" (Flipper-XFW).
+ * 
+ * @see https://github.com/Flipper-XFW/Xtreme-Firmware
+ * @see https://github.com/Flipper-XFW/Xtreme-Apps
+*/
 #include <xtreme/xtreme.h>
-
+#define UART_CH (xtreme_settings.uart_esp_channel)
+#elif defined FW_ORIGIN_KaliZero
+/**
+ * Enable the following line for "KaliZero Firmware" & "KaliZero Apps".
+ * 
+ * @see https://github.com/Next-Flip/KaliZero-Firmware
+ * @see https://github.com/Next-Flip/KaliZero-Apps
+*/
+#include <kalizero/kalizero.h>
 #define UART_CH (kalizero_settings.uart_esp_channel)
+#elif defined FW_ORIGIN_RM
+/**
+ * Enable the following line for "RogueMaster Firmware".
+ * 
+ * @see https://github.com/RogueMaster/flipperzero-firmware-wPlugins
+*/
+#include <cfw/cfw.h>
+#define UART_CH (cfw_settings.uart_esp_channel)
+#else
+#define UART_CH (FuriHalSerialIdUsart)
+#endif
 
 #define BITMAP_HEADER_LENGTH 62
-#define FRAME_BIT_DEPTH 1
-#define FRAME_BUFFER_LENGTH 1024
-#define FRAME_HEIGHT 64
-#define FRAME_WIDTH 128
-#define HEADER_LENGTH 3 // 'Y', ':', and row identifier
-#define LAST_ROW_INDEX 1008
-#define RING_BUFFER_LENGTH 19
-#define ROW_BUFFER_LENGTH 16
+#define FRAME_BIT_DEPTH      1
+#define FRAME_BUFFER_LENGTH  1024
+#define FRAME_HEIGHT         64
+#define FRAME_WIDTH          128
+#define HEADER_LENGTH        3 // 'Y', ':', and row identifier
+#define LAST_ROW_INDEX       1008
+#define RING_BUFFER_LENGTH   19
+#define ROW_BUFFER_LENGTH    16
 
 static const unsigned char bitmap_header[BITMAP_HEADER_LENGTH] = {
     0x42, 0x4D, 0x3E, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3E, 0x00, 0x00, 0x00, 0x28, 0x00,

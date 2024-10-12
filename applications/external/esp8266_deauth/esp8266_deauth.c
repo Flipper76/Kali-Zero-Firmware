@@ -12,7 +12,7 @@
 //#include <notification/notification_messages.h>
 //#include <stdlib.h>
 
-#include <xtreme/xtreme.h>
+#include <kalizero/kalizero.h>
 
 #include "FlipperZeroWiFiDeauthModuleDefines.h"
 
@@ -21,7 +21,7 @@
 #define DEAUTH_APP_DEBUG 0
 
 #if DEAUTH_APP_DEBUG
-#define APP_NAME_TAG "WiFi_Deauther"
+#define APP_NAME_TAG                  "WiFi_Deauther"
 #define DEAUTH_APP_LOG_I(format, ...) FURI_LOG_I(APP_NAME_TAG, format, ##__VA_ARGS__)
 #define DEAUTH_APP_LOG_D(format, ...) FURI_LOG_D(APP_NAME_TAG, format, ##__VA_ARGS__)
 #define DEAUTH_APP_LOG_E(format, ...) FURI_LOG_E(APP_NAME_TAG, format, ##__VA_ARGS__)
@@ -31,11 +31,12 @@
 #define DEAUTH_APP_LOG_E(format, ...)
 #endif // WIFI_APP_DEBUG
 
-#define ENABLE_MODULE_POWER 1
+#define ENABLE_MODULE_POWER     1
 #define ENABLE_MODULE_DETECTION 1
 
 typedef enum EEventType // app internally defined event types
-{ EventTypeKey // flipper input.h type
+{
+    EventTypeKey // flipper input.h type
 } EEventType;
 
 typedef struct SPluginEvent {
@@ -206,9 +207,9 @@ static void esp8266_deauth_module_render_callback(Canvas* const canvas, void* ct
     furi_mutex_release(app->mutex);
 }
 
-static void
-    esp8266_deauth_module_input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void esp8266_deauth_module_input_callback(InputEvent* input_event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     SPluginEvent event = {.m_type = EventTypeKey, .m_input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
@@ -504,6 +505,9 @@ int32_t esp8266_deauth_app(void* p) {
     }
 
     DEAUTH_APP_LOG_I("Start exit app");
+    furi_hal_serial_async_rx_stop(app->serial_handle);
+    furi_hal_serial_deinit(app->serial_handle);
+    furi_hal_serial_control_release(app->serial_handle);
 
     furi_thread_flags_set(furi_thread_get_id(app->m_worker_thread), WorkerEventStop);
     furi_thread_join(app->m_worker_thread);
@@ -517,9 +521,6 @@ int32_t esp8266_deauth_app(void* p) {
     furi_hal_gpio_init(&gpio_ext_pb2, GpioModeAnalog, GpioPullNo, GpioSpeedLow);
     furi_hal_gpio_init(&gpio_ext_pb3, GpioModeAnalog, GpioPullNo, GpioSpeedLow);
     furi_hal_gpio_init(&gpio_ext_pa4, GpioModeAnalog, GpioPullNo, GpioSpeedLow);
-
-    furi_hal_serial_deinit(app->serial_handle);
-    furi_hal_serial_control_release(app->serial_handle);
 
     //*app->m_originalBufferLocation = app->m_originalBuffer;
 

@@ -4,7 +4,7 @@
 #include <furi_hal.h>
 
 #define S_DEVELOPED "anfractuosity"
-#define S_GITHUB "https://github.com/anfractuosity/flipperscope"
+#define S_GITHUB    "https://github.com/anfractuosity/flipperscope"
 
 typedef enum {
     ScopeViewVariableItemList,

@@ -52,10 +52,12 @@ const SubGhzProtocolDecoder subghz_protocol_intertechno_v3_decoder = {
     .feed = subghz_protocol_decoder_intertechno_v3_feed,
     .reset = subghz_protocol_decoder_intertechno_v3_reset,
 
-    .get_hash_data = subghz_protocol_decoder_intertechno_v3_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_intertechno_v3_get_hash_data,
     .serialize = subghz_protocol_decoder_intertechno_v3_serialize,
     .deserialize = subghz_protocol_decoder_intertechno_v3_deserialize,
     .get_string = subghz_protocol_decoder_intertechno_v3_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_intertechno_v3_encoder = {
@@ -470,6 +472,6 @@ void subghz_protocol_decoder_intertechno_v3_get_string(void* context, FuriString
             output,
             "Ch:" CH_PATTERN " Dimm:%d%%\r\n",
             CNT_TO_CH(instance->generic.cnt),
-            (int)(6.67 * (float)instance->generic.btn));
+            (int)(6.67f * (float)instance->generic.btn));
     }
 }

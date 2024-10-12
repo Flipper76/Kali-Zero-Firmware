@@ -32,7 +32,7 @@ static void battery_test_battery_info_update_model(void* context) {
     notification_message(app->notifications, &sequence_display_backlight_on);
 }
 
-BatteryTestApp* battery_test_alloc() {
+BatteryTestApp* battery_test_alloc(void) {
     BatteryTestApp* app = malloc(sizeof(BatteryTestApp));
 
     // Records
@@ -42,7 +42,6 @@ BatteryTestApp* battery_test_alloc() {
 
     // View dispatcher
     app->view_dispatcher = view_dispatcher_alloc();
-    view_dispatcher_enable_queue(app->view_dispatcher);
     view_dispatcher_set_event_callback_context(app->view_dispatcher, app);
     view_dispatcher_set_tick_event_callback(
         app->view_dispatcher, battery_test_battery_info_update_model, 500);
@@ -58,9 +57,9 @@ BatteryTestApp* battery_test_alloc() {
         battery_info_get_view(app->battery_info));
 
     app->dialog = dialog_ex_alloc();
-    dialog_ex_set_header(app->dialog, "Fermer Test batterie?", 64, 12, AlignCenter, AlignTop);
-    dialog_ex_set_left_button_text(app->dialog, "Quitter");
-    dialog_ex_set_right_button_text(app->dialog, "Rester");
+    dialog_ex_set_header(app->dialog, "Close Battery Test?", 64, 12, AlignCenter, AlignTop);
+    dialog_ex_set_left_button_text(app->dialog, "Exit");
+    dialog_ex_set_right_button_text(app->dialog, "Stay");
     dialog_ex_set_result_callback(app->dialog, battery_test_dialog_callback);
     dialog_ex_set_context(app->dialog, app);
 

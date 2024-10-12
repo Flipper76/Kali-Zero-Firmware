@@ -1,9 +1,9 @@
 #include "archive_files.h"
 #include "archive_apps.h"
 #include "archive_browser.h"
-#include <applications/system/subghz_playlist/playlist_file.h>
-#include <applications/system/subghz_remote/subghz_remote_app_i.h>
-#include <applications/system/ir_remote/infrared_remote.h>
+#include <applications/external/subghz_playlist/playlist_file.h>
+#include <applications/external/subghz_remote/subghz_remote_app_i.h>
+#include <applications/external/ir_remote/infrared_remote.h>
 
 #define TAG "Archive"
 
@@ -18,7 +18,7 @@ void archive_set_file_type(ArchiveFile_t* file, const char* path, bool is_folder
     } else {
         for(size_t i = 0; i < COUNT_OF(known_ext); i++) {
             if((known_ext[i][0] == '?') || (known_ext[i][0] == '*')) continue;
-            if(furi_string_end_with(file->path, known_ext[i])) {
+            if(furi_string_end_withi(file->path, known_ext[i])) {
                 // Check for .txt containing folder
                 if(strcmp(known_ext[i], ".txt") == 0) {
                     const char* txt_path = NULL;
@@ -36,7 +36,13 @@ void archive_set_file_type(ArchiveFile_t* file, const char* path, bool is_folder
                         txt_path = archive_get_default_path(ArchiveTabBadKb);
                         break;
                     }
-                    if(txt_path != NULL && furi_string_start_with_str(file->path, txt_path)) {
+                    if(txt_path != NULL) {
+                        size_t len = strlen(txt_path);
+                        if(furi_string_size(file->path) < len) continue;
+                        // Compare but ignore /ext or /any, continue if different (memcmp() != 0)
+                        if(memcmp(furi_string_get_cstr(file->path) + 4, txt_path + 4, len - 4)) {
+                            continue;
+                        }
                         file->type = i;
                         return;
                     }
@@ -87,6 +93,7 @@ void archive_file_append(const char* path, const char* format, ...) {
         storage_file_write(file, furi_string_get_cstr(string), furi_string_size(string));
     }
 
+    furi_string_free(string);
     storage_file_close(file);
     storage_file_free(file);
     furi_record_close(RECORD_STORAGE);

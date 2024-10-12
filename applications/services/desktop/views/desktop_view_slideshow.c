@@ -3,17 +3,17 @@
 #include <gui/elements.h>
 
 #include "desktop_view_slideshow.h"
-#include "../desktop_i.h"
 #include "../helpers/slideshow.h"
 
 #define DESKTOP_SLIDESHOW_POWEROFF_SHORT 5000
-#define DESKTOP_SLIDESHOW_POWEROFF_LONG (60 * 60 * 1000)
+#define DESKTOP_SLIDESHOW_POWEROFF_LONG  (60 * 60 * 1000)
 
 struct DesktopSlideshowView {
     View* view;
     DesktopSlideshowViewCallback callback;
     void* context;
     FuriTimer* timer;
+
     FuriTimer* auto_timer;
 };
 
@@ -158,7 +158,7 @@ static void desktop_view_slideshow_exit(void* context) {
     view_commit_model(instance->view, false);
 }
 
-DesktopSlideshowView* desktop_view_slideshow_alloc() {
+DesktopSlideshowView* desktop_view_slideshow_alloc(void) {
     DesktopSlideshowView* instance = malloc(sizeof(DesktopSlideshowView));
     instance->view = view_alloc();
     view_allocate_model(instance->view, ViewModelTypeLocking, sizeof(DesktopSlideshowViewModel));

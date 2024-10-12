@@ -45,10 +45,12 @@ const SubGhzProtocolDecoder subghz_protocol_kia_decoder = {
     .feed = subghz_protocol_decoder_kia_feed,
     .reset = subghz_protocol_decoder_kia_reset,
 
-    .get_hash_data = subghz_protocol_decoder_kia_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_kia_get_hash_data,
     .serialize = subghz_protocol_decoder_kia_serialize,
     .deserialize = subghz_protocol_decoder_kia_deserialize,
     .get_string = subghz_protocol_decoder_kia_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_kia_encoder = {

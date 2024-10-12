@@ -49,8 +49,8 @@ typedef void (*ViewDrawCallback)(Canvas* canvas, void* model);
 typedef bool (*ViewInputCallback)(InputEvent* event, void* context);
 
 /** View Ascii callback
- * @param      event    number of custom event
- * @param      context  pointer to context
+ * @param      event,    pointer to ascii event data
+ * @param      context,  pointer to context
  * @return     true if event handled, false if event ignored
  * @warning    called from GUI thread
  */
@@ -101,7 +101,7 @@ typedef enum {
 /** Allocate and init View
  * @return View instance
  */
-View* view_alloc();
+View* view_alloc(void);
 
 /** Free View
  *

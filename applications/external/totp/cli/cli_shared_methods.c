@@ -26,7 +26,8 @@ bool totp_cli_ensure_authenticated(const PluginState* plugin_state, Cli* cli) {
     return true;
 }
 
-void totp_cli_force_close_app(FuriMessageQueue* event_queue) {
+void totp_cli_force_close_app(void* ctx) {
+    FuriMessageQueue* event_queue = ctx;
     PluginEvent event = {.type = EventForceCloseApp};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
 }
@@ -41,7 +42,7 @@ bool totp_cli_read_line(Cli* cli, FuriString* out_str, bool mask_user_input) {
             cli_read_timeout(cli, &c2, 1, 0);
             cli_read_timeout(cli, &c2, 1, 0);
         } else if(c == CliSymbolAsciiETX) {
-            cli_nl();
+            cli_nl(cli);
             return false;
         } else if(
             (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
@@ -60,7 +61,7 @@ bool totp_cli_read_line(Cli* cli, FuriString* out_str, bool mask_user_input) {
                 furi_string_left(out_str, out_str_size - 1);
             }
         } else if(c == CliSymbolAsciiCR) {
-            cli_nl();
+            cli_nl(cli);
             break;
         }
     }

@@ -1,3 +1,50 @@
+nanopb-0.4.8 (2023-11-11)
+ Fix name mangling with dependent proto files (#892, #899)
+ Fix initializer macros for custom callback datatype (#806)
+ Use UTF-8 encoding for generated files irrespective of locale (#868)
+ Add integer size overrides for fixed width types (#897)
+ Add ability to specify size of generated enums (#867)
+ Provide define for largest message in file (#893)
+ Automatically break circular dependencies (#881)
+ Remove pkg_resources import to avoid deprecation warning (#887)
+ Use static_assert keyword on MSVC in C89 mode (#843)
+ platformio: Allow substitutions in custom_nanopb_protos (#882)
+ CMakeLists: Add missing __init__.py to generator install (#841)
+ CMakeLists: Add nanopb_PYTHON_INSTDIR_OVERRIDE (#875)
+ CMakeLists: Rename installation directories (#845, #907)
+ FindNanopb.cmake: Fix regression bug with relative include path (#888)
+ FindNanopb.cmake: Ensure generator files are updated when cached (#847)
+ FindNanopb.cmake: Fix generator call on Windows (#874)
+ Bazel: multiple build rule fixes and updates (#855, #891, #904, #906, #919)
+
+nanopb-0.4.7 (2022-12-11)
+ Fix comments generation for submessages (#788)
+ Fix handling of spaces in arguments passed through protoc (#810)
+ Fix problems with multiple files and mangle_names option (#783, #820)
+ Fix generator error when using M_STRIP_PACKAGE without package name (#795)
+ Fix compilation error with fixed size array and FT_POINTER (#630)
+ Fix wrong format in Python Poetry project file (#811)
+ Fix unnecessary generator message when using --quiet (#831)
+ Fix enum_to_string with C++ (#838)
+ Fix /* */ inside .proto file comment
+ Workaround python-protobuf version issues (#787)
+ Safeguard substraction in pb_read() with custom streams (#697)
+ Always include pb_release() as function, instead of macro. (#802)
+ Allow using = instead of : with generator option -s
+ Allow specifying include format without special characters (#810)
+ Allow including headers from inside of extern C (#814)
+ Add option NANOPB_PB2_TEMP_DIR to store nanopb_pb2.py in a temporary dir (#601)
+ Add compile-time error message for when PB_FIELD_32BIT is needed (#680, #827)
+ Add --c-style command line option for naming style (#199, #533, #791)
+ Add --protoc-opt to nanopb_generator.py (#628)
+ Add ENUMTYPE convenience macros (#803)
+ Add Bazel build rules (#360, #500)
+ Generator: keep order of messages when possible
+ Test case improvements (#792)
+ PlatformIO build rule improvements (#808, #809, #819, #834, #839, #840)
+ CMake build rule improvements (#822)
+ CMakeLists: use protoc wrapper script by default (#769)
+
 nanopb-0.4.6 (2022-05-30)
  Fix passing of error message from substream callback (#703)
  Fix comments going to wrong member variables (#701)
@@ -34,10 +81,9 @@ nanopb-0.4.6 (2022-05-30)
  Improve handling of varint overflows
  Improve optimization for little-endian platforms
 
-NOTE: During development, prereleases were published on platform.io registry
-as versions 0.4.6 - 0.4.6.3. The version 0.4.6.4 on platform.io corresponds
+NOTE: During development, prereleases were published on PlatformIO registry
+as versions 0.4.6 - 0.4.6.3. The version 0.4.6.4 on PlatformIO corresponds
 to the real final 0.4.6 release.
-
 
 nanopb-0.4.5 (2021-03-22)
  Fix invalid free() with oneof (#647, GHSA-7mv5-5mxh-qg88)
@@ -189,6 +235,13 @@ nanopb-0.4.0 (2019-12-20)
  Implement conan recipe (#378)
  CMake: Split nanopb_out command (#454)
  CMake: install created shared library(dll) in windows to the binary folder (#447)
+
+nanopb-0.3.9.9 (2022-04-23)
+ Fix Xcode analyzer warnings (#667, #674)
+ Fix clang sanitizer warnings
+
+Note: there are no known functional differences between 0.3.9.8 and 0.3.9.9.
+The changes are merely to fix warnings introduced by new compiler versions.
 
 nanopb-0.3.9.8 (2021-03-22)
  Fix invalid free() with oneof (#647, GHSA-7mv5-5mxh-qg88)

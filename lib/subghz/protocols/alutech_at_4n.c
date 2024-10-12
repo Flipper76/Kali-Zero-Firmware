@@ -54,10 +54,12 @@ const SubGhzProtocolDecoder subghz_protocol_alutech_at_4n_decoder = {
     .feed = subghz_protocol_decoder_alutech_at_4n_feed,
     .reset = subghz_protocol_decoder_alutech_at_4n_reset,
 
-    .get_hash_data = subghz_protocol_decoder_alutech_at_4n_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_alutech_at_4n_get_hash_data,
     .serialize = subghz_protocol_decoder_alutech_at_4n_serialize,
     .deserialize = subghz_protocol_decoder_alutech_at_4n_deserialize,
     .get_string = subghz_protocol_decoder_alutech_at_4n_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_alutech_at_4n_encoder = {
@@ -323,7 +325,7 @@ bool subghz_protocol_alutech_at_4n_create_data(
  * Basic set | 0x11 | 0x22 | 0xFF | 0x44 | 0x33 |
  * @return Button code
  */
-static uint8_t subghz_protocol_alutech_at_4n_get_btn_code();
+static uint8_t subghz_protocol_alutech_at_4n_get_btn_code(void);
 
 /**
  * Generating an upload from data.
@@ -701,7 +703,7 @@ SubGhzProtocolStatus subghz_protocol_decoder_alutech_at_4n_deserialize(
     return ret;
 }
 
-static uint8_t subghz_protocol_alutech_at_4n_get_btn_code() {
+static uint8_t subghz_protocol_alutech_at_4n_get_btn_code(void) {
     uint8_t custom_btn_id = subghz_custom_btn_get();
     uint8_t original_btn_code = subghz_custom_btn_get_original();
     uint8_t btn = original_btn_code;

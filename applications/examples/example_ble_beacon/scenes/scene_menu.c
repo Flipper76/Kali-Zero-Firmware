@@ -16,13 +16,13 @@ void ble_beacon_app_scene_menu_on_enter(void* context) {
 
     submenu_add_item(
         submenu,
-        "Set MAC",
+        "Définir MAC",
         SubmenuIndexSetMac,
         ble_beacon_app_scene_menu_submenu_callback,
         ble_beacon);
     submenu_add_item(
         submenu,
-        "Set Data",
+        "Définir données",
         SubmenuIndexSetData,
         ble_beacon_app_scene_menu_submenu_callback,
         ble_beacon);

@@ -1,12 +1,11 @@
 /*****************************************************************************
  * @file    ble_events.c
- * @author  MDG
  * @brief   STM32WB BLE API (event callbacks)
  *          Auto-generated file: do not edit!
  *****************************************************************************
  * @attention
  *
- * Copyright (c) 2018-2023 STMicroelectronics.
+ * Copyright (c) 2018-2024 STMicroelectronics.
  * All rights reserved.
  *
  * This software is licensed under terms that can be found in the LICENSE file
@@ -326,7 +325,7 @@ static void hci_le_advertising_report_event_process( const uint8_t* in )
     Advertising_Report[0].Data = &in[9];
     in += 9 + in[8];
     Advertising_Report[0].RSSI = in[0];
-    hci_le_advertising_report_event( 1, Advertising_Report );
+    (void)hci_le_advertising_report_event( 1, Advertising_Report );
   }
 }
 

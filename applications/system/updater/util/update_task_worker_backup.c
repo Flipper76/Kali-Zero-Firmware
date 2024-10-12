@@ -7,13 +7,13 @@
 #include <desktop/views/desktop_view_slideshow.h>
 #include <toolbox/path.h>
 #include <update_util/dfu_file.h>
-#include <update_util/lfs_backup.h>
+#include <update_util/int_backup.h>
 #include <update_util/update_operation.h>
 #include <update_util/resources/manifest.h>
 #include <toolbox/tar/tar_archive.h>
 #include <toolbox/crc32_calc.h>
 
-#define KZFWFIRSTBOOT_FLAG_PATH CFG_PATH("xfwfirstboot.flag")
+#define FIRSTBOOT_FLAG_PATH INT_PATH(".kalizero_firstboot.flag")
 
 #define TAG "UpdWorkerBackup"
 
@@ -23,14 +23,14 @@ static bool update_task_pre_update(UpdateTask* update_task) {
     backup_file_path = furi_string_alloc();
     path_concat(
         furi_string_get_cstr(update_task->update_path),
-        LFS_BACKUP_DEFAULT_FILENAME,
+        INT_BACKUP_DEFAULT_FILENAME,
         backup_file_path);
 
-    update_task_set_progress(update_task, UpdateTaskStageLfsBackup, 0);
+    update_task_set_progress(update_task, UpdateTaskStageIntBackup, 0);
     /* to avoid bootloops */
     furi_hal_rtc_set_boot_mode(FuriHalRtcBootModeNormal);
     if((success =
-            lfs_backup_create(update_task->storage, furi_string_get_cstr(backup_file_path)))) {
+            int_backup_create(update_task->storage, furi_string_get_cstr(backup_file_path)))) {
         furi_hal_rtc_set_boot_mode(FuriHalRtcBootModeUpdate);
     }
 
@@ -38,35 +38,12 @@ static bool update_task_pre_update(UpdateTask* update_task) {
     return success;
 }
 
-typedef enum {
-    UpdateTaskResourcesWeightsFileCleanup = 20,
-    UpdateTaskResourcesWeightsDirCleanup = 20,
-    UpdateTaskResourcesWeightsFileUnpack = 60,
-} UpdateTaskResourcesWeights;
-
-#define UPDATE_TASK_RESOURCES_FILE_TO_TOTAL_PERCENT 90
-
-typedef struct {
-    UpdateTask* update_task;
-    int32_t total_files, processed_files;
-} TarUnpackProgress;
-
-static bool update_task_resource_unpack_cb(const char* name, bool is_directory, void* context) {
-    UNUSED(name);
-    UNUSED(is_directory);
-    TarUnpackProgress* unpack_progress = context;
-    unpack_progress->processed_files++;
-    update_task_set_progress(
-        unpack_progress->update_task,
-        UpdateTaskStageProgress,
-        /* For this stage, last progress segment = extraction */
-        (UpdateTaskResourcesWeightsFileCleanup + UpdateTaskResourcesWeightsDirCleanup) +
-            (unpack_progress->processed_files * UpdateTaskResourcesWeightsFileUnpack) /
-                (unpack_progress->total_files + 1));
-    return true;
+static void update_task_resource_unpack_cb(size_t progress, size_t total, void* context) {
+    UpdateTask* update_task = context;
+    update_task_set_progress(update_task, UpdateTaskStageProgress, (progress * 100) / (total + 1));
 }
 
-static void update_task_cleanup_resources(UpdateTask* update_task, const uint32_t n_tar_entries) {
+static void update_task_cleanup_resources(UpdateTask* update_task) {
     ResourceManifestReader* manifest_reader = resource_manifest_reader_alloc(update_task->storage);
     do {
         FURI_LOG_D(TAG, "Nettoyer ancien manifeste");
@@ -75,21 +52,22 @@ static void update_task_cleanup_resources(UpdateTask* update_task, const uint32_
             break;
         }
 
-        const uint32_t n_approx_file_entries =
-            n_tar_entries * UPDATE_TASK_RESOURCES_FILE_TO_TOTAL_PERCENT / 100 + 1;
-        uint32_t n_dir_entries = 1;
-
         ResourceManifestEntry* entry_ptr = NULL;
-        uint32_t n_processed_entries = 0;
+        /* Iterate over manifest and calculate entries count */
+        uint32_t n_total_entries = 1;
         while((entry_ptr = resource_manifest_reader_next(manifest_reader))) {
-            if(entry_ptr->type == ResourceManifestEntryTypeFile) {
-                update_task_set_progress(
-                    update_task,
-                    UpdateTaskStageProgress,
-                    /* For this stage, first pass = old manifest's file cleanup */
-                    (n_processed_entries++ * UpdateTaskResourcesWeightsFileCleanup) /
-                        n_approx_file_entries);
+            n_total_entries++;
+        }
+        resource_manifest_rewind(manifest_reader);
 
+        update_task_set_progress(update_task, UpdateTaskStageResourcesFileCleanup, 0);
+        uint32_t n_processed_file_entries = 0;
+        while((entry_ptr = resource_manifest_reader_next(manifest_reader))) {
+            update_task_set_progress(
+                update_task,
+                UpdateTaskStageProgress,
+                (n_processed_file_entries++ * 100) / n_total_entries);
+            if(entry_ptr->type == ResourceManifestEntryTypeFile) {
                 FuriString* file_path = furi_string_alloc();
                 path_concat(
                     STORAGE_EXT_PATH_PREFIX, furi_string_get_cstr(entry_ptr->name), file_path);
@@ -105,22 +83,17 @@ static void update_task_cleanup_resources(UpdateTask* update_task, const uint32_
                         storage_error_get_desc(result));
                 }
                 furi_string_free(file_path);
-            } else if(entry_ptr->type == ResourceManifestEntryTypeDirectory) {
-                n_dir_entries++;
             }
         }
 
-        n_processed_entries = 0;
+        update_task_set_progress(update_task, UpdateTaskStageResourcesDirCleanup, 0);
+        uint32_t n_processed_dir_entries = 0;
         while((entry_ptr = resource_manifest_reader_previous(manifest_reader))) {
+            update_task_set_progress(
+                update_task,
+                UpdateTaskStageProgress,
+                (n_processed_dir_entries++ * 100) / n_total_entries);
             if(entry_ptr->type == ResourceManifestEntryTypeDirectory) {
-                update_task_set_progress(
-                    update_task,
-                    UpdateTaskStageProgress,
-                    /* For this stage, second 10% of progress = cleanup directories */
-                    UpdateTaskResourcesWeightsFileCleanup +
-                        (n_processed_entries++ * UpdateTaskResourcesWeightsDirCleanup) /
-                            n_dir_entries);
-
                 FuriString* folder_path = furi_string_alloc();
 
                 do {
@@ -158,12 +131,12 @@ static bool update_task_post_update(UpdateTask* update_task) {
     do {
         path_concat(
             furi_string_get_cstr(update_task->update_path),
-            LFS_BACKUP_DEFAULT_FILENAME,
+            INT_BACKUP_DEFAULT_FILENAME,
             file_path);
 
-        update_task_set_progress(update_task, UpdateTaskStageLfsRestore, 0);
+        update_task_set_progress(update_task, UpdateTaskStageIntRestore, 0);
 
-        CHECK_RESULT(lfs_backup_unpack(update_task->storage, furi_string_get_cstr(file_path)));
+        CHECK_RESULT(int_backup_unpack(update_task->storage, furi_string_get_cstr(file_path)));
 
         // Fix flags for production / development
 #ifdef FURI_DEBUG
@@ -177,43 +150,43 @@ static bool update_task_post_update(UpdateTask* update_task) {
 #endif
 
         if(update_task->state.groups & UpdateTaskStageGroupResources) {
-            TarUnpackProgress progress = {
-                .update_task = update_task,
-                .total_files = 0,
-                .processed_files = 0,
-            };
-            update_task_set_progress(update_task, UpdateTaskStageResourcesUpdate, 0);
-
             path_concat(
                 furi_string_get_cstr(update_task->update_path),
                 furi_string_get_cstr(update_task->manifest->resource_bundle),
                 file_path);
 
-            tar_archive_set_file_callback(archive, update_task_resource_unpack_cb, &progress);
-            CHECK_RESULT(
-                tar_archive_open(archive, furi_string_get_cstr(file_path), TAR_OPEN_MODE_READ));
+            CHECK_RESULT(tar_archive_open(
+                archive,
+                furi_string_get_cstr(file_path),
+                tar_archive_get_mode_for_path(furi_string_get_cstr(file_path))));
 
-            progress.total_files = tar_archive_get_entries_count(archive);
-            if(progress.total_files > 0) {
-                update_task_cleanup_resources(update_task, progress.total_files);
+            update_task_cleanup_resources(update_task);
 
-                CHECK_RESULT(tar_archive_unpack_to(archive, STORAGE_EXT_PATH_PREFIX, NULL));
-            }
+            update_task_set_progress(update_task, UpdateTaskStageResourcesFileUnpack, 0);
+            tar_archive_set_read_callback(archive, update_task_resource_unpack_cb, update_task);
+            CHECK_RESULT(tar_archive_unpack_to(archive, STORAGE_EXT_PATH_PREFIX, NULL));
         }
 
         if(update_task->state.groups & UpdateTaskStageGroupSplashscreen) {
             update_task_set_progress(update_task, UpdateTaskStageSplashscreenInstall, 0);
             FuriString* tmp_path;
             tmp_path = furi_string_alloc_set(update_task->update_path);
-            if(storage_common_stat(update_task->storage, KZFWFIRSTBOOT_FLAG_PATH, NULL) ==
+            storage_common_rename(
+                update_task->storage,
+                EXT_PATH(".config/firstboot.flag"), // Poor naming, shouldn't be generic for all FW
+                FIRSTBOOT_FLAG_PATH);
+            storage_common_rename(
+                update_task->storage,
+                EXT_PATH(".config/kalizero_firstboot.flag"), // Migrate to int on ext
+                FIRSTBOOT_FLAG_PATH);
+            if(storage_common_stat(update_task->storage, FIRSTBOOT_FLAG_PATH, NULL) ==
                FSE_NOT_EXIST) {
                 File* file = storage_file_alloc(update_task->storage);
-                if(storage_file_open(
-                       file, KZFWFIRSTBOOT_FLAG_PATH, FSAM_WRITE, FSOM_CREATE_ALWAYS)) {
+                if(storage_file_open(file, FIRSTBOOT_FLAG_PATH, FSAM_WRITE, FSOM_CREATE_ALWAYS)) {
                     storage_file_close(file);
                 }
                 storage_file_free(file);
-                path_append(tmp_path, "xfwfirstboot.bin");
+                path_append(tmp_path, "firstboot.bin");
                 if(storage_common_stat(
                        update_task->storage, furi_string_get_cstr(tmp_path), NULL) != FSE_OK) {
                     furi_string_set(tmp_path, update_task->update_path);
@@ -223,11 +196,9 @@ static bool update_task_post_update(UpdateTask* update_task) {
             } else {
                 path_append(tmp_path, furi_string_get_cstr(update_task->manifest->splash_file));
             }
-            if(storage_common_copy(
-                   update_task->storage, furi_string_get_cstr(tmp_path), SLIDESHOW_FS_PATH) !=
-               FSE_OK) {
-                // actually, not critical
-            }
+            storage_common_remove(update_task->storage, SLIDESHOW_FS_PATH); // Overwrite if exists
+            storage_common_copy(
+                update_task->storage, furi_string_get_cstr(tmp_path), SLIDESHOW_FS_PATH);
             furi_string_free(tmp_path);
             update_task_set_progress(update_task, UpdateTaskStageSplashscreenInstall, 100);
         }

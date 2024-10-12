@@ -4,7 +4,7 @@
 #include <lib/toolbox/args.h>
 #include <cli/cli.h>
 
-void crypto_cli_print_usage() {
+void crypto_cli_print_usage(void) {
     printf("Usage:\r\n");
     printf("crypto <cmd> <args>\r\n");
     printf("Cmd list:\r\n");
@@ -316,12 +316,15 @@ static void crypto_cli(Cli* cli, FuriString* args, void* context) {
     furi_string_free(cmd);
 }
 
-void crypto_on_system_start() {
-#ifdef SRV_CLI
-    Cli* cli = furi_record_open(RECORD_CLI);
-    cli_add_command(cli, "crypto", CliCommandFlagDefault, crypto_cli, NULL);
-    furi_record_close(RECORD_CLI);
-#else
-    UNUSED(crypto_cli);
-#endif
+#include <flipper_application/flipper_application.h>
+#include <cli/cli_i.h>
+
+static const FlipperAppPluginDescriptor plugin_descriptor = {
+    .appid = CLI_PLUGIN_APP_ID,
+    .ep_api_version = CLI_PLUGIN_API_VERSION,
+    .entry_point = &crypto_cli,
+};
+
+const FlipperAppPluginDescriptor* crypto_cli_plugin_ep(void) {
+    return &plugin_descriptor;
 }

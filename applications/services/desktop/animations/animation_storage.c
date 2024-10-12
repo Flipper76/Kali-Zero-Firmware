@@ -8,13 +8,14 @@
 
 #include "animation_manager.h"
 #include "animation_storage.h"
-#include "animation_storage_i.h"
 #include <assets_dolphin_internal.h>
 #include <assets_dolphin_blocking.h>
-#include <xtreme/xtreme.h>
-#define ANIMATION_META_FILE "meta.txt"
+#include <kalizero/kalizero.h>
+
 #define TAG "AnimationStorage"
-char ANIMATION_DIR[23 /*"/ext/asset_packs//Anims"*/ + KALIZERO_ASSETS_PACK_NAME_LEN + 1];
+
+#define ANIMATION_META_FILE "meta.txt"
+char ANIMATION_DIR[23 /* /ext/asset_packs//Anims */ + ASSET_PACKS_NAME_LEN + 1];
 char ANIMATION_MANIFEST_FILE[sizeof(ANIMATION_DIR) + 13 /*"/manifest.txt"*/];
 
 static void animation_storage_free_bubbles(BubbleAnimation* animation);
@@ -28,7 +29,7 @@ void animation_handler_select_manifest() {
     bool use_asset_pack = kalizero_settings.asset_pack[0] != '\0';
     if(use_asset_pack) {
         furi_string_printf(
-            anim_dir, "%s/%s/Anims", KALIZERO_ASSETS_PATH, kalizero_settings.asset_pack);
+            anim_dir, "%s/%s/Anims", ASSET_PACKS_PATH, kalizero_settings.asset_pack);
         furi_string_printf(manifest, "%s/manifest.txt", furi_string_get_cstr(anim_dir));
         Storage* storage = furi_record_open(RECORD_STORAGE);
         if(storage_common_stat(storage, furi_string_get_cstr(manifest), NULL) == FSE_OK) {
@@ -56,6 +57,7 @@ static bool animation_storage_load_single_manifest_info(
     const char* name) {
     furi_assert(manifest_info);
     animation_handler_select_manifest();
+
     bool result = false;
     Storage* storage = furi_record_open(RECORD_STORAGE);
     FlipperFormat* file = flipper_format_file_alloc(storage);
@@ -81,8 +83,7 @@ static bool animation_storage_load_single_manifest_info(
         if(furi_string_cmp_str(read_string, name)) break;
         flipper_format_set_strict_mode(file, true);
 
-        manifest_info->name = malloc(furi_string_size(read_string) + 1);
-        strcpy((char*)manifest_info->name, furi_string_get_cstr(read_string));
+        manifest_info->name = strdup(furi_string_get_cstr(read_string));
 
         if(!flipper_format_read_uint32(file, "Min butthurt", &u32value, 1)) break;
         manifest_info->min_butthurt = u32value;
@@ -135,9 +136,7 @@ void animation_storage_fill_animation_list(StorageAnimationList_t* animation_lis
             storage_animation->manifest_info.name = NULL;
 
             if(!flipper_format_read_string(file, "Name", read_string)) break;
-            storage_animation->manifest_info.name = malloc(furi_string_size(read_string) + 1);
-            strcpy(
-                (char*)storage_animation->manifest_info.name, furi_string_get_cstr(read_string));
+            storage_animation->manifest_info.name = strdup(furi_string_get_cstr(read_string));
 
             if(!flipper_format_read_uint32(file, "Min butthurt", &u32value, 1)) break;
             storage_animation->manifest_info.min_butthurt = u32value;
@@ -323,7 +322,7 @@ static bool animation_storage_load_frames(
     FileInfo file_info;
     FuriString* filename;
     filename = furi_string_alloc();
-    size_t max_filesize = ROUND_UP_TO(width, 8) * height + 2;
+    size_t max_filesize = ROUND_UP_TO(width, 8) * height + 1;
 
     for(int i = 0; i < icon->frame_count; ++i) {
         frames_ok = false;
@@ -431,8 +430,7 @@ static bool animation_storage_load_bubbles(BubbleAnimation* animation, FlipperFo
 
             furi_string_replace_all(str, "\\n", "\n");
 
-            FURI_CONST_ASSIGN_PTR(bubble->bubble.text, malloc(furi_string_size(str) + 1));
-            strcpy((char*)bubble->bubble.text, furi_string_get_cstr(str));
+            FURI_CONST_ASSIGN_PTR(bubble->bubble.text, strdup(furi_string_get_cstr(str)));
 
             if(!flipper_format_read_string(ff, "AlignH", str)) break;
             if(!animation_storage_cast_align(str, (Align*)&bubble->bubble.align_h)) break;

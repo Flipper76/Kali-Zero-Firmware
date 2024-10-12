@@ -6,25 +6,28 @@
 #include <storage/storage.h>
 #include <toolbox/path.h>
 #include <update_util/dfu_file.h>
-#include <update_util/lfs_backup.h>
 #include <update_util/update_operation.h>
+
+#define TAG "UpdWorker"
 
 static const char* update_task_stage_descr[] = {
     [UpdateTaskStageProgress] = "...",
-    [UpdateTaskStageReadManifest] = "Chargement manifeste maj",
-    [UpdateTaskStageValidateDFUImage] = "Test du fichier DFU",
+    [UpdateTaskStageReadManifest] = "Charg. manifeste maj",
+    [UpdateTaskStageValidateDFUImage] = "Test fichier DFU",
     [UpdateTaskStageFlashWrite] = "Écriture flash",
-    [UpdateTaskStageFlashValidate] = "Validation du flash",
-    [UpdateTaskStageRadioImageValidate] = "Test du firmware radio",
-    [UpdateTaskStageRadioErase] = "Suppression firmware radio",
-    [UpdateTaskStageRadioWrite] = "Ecriture de FW radio",
-    [UpdateTaskStageRadioInstall] = "Installation firmware radio",
-    [UpdateTaskStageRadioBusy] = "Noyau 2 non disponible",
+    [UpdateTaskStageFlashValidate] = "Validation flash",
+    [UpdateTaskStageRadioImageValidate] = "Test firmware radio",
+    [UpdateTaskStageRadioErase] = "Suppr. firmware radio",
+    [UpdateTaskStageRadioWrite] = "Ecriture FW radio",
+    [UpdateTaskStageRadioInstall] = "Install. firmware radio",
+    [UpdateTaskStageRadioBusy] = "Noyau 2 indisponible",
     [UpdateTaskStageOBValidation] = "Validation opt. octets",
-    [UpdateTaskStageLfsBackup] = "Sauvegarde de LFS",
-    [UpdateTaskStageLfsRestore] = "Restauration de LFS",
-    [UpdateTaskStageResourcesUpdate] = "Mise à jour ressources",
-    [UpdateTaskStageSplashscreenInstall] = "Installation splashscreen",
+    [UpdateTaskStageIntBackup] = "Sauvegarde Config",
+    [UpdateTaskStageIntRestore] = "Restauration Config",
+    [UpdateTaskStageResourcesFileCleanup] = "Nettoyage fichiers",
+    [UpdateTaskStageResourcesDirCleanup] = "Nettoyage répertoires",
+    [UpdateTaskStageResourcesFileUnpack] = "Extraction resources",
+    [UpdateTaskStageSplashscreenInstall] = "Install. splashscreen",
     [UpdateTaskStageCompleted] = "Redémarrage...",
     [UpdateTaskStageError] = "Erreur",
     [UpdateTaskStageOBError] = "OB, rapport",
@@ -79,7 +82,7 @@ static const struct {
     },
 #ifndef FURI_RAM_EXEC
     {
-        .stage = UpdateTaskStageLfsBackup,
+        .stage = UpdateTaskStageIntBackup,
         .percent_min = 0,
         .percent_max = 100,
         .descr = "Erreur R/W FS",
@@ -190,13 +193,25 @@ static const struct {
 #endif
 #ifndef FURI_RAM_EXEC
     {
-        .stage = UpdateTaskStageLfsRestore,
+        .stage = UpdateTaskStageIntRestore,
+        .percent_min = 0,
+        .percent_max = 100,
+        .descr = "Erreur E/S carte SD",
+    },
+    {
+        .stage = UpdateTaskStageResourcesFileCleanup,
+        .percent_min = 0,
+        .percent_max = 100,
+        .descr = "Erreur E/S carte SD",
+    },
+    {
+        .stage = UpdateTaskStageResourcesDirCleanup,
         .percent_min = 0,
         .percent_max = 100,
         .descr = "Erreur d'E/S LFS",
     },
     {
-        .stage = UpdateTaskStageResourcesUpdate,
+        .stage = UpdateTaskStageResourcesFileUnpack,
         .percent_min = 0,
         .percent_max = 100,
         .descr = "Erreur d'E/S  SD",
@@ -221,29 +236,34 @@ typedef struct {
 } UpdateTaskStageGroupMap;
 
 #define STAGE_DEF(GROUP, WEIGHT) \
-    { .group = (GROUP), .weight = (WEIGHT), }
+    {                            \
+        .group = (GROUP),        \
+        .weight = (WEIGHT),      \
+    }
 
 static const UpdateTaskStageGroupMap update_task_stage_progress[] = {
     [UpdateTaskStageProgress] = STAGE_DEF(UpdateTaskStageGroupMisc, 0),
 
     [UpdateTaskStageReadManifest] = STAGE_DEF(UpdateTaskStageGroupPreUpdate, 45),
-    [UpdateTaskStageLfsBackup] = STAGE_DEF(UpdateTaskStageGroupPreUpdate, 5),
+    [UpdateTaskStageIntBackup] = STAGE_DEF(UpdateTaskStageGroupPreUpdate, 5),
 
     [UpdateTaskStageRadioImageValidate] = STAGE_DEF(UpdateTaskStageGroupRadio, 15),
-    [UpdateTaskStageRadioErase] = STAGE_DEF(UpdateTaskStageGroupRadio, 35),
-    [UpdateTaskStageRadioWrite] = STAGE_DEF(UpdateTaskStageGroupRadio, 60),
+    [UpdateTaskStageRadioErase] = STAGE_DEF(UpdateTaskStageGroupRadio, 25),
+    [UpdateTaskStageRadioWrite] = STAGE_DEF(UpdateTaskStageGroupRadio, 40),
     [UpdateTaskStageRadioInstall] = STAGE_DEF(UpdateTaskStageGroupRadio, 30),
     [UpdateTaskStageRadioBusy] = STAGE_DEF(UpdateTaskStageGroupRadio, 5),
 
     [UpdateTaskStageOBValidation] = STAGE_DEF(UpdateTaskStageGroupOptionBytes, 2),
 
-    [UpdateTaskStageValidateDFUImage] = STAGE_DEF(UpdateTaskStageGroupFirmware, 30),
-    [UpdateTaskStageFlashWrite] = STAGE_DEF(UpdateTaskStageGroupFirmware, 150),
-    [UpdateTaskStageFlashValidate] = STAGE_DEF(UpdateTaskStageGroupFirmware, 15),
+    [UpdateTaskStageValidateDFUImage] = STAGE_DEF(UpdateTaskStageGroupFirmware, 33),
+    [UpdateTaskStageFlashWrite] = STAGE_DEF(UpdateTaskStageGroupFirmware, 100),
+    [UpdateTaskStageFlashValidate] = STAGE_DEF(UpdateTaskStageGroupFirmware, 20),
 
-    [UpdateTaskStageLfsRestore] = STAGE_DEF(UpdateTaskStageGroupPostUpdate, 5),
+    [UpdateTaskStageIntRestore] = STAGE_DEF(UpdateTaskStageGroupPostUpdate, 5),
 
-    [UpdateTaskStageResourcesUpdate] = STAGE_DEF(UpdateTaskStageGroupResources, 255),
+    [UpdateTaskStageResourcesFileCleanup] = STAGE_DEF(UpdateTaskStageGroupResources, 100),
+    [UpdateTaskStageResourcesDirCleanup] = STAGE_DEF(UpdateTaskStageGroupResources, 50),
+    [UpdateTaskStageResourcesFileUnpack] = STAGE_DEF(UpdateTaskStageGroupResources, 255),
     [UpdateTaskStageSplashscreenInstall] = STAGE_DEF(UpdateTaskStageGroupSplashscreen, 5),
 
     [UpdateTaskStageCompleted] = STAGE_DEF(UpdateTaskStageGroupMisc, 1),
@@ -288,6 +308,7 @@ static void update_task_calc_completed_stages(UpdateTask* update_task) {
 
 void update_task_set_progress(UpdateTask* update_task, UpdateTaskStage stage, uint8_t progress) {
     if(stage != UpdateTaskStageProgress) {
+        FURI_LOG_I(TAG, "Stage %d, progress %d", stage, progress);
         /* do not override more specific error states */
         if((stage >= UpdateTaskStageError) && (update_task->state.stage >= UpdateTaskStageError)) {
             return;
@@ -334,11 +355,23 @@ void update_task_set_progress(UpdateTask* update_task, UpdateTaskStage stage, ui
     update_task->state.overall_progress = adapted_progress;
 
     if(update_task->status_change_cb) {
-        (update_task->status_change_cb)(
-            furi_string_get_cstr(update_task->state.status),
-            adapted_progress,
-            update_stage_is_error(update_task->state.stage),
-            update_task->status_change_cb_state);
+        if(update_stage_is_error(update_task->state.stage)) {
+            (update_task->status_change_cb)(
+                furi_string_get_cstr(update_task->state.status),
+                adapted_progress,
+                update_stage_is_error(update_task->state.stage),
+                update_task->status_change_cb_state);
+        } else {
+            size_t len = furi_string_size(update_task->state.status) + strlen(" 100%") + 1;
+            char* s = malloc(len);
+            snprintf(s, len, "%s %d%%", furi_string_get_cstr(update_task->state.status), progress);
+            (update_task->status_change_cb)(
+                s,
+                adapted_progress,
+                update_stage_is_error(update_task->state.stage),
+                update_task->status_change_cb_state);
+            free(s);
+        }
     }
 }
 
@@ -374,20 +407,21 @@ bool update_task_open_file(UpdateTask* update_task, FuriString* filename) {
     return open_success;
 }
 
-static void update_task_worker_thread_cb(FuriThreadState state, void* context) {
-    UpdateTask* update_task = context;
+static void
+    update_task_worker_thread_cb(FuriThread* thread, FuriThreadState state, void* context) {
+    UNUSED(context);
 
     if(state != FuriThreadStateStopped) {
         return;
     }
 
-    if(furi_thread_get_return_code(update_task->thread) == UPDATE_TASK_NOERR) {
+    if(furi_thread_get_return_code(thread) == UPDATE_TASK_NOERR) {
         furi_delay_ms(UPDATE_DELAY_OPERATION_OK);
         furi_hal_power_reset();
     }
 }
 
-UpdateTask* update_task_alloc() {
+UpdateTask* update_task_alloc(void) {
     UpdateTask* update_task = malloc(sizeof(UpdateTask));
 
     update_task->state.stage = UpdateTaskStageProgress;
@@ -406,7 +440,6 @@ UpdateTask* update_task_alloc() {
         furi_thread_alloc_ex("UpdateWorker", 5120, NULL, update_task);
 
     furi_thread_set_state_callback(thread, update_task_worker_thread_cb);
-    furi_thread_set_state_context(thread, update_task);
 #ifdef FURI_RAM_EXEC
     UNUSED(update_task_worker_backup_restore);
     furi_thread_set_callback(thread, update_task_worker_flash_writer);

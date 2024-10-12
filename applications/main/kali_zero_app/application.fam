@@ -1,6 +1,6 @@
 App(
     appid="kali_zero_app",
-    name="Kali Zero",
+    name="KaliZero",
     apptype=FlipperAppType.MENUEXTERNAL,
     entry_point="kali_zero_app",
     stack_size=2 * 1024,

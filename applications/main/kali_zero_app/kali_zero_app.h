@@ -1,49 +1,66 @@
 #pragma once
 
-#include <furi.h>
 #include <gui/gui.h>
-#include <gui/view.h>
-#include <gui/view_dispatcher.h>
-#include <gui/scene_manager.h>
+#include <storage/storage.h>
+#include <desktop/desktop.h>
 #include <dialogs/dialogs.h>
-#include <gui/modules/dialog_ex.h>
-#include <assets_icons.h>
-#include <applications.h>
+#include <expansion/expansion.h>
+#include <notification/notification_app.h>
+#include <gui/scene_manager.h>
+#include <gui/view_dispatcher.h>
+#include <power/power_service/power.h>
+
 #include <gui/modules/variable_item_list.h>
 #include <gui/modules/submenu.h>
 #include <gui/modules/text_input.h>
 #include <gui/modules/byte_input.h>
+#include <gui/modules/number_input.h>
 #include <gui/modules/popup.h>
-#include <lib/toolbox/value_index.h>
-#include <toolbox/stream/file_stream.h>
-#include "scenes/kali_zero_app_scene.h"
-#include "dolphin/helpers/dolphin_state.h"
-#include "dolphin/dolphin.h"
-#include "dolphin/dolphin_i.h"
-#include <lib/flipper_format/flipper_format.h>
-#include <lib/subghz/subghz_setting.h>
-#include <flipper_application/flipper_application.h>
-#include <notification/notification_app.h>
-#include <power/power_service/power.h>
-#include <rgb_backlight.h>
-#include <m-array.h>
-#include <xtreme/namespoof.h>
-#include <xtreme/xtreme.h>
+#include <gui/modules/dialog_ex.h>
 
-#define kalizero_SUBGHZ_FREQ_BUFFER_SIZE 7
+#include <kalizero/asset_packs.h>
+#include <loader/loader_menu.h>
+#include <lib/subghz/subghz_setting.h>
+#include <rgb_backlight.h>
+#include <kalizero/namespoof.h>
+#include <dolphin/dolphin.h>
+#include <dolphin/dolphin_i.h>
+#include <dolphin/helpers/dolphin_state.h>
+#include <kalizero/settings.h>
+#include <desktop/views/desktop_view_slideshow.h>
+
+#include <applications.h>
+#include <assets_icons.h>
+#include <flipper_application/flipper_application.h>
+#include <furi.h>
+#include <gui/view.h>
+#include <lib/flipper_format/flipper_format.h>
+#include <lib/toolbox/value_index.h>
+#include <m-array.h>
+#include <toolbox/stream/file_stream.h>
+
+#include "scenes/kali_zero_app_scene.h"
 
 ARRAY_DEF(CharList, char*)
 
+#define DOLPHIN_MAX_XP (DOLPHIN_LEVELS[DOLPHIN_LEVEL_COUNT - 1] + 1)
+
 typedef struct {
     Gui* gui;
+    Storage* storage;
+    Desktop* desktop;
+    Dolphin* dolphin;
     DialogsApp* dialogs;
+    Expansion* expansion;
     NotificationApp* notification;
     SceneManager* scene_manager;
     ViewDispatcher* view_dispatcher;
+
     VariableItemList* var_item_list;
     Submenu* submenu;
     TextInput* text_input;
     ByteInput* byte_input;
+    NumberInput* number_input;
     Popup* popup;
     DialogEx* dialog_ex;
 
@@ -52,25 +69,29 @@ typedef struct {
     CharList_t mainmenu_app_labels;
     CharList_t mainmenu_app_exes;
     uint8_t mainmenu_app_index;
+    DesktopSettings desktop_settings;
     bool subghz_use_defaults;
     FrequencyList_t subghz_static_freqs;
     uint8_t subghz_static_index;
     FrequencyList_t subghz_hopper_freqs;
     uint8_t subghz_hopper_index;
-    char subghz_freq_buffer[kalizero_SUBGHZ_FREQ_BUFFER_SIZE];
     bool subghz_extend;
+    bool subghz_bypass;
     RgbColor lcd_color;
+    RgbColor vgm_color;
     char device_name[FURI_HAL_VERSION_ARRAY_NAME_LENGTH];
-    int32_t dolphin_level;
-    int32_t dolphin_angry;
+    uint32_t dolphin_xp;
+    uint32_t dolphin_angry;
     FuriString* version_tag;
 
     bool save_mainmenu_apps;
+    bool save_desktop;
     bool save_subghz_freqs;
     bool save_subghz;
     bool save_name;
-    bool save_level;
+    bool save_xp;
     bool save_angry;
+    bool save_dolphin;
     bool save_backlight;
     bool save_settings;
     bool apply_pack;
@@ -83,8 +104,12 @@ typedef enum {
     KaliZeroAppViewSubmenu,
     KaliZeroAppViewTextInput,
     KaliZeroAppViewByteInput,
+    KaliZeroAppViewNumberInput,
     KaliZeroAppViewPopup,
     KaliZeroAppViewDialogEx,
 } KaliZeroAppView;
 
 bool kali_zero_app_apply(KaliZeroApp* app);
+
+void kali_zero_app_load_mainmenu_apps(KaliZeroApp* app);
+void kali_zero_app_empty_mainmenu_apps(KaliZeroApp* app);

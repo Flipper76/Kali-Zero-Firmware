@@ -43,10 +43,12 @@ const SubGhzProtocolDecoder subghz_protocol_ido_decoder = {
     .feed = subghz_protocol_decoder_ido_feed,
     .reset = subghz_protocol_decoder_ido_reset,
 
-    .get_hash_data = subghz_protocol_decoder_ido_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_ido_get_hash_data,
     .deserialize = subghz_protocol_decoder_ido_deserialize,
     .serialize = subghz_protocol_decoder_ido_serialize,
     .get_string = subghz_protocol_decoder_ido_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_ido_encoder = {

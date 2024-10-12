@@ -7,8 +7,9 @@
 #include <toolbox/stream/buffered_file_stream.h>
 
 #define TAG "Fuzzer worker"
+
 #define TOTAL_PROTOCOL_COUNT fuzzer_proto_get_count_of_protocols()
-#define PROTOCOL_KEY_FOLDER EXT_PATH(PROTOCOL_KEY_FOLDER_NAME)
+#define PROTOCOL_KEY_FOLDER  EXT_PATH(PROTOCOL_KEY_FOLDER_NAME)
 
 typedef uint8_t FuzzerWorkerPayload[MAX_PAYLOAD_SIZE];
 

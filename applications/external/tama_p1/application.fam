@@ -9,5 +9,5 @@ App(
     order=215,
     fap_file_assets="files",
     fap_icon="tamaIcon4.png",
-    fap_category="Jeux",
+    fap_category="Games",
 )

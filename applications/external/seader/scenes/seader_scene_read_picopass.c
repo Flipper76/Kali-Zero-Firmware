@@ -28,11 +28,13 @@ bool seader_scene_read_picopass_on_event(void* context, SceneManagerEvent event)
 
     if(event.type == SceneManagerEventTypeCustom) {
         if(event.event == SeaderCustomEventWorkerExit) {
-            seader->credential->type = SeaderCredentialTypePicopass;
             scene_manager_next_scene(seader->scene_manager, SeaderSceneReadCardSuccess);
             consumed = true;
+        } else if(event.event == SeaderCustomEventPollerDetect) {
+            Popup* popup = seader->popup;
+            popup_set_header(popup, "DON'T\nMOVE", 68, 30, AlignLeft, AlignTop);
+            consumed = true;
         } else if(event.event == SeaderCustomEventPollerSuccess) {
-            seader->credential->type = SeaderCredentialTypePicopass;
             scene_manager_next_scene(seader->scene_manager, SeaderSceneReadCardSuccess);
             consumed = true;
         }
@@ -51,6 +53,7 @@ void seader_scene_read_picopass_on_exit(void* context) {
     if(seader->picopass_poller) {
         picopass_poller_stop(seader->picopass_poller);
         picopass_poller_free(seader->picopass_poller);
+        seader->picopass_poller = NULL;
     }
 
     // Clear view

@@ -6,19 +6,7 @@
 
 #include <one_wire/one_wire_host.h>
 
-static void onewire_cli(Cli* cli, FuriString* args, void* context);
-
-void onewire_on_system_start() {
-#ifdef SRV_CLI
-    Cli* cli = furi_record_open(RECORD_CLI);
-    cli_add_command(cli, "onewire", CliCommandFlagDefault, onewire_cli, cli);
-    furi_record_close(RECORD_CLI);
-#else
-    UNUSED(onewire_cli);
-#endif
-}
-
-static void onewire_cli_print_usage() {
+static void onewire_cli_print_usage(void) {
     printf("Usage:\r\n");
     printf("onewire search\r\n");
 }
@@ -32,7 +20,7 @@ static void onewire_cli_search(Cli* cli) {
     printf("Search started\r\n");
 
     onewire_host_start(onewire);
-    furi_hal_power_enable_otg();
+    if(!furi_hal_power_is_otg_enabled()) furi_hal_power_enable_otg();
 
     while(!done) {
         if(onewire_host_search(onewire, address, OneWireHostSearchModeNormal) != 1) {
@@ -49,7 +37,7 @@ static void onewire_cli_search(Cli* cli) {
         furi_delay_ms(100);
     }
 
-    furi_hal_power_disable_otg();
+    if(furi_hal_power_is_otg_enabled()) furi_hal_power_disable_otg();
     onewire_host_free(onewire);
 }
 
@@ -69,4 +57,17 @@ void onewire_cli(Cli* cli, FuriString* args, void* context) {
     }
 
     furi_string_free(cmd);
+}
+
+#include <flipper_application/flipper_application.h>
+#include <cli/cli_i.h>
+
+static const FlipperAppPluginDescriptor plugin_descriptor = {
+    .appid = CLI_PLUGIN_APP_ID,
+    .ep_api_version = CLI_PLUGIN_API_VERSION,
+    .entry_point = &onewire_cli,
+};
+
+const FlipperAppPluginDescriptor* onewire_cli_plugin_ep(void) {
+    return &plugin_descriptor;
 }

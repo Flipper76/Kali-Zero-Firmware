@@ -37,7 +37,8 @@ void kali_zero_app_scene_interface_on_enter(void* context) {
         var_item_list, kali_zero_app_scene_interface_var_item_list_callback, app);
 
     variable_item_list_set_selected_item(
-        var_item_list, scene_manager_get_scene_state(app->scene_manager, KaliZeroAppSceneInterface));
+        var_item_list,
+        scene_manager_get_scene_state(app->scene_manager, KaliZeroAppSceneInterface));
 
     view_dispatcher_switch_to_view(app->view_dispatcher, KaliZeroAppViewVarItemList);
 }
@@ -51,11 +52,13 @@ bool kali_zero_app_scene_interface_on_event(void* context, SceneManagerEvent eve
         consumed = true;
         switch(event.event) {
         case VarItemListIndexGraphics:
-            scene_manager_set_scene_state(app->scene_manager, KaliZeroAppSceneInterfaceGraphics, 0);
+            scene_manager_set_scene_state(
+                app->scene_manager, KaliZeroAppSceneInterfaceGraphics, 0);
             scene_manager_next_scene(app->scene_manager, KaliZeroAppSceneInterfaceGraphics);
             break;
         case VarItemListIndexMainmenu:
-            scene_manager_set_scene_state(app->scene_manager, KaliZeroAppSceneInterfaceMainmenu, 0);
+            scene_manager_set_scene_state(
+                app->scene_manager, KaliZeroAppSceneInterfaceMainmenu, 0);
             scene_manager_next_scene(app->scene_manager, KaliZeroAppSceneInterfaceMainmenu);
             break;
         case VarItemListIndexLockscreen:
@@ -64,7 +67,8 @@ bool kali_zero_app_scene_interface_on_event(void* context, SceneManagerEvent eve
             scene_manager_next_scene(app->scene_manager, KaliZeroAppSceneInterfaceLockscreen);
             break;
         case VarItemListIndexStatusbar:
-            scene_manager_set_scene_state(app->scene_manager, KaliZeroAppSceneInterfaceStatusbar, 0);
+            scene_manager_set_scene_state(
+                app->scene_manager, KaliZeroAppSceneInterfaceStatusbar, 0);
             scene_manager_next_scene(app->scene_manager, KaliZeroAppSceneInterfaceStatusbar);
             break;
         case VarItemListIndexFileBrowser:

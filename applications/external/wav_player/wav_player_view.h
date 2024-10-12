@@ -3,13 +3,7 @@
 
 #include <furi.h>
 #include <furi_hal.h>
-#include <cli/cli.h>
-#include <gui/gui.h>
-#include <stm32wbxx_ll_dma.h>
-#include <dialogs/dialogs.h>
-#include <notification/notification_messages.h>
-#include <gui/view_dispatcher.h>
-#include <toolbox/stream/file_stream.h>
+#include <gui/view.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,7 +17,6 @@ typedef enum {
     WavPlayerCtrlMoveL,
     WavPlayerCtrlMoveR,
     WavPlayerCtrlOk,
-    WavPlayerCtrlBack,
 } WavPlayerCtrl;
 
 typedef void (*WavPlayerCtrlCallback)(WavPlayerCtrl ctrl, void* context);
@@ -64,7 +57,7 @@ void wav_player_view_set_current(WavPlayerView* wav_view, size_t current);
 
 void wav_player_view_set_play(WavPlayerView* wav_view, bool play);
 
-void wav_player_view_set_data(WavPlayerView* wav_view, uint16_t* data, size_t data_count);
+void wav_player_view_set_data(WavPlayerView* wav_view, uint8_t* data, size_t data_count);
 
 void wav_player_view_set_bits(WavPlayerView* wav_view, uint16_t bit);
 void wav_player_view_set_chans(WavPlayerView* wav_view, uint16_t chn);

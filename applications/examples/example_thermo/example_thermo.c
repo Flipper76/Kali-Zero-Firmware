@@ -25,15 +25,15 @@
 #include <furi_hal_power.h>
 
 #define UPDATE_PERIOD_MS 1000UL
-#define TEXT_STORE_SIZE 64U
+#define TEXT_STORE_SIZE  64U
 
-#define DS18B20_CMD_SKIP_ROM 0xccU
-#define DS18B20_CMD_CONVERT 0x44U
+#define DS18B20_CMD_SKIP_ROM        0xccU
+#define DS18B20_CMD_CONVERT         0x44U
 #define DS18B20_CMD_READ_SCRATCHPAD 0xbeU
 
-#define DS18B20_CFG_RESOLUTION_POS 5U
+#define DS18B20_CFG_RESOLUTION_POS  5U
 #define DS18B20_CFG_RESOLUTION_MASK 0x03U
-#define DS18B20_DECIMAL_PART_MASK 0x0fU
+#define DS18B20_DECIMAL_PART_MASK   0x0fU
 
 #define DS18B20_SIGN_MASK 0xf0U
 
@@ -220,16 +220,16 @@ static void example_thermo_draw_callback(Canvas* canvas, void* ctx) {
     const size_t middle_x = canvas_width(canvas) / 2U;
 
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str_aligned(canvas, middle_x, 12, AlignCenter, AlignBottom, "Thermometer Demo");
+    canvas_draw_str_aligned(canvas, middle_x, 12, AlignCenter, AlignBottom, "Démo thermomètre");
     canvas_draw_line(canvas, 0, 16, 128, 16);
 
     canvas_set_font(canvas, FontSecondary);
-    canvas_draw_str_aligned(canvas, middle_x, 30, AlignCenter, AlignBottom, "Connect thermometer");
+    canvas_draw_str_aligned(canvas, middle_x, 30, AlignCenter, AlignBottom, "Connecte un thermomètre");
 
     snprintf(
         text_store,
         TEXT_STORE_SIZE,
-        "to GPIO pin %ld",
+        "à la broche GPIO %ld",
         furi_hal_resources_get_ext_pin_number(&THERMO_GPIO_PIN));
     canvas_draw_str_aligned(canvas, middle_x, 42, AlignCenter, AlignBottom, text_store);
 
@@ -251,13 +251,13 @@ static void example_thermo_draw_callback(Canvas* canvas, void* ctx) {
             temp_units = 'F';
             break;
         default:
-            furi_crash("Illegal measurement units");
+            furi_crash("Unités de mesure illégales");
         }
         /* If a reading is available, display it */
         snprintf(text_store, TEXT_STORE_SIZE, "Temperature: %+.1f%c", (double)temp, temp_units);
     } else {
         /* Or show a message that no data is available */
-        strncpy(text_store, "-- No data --", TEXT_STORE_SIZE);
+        strlcpy(text_store, "-- Aucune données --", TEXT_STORE_SIZE);
     }
 
     canvas_draw_str_aligned(canvas, middle_x, 58, AlignCenter, AlignBottom, text_store);
@@ -315,7 +315,7 @@ static void example_thermo_run(ExampleThermoContext* context) {
 /******************** Initialisation & startup *****************************/
 
 /* Allocate the memory and initialise the variables */
-static ExampleThermoContext* example_thermo_context_alloc() {
+static ExampleThermoContext* example_thermo_context_alloc(void) {
     ExampleThermoContext* context = malloc(sizeof(ExampleThermoContext));
 
     context->view_port = view_port_alloc();

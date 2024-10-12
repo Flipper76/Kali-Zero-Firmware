@@ -6,17 +6,17 @@
 #include <notification/notification_messages.h>
 #include <assets_icons.h>
 #include <toolbox/stream/file_stream.h>
-#include <xtreme/xtreme.h>
+#include <kalizero/kalizero.h>
 
 #include "helpers/minmea.h"
 #include "wardriver_icons.h"
 
 #define appname "ll-wardriver"
 
-#define RX_BUF_SIZE 2048
+#define RX_BUF_SIZE       2048
 #define MAX_ACCESS_POINTS 2048
 
-#define MAX_SSID_LENGTH 32
+#define MAX_SSID_LENGTH  32
 #define MAX_BSSID_LENGTH 18
 
 #define FILE_PATH EXT_PATH("apps_data/ll-wardriver")
@@ -31,7 +31,11 @@ typedef struct {
     InputEvent input;
 } Event;
 
-typedef enum { SHOW_NMEA, NORMAL, NO_APS } ViewState;
+typedef enum {
+    SHOW_NMEA,
+    NORMAL,
+    NO_APS
+} ViewState;
 
 typedef struct {
     char* recievedMac;
@@ -62,7 +66,6 @@ typedef struct {
 typedef struct {
     FuriMessageQueue* queue;
     FuriMutex* mutex;
-    FuriString* buffer;
 
     FuriThread* thread_esp;
     FuriStreamBuffer* rx_stream_esp;

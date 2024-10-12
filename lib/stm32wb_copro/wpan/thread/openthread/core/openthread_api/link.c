@@ -30,6 +30,10 @@
 #include "thread.h"
 #include <string.h>
 
+#ifdef ENABLE_OPENTHREAD_CLI
+#include "radio_link.h"
+#endif
+
 extern otHandleActiveScanResult otHandleActiveScanResultCb;
 extern otHandleEnergyScanResult otHandleEnergyScanResultCb;
 extern otLinkPcapCallback otLinkPcapCb;
@@ -638,6 +642,7 @@ bool otLinkIsRadioFilterEnabled(otInstance *aInstance)
   Ot_Cmd_Transfer();
 
   p_ot_req = THREAD_Get_OTCmdRspPayloadBuffer();
+  return (bool)p_ot_req->Data[0];
 }
 #endif
 

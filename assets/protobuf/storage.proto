@@ -92,3 +92,8 @@ message BackupCreateRequest {
 message BackupRestoreRequest {
     string archive_path = 1;
 }
+
+message TarExtractRequest {
+    string tar_path = 1;
+    string out_path = 2;
+}

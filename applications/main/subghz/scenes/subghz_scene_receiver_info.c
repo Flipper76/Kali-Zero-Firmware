@@ -17,9 +17,7 @@ void subghz_scene_receiver_info_callback(GuiButtonType result, InputType type, v
     } else if((result == GuiButtonTypeRight) && (type == InputTypeShort)) {
         view_dispatcher_send_custom_event(
             subghz->view_dispatcher, SubGhzCustomEventSceneReceiverInfoSave);
-    } else if(
-        (result == GuiButtonTypeLeft) && (type == InputTypeShort) &&
-        subghz->last_settings->gps_baudrate != 0) {
+    } else if((result == GuiButtonTypeLeft) && (type == InputTypeShort) && subghz->gps) {
         view_dispatcher_send_custom_event(
             subghz->view_dispatcher, SubGhzCustomEventSceneReceiverInfoSats);
     }
@@ -42,8 +40,8 @@ static bool subghz_scene_receiver_info_update_parser(void* context) {
             subghz->txrx,
             furi_string_get_cstr(preset->name),
             preset->frequency,
-            0,
-            0,
+            NAN,
+            NAN,
             preset->data,
             preset->data_size);
 
@@ -81,7 +79,7 @@ void subghz_scene_receiver_info_draw_widget(SubGhz* subghz) {
         widget_add_string_multiline_element(
             subghz->widget, 0, 0, AlignLeft, AlignTop, FontSecondary, furi_string_get_cstr(text));
 
-        if(subghz->last_settings->gps_baudrate != 0) {
+        if(subghz->gps) {
             widget_add_button_element(
                 subghz->widget,
                 GuiButtonTypeLeft,
@@ -189,7 +187,8 @@ bool subghz_scene_receiver_info_on_event(void* context, SceneManagerEvent event)
             }
             return true;
         } else if(event.event == SubGhzCustomEventSceneReceiverInfoSats) {
-            if(subghz->last_settings->gps_baudrate != 0) {
+            if(subghz->gps) {
+                scene_manager_set_scene_state(subghz->scene_manager, SubGhzSceneShowGps, false);
                 scene_manager_next_scene(subghz->scene_manager, SubGhzSceneShowGps);
                 return true;
             } else {
@@ -198,14 +197,14 @@ bool subghz_scene_receiver_info_on_event(void* context, SceneManagerEvent event)
         }
     } else if(event.type == SceneManagerEventTypeTick) {
         if(subghz_txrx_hopper_get_state(subghz->txrx) != SubGhzHopperStateOFF) {
-            subghz_txrx_hopper_update(subghz->txrx);
+            subghz_txrx_hopper_update(subghz->txrx, subghz->last_settings->hopping_threshold);
         }
         switch(subghz->state_notifications) {
         case SubGhzNotificationStateTx:
             notification_message(subghz->notifications, &sequence_blink_magenta_10);
             break;
         case SubGhzNotificationStateRx:
-            if(subghz->last_settings->gps_baudrate != 0) {
+            if(subghz->gps) {
                 if(subghz->gps->satellites > 0) {
                     notification_message(subghz->notifications, &sequence_blink_green_10);
                 } else {

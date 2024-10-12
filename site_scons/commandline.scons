@@ -222,6 +222,16 @@ vars.AddVariables(
         "Application set to use from FIRMWARE_APPS",
         "default",
     ),
+    BoolVariable(
+        "SKIP_EXTERNAL",
+        help="Skip external apps unless explicitly selected",
+        default=False,
+    ),
+    (
+        "EXTRA_EXT_APPS",
+        "List of appids to include regardless of other configuration",
+        [],
+    ),
     (
         "APPSRC",
         "Application source directory for app to build & upload",
@@ -264,7 +274,7 @@ vars.AddVariables(
     EnumVariable(
         "LANG_SERVER",
         help="Language server type for vscode_dist.",
-        default="cpptools",
+        default="clangd",
         allowed_values=[
             "cpptools",
             "clangd",

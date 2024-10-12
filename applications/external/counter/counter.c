@@ -6,21 +6,21 @@
 #include <notification/notification.h>
 #include <notification/notification_messages.h>
 
-#define MAX_COUNT 99999
-#define NUM_WIDTH 12
-#define BOXTIME 2
-#define MIN_BOXWIDTH 30
-#define BOXHEIGHT 30
-#define MIDDLE_Y 32 - BOXHEIGHT / 2
-#define OFFSET_X 8
-#define OFFSET_Y 9
+#define MAX_COUNT     99999
+#define NUM_WIDTH     12
+#define BOXTIME       2
+#define MIN_BOXWIDTH  30
+#define BOXHEIGHT     30
+#define MIDDLE_Y      32 - BOXHEIGHT / 2
+#define OFFSET_X      8
+#define OFFSET_Y      9
 #define VIBRO_TIME_MS 20
 
 typedef struct {
     FuriMessageQueue* input_queue;
     ViewPort* view_port;
     Gui* gui;
-    FuriMutex** mutex;
+    FuriMutex* mutex;
     NotificationApp* notifications;
 
     int count;

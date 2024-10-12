@@ -1,5 +1,4 @@
 #include "../nfc_magic_app_i.h"
-#include "../lib/magic/protocols/gen4/gen4_poller_i.h"
 
 enum {
     NfcMagicSceneGen4SetShadowModeStateCardSearch,
@@ -42,7 +41,7 @@ static void nfc_magic_scene_gen4_set_shd_mode_setup_view(NfcMagicApp* instance) 
             instance->popup, "Apply the\ncard\nto the back", 128, 32, AlignRight, AlignCenter);
     } else {
         popup_set_icon(popup, 12, 23, &I_Loading_24);
-        popup_set_header(popup, "Writing\nDon't move...", 52, 32, AlignLeft, AlignCenter);
+        popup_set_header(popup, "Configuring\nDon't move...", 52, 32, AlignLeft, AlignCenter);
     }
 
     view_dispatcher_switch_to_view(instance->view_dispatcher, NfcMagicAppViewPopup);
@@ -64,7 +63,7 @@ void nfc_magic_scene_gen4_set_shd_mode_on_enter(void* context) {
 
     instance->gen4_poller = gen4_poller_alloc(instance->nfc);
     gen4_poller_set_password(instance->gen4_poller, instance->gen4_password);
-    instance->gen4_poller->shadow_mode = shadow_mode;
+    gen4_poller_struct_set_shadow_mode(instance->gen4_poller, shadow_mode);
 
     gen4_poller_start(
         instance->gen4_poller, nfc_magic_scene_gen4_set_shd_mode_poller_callback, instance);

@@ -68,7 +68,8 @@ void nfc_render_emv_application(const EmvApplication* apl, FuriString* str) {
     const uint8_t len = apl->aid_len;
 
     furi_string_cat_printf(str, "AID: ");
-    for(uint8_t i = 0; i < len; i++) furi_string_cat_printf(str, "%02X", apl->aid[i]);
+    for(uint8_t i = 0; i < len; i++)
+        furi_string_cat_printf(str, "%02X", apl->aid[i]);
     furi_string_cat_printf(str, "\n");
 }
 
@@ -112,6 +113,7 @@ void nfc_render_emv_transactions(const EmvApplication* apl, FuriString* str) {
         if(!apl->trans[i].amount) {
             furi_string_cat_printf(str, "???");
         } else {
+            FURI_LOG_D("EMV Render", "Amount: %llX\n", apl->trans[i].amount);
             uint8_t amount_bytes[6];
             bit_lib_num_to_bytes_le(apl->trans[i].amount, 6, amount_bytes);
 

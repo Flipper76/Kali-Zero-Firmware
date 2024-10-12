@@ -1,12 +1,7 @@
 #include <furi.h>
 #include <furi_hal.h>
-#include <cli/cli.h>
 #include <gui/gui.h>
 #include <stm32wbxx_ll_dma.h>
-#include <dialogs/dialogs.h>
-#include <notification/notification_messages.h>
-#include <gui/view_dispatcher.h>
-#include <toolbox/stream/file_stream.h>
 #include "wav_player_hal.h"
 #include "wav_parser.h"
 #include "wav_player_view.h"
@@ -20,29 +15,32 @@
 
 #define WAVPLAYER_FOLDER "/ext/wav_player"
 
-static bool open_wav_stream(Stream* stream) {
+static bool open_wav_stream(WavPlayerApp* app) {
     DialogsApp* dialogs = furi_record_open(RECORD_DIALOGS);
     bool result = false;
-    FuriString* path;
-    path = furi_string_alloc();
-    furi_string_set(path, WAVPLAYER_FOLDER);
 
-    DialogsFileBrowserOptions browser_options;
-    dialog_file_browser_set_basic_options(&browser_options, ".wav", &I_music_10px);
-    browser_options.base_path = WAVPLAYER_FOLDER;
-    browser_options.hide_ext = false;
+    if(furi_string_empty(app->path)) {
+        furi_string_set(app->path, WAVPLAYER_FOLDER);
 
-    bool ret = dialog_file_browser_show(dialogs, path, path, &browser_options);
+        DialogsFileBrowserOptions browser_options;
+        dialog_file_browser_set_basic_options(&browser_options, ".wav", &I_music_10px);
+        browser_options.base_path = WAVPLAYER_FOLDER;
+        browser_options.hide_ext = false;
 
-    furi_record_close(RECORD_DIALOGS);
-    if(ret) {
-        if(!file_stream_open(stream, furi_string_get_cstr(path), FSAM_READ, FSOM_OPEN_EXISTING)) {
-            FURI_LOG_E(TAG, "Cannot open file \"%s\"", furi_string_get_cstr(path));
-        } else {
-            result = true;
-        }
+        bool ret = dialog_file_browser_show(dialogs, app->path, app->path, &browser_options);
+
+        furi_record_close(RECORD_DIALOGS);
+
+        if(!ret) return false;
     }
-    furi_string_free(path);
+
+    if(!file_stream_open(
+           app->stream, furi_string_get_cstr(app->path), FSAM_READ, FSOM_OPEN_EXISTING)) {
+        FURI_LOG_E(TAG, "Cannot open file \"%s\"", furi_string_get_cstr(app->path));
+    } else {
+        result = true;
+    }
+
     return result;
 }
 
@@ -81,6 +79,23 @@ static void wav_player_dma_isr(void* ctx) {
     }
 }
 
+static void exit_callback(void* ctx) {
+    FuriMessageQueue* event_queue = ctx;
+
+    WavPlayerEvent event;
+    event.type = WavPlayerEventCtrlBack;
+    furi_message_queue_put(event_queue, &event, 0);
+}
+
+static bool thread_exit_signal_callback(uint32_t signal, void* arg, void* ctx) {
+    UNUSED(arg);
+    if(signal == FuriSignalExit) {
+        exit_callback(ctx);
+        return true;
+    }
+    return false;
+}
+
 static WavPlayerApp* app_alloc() {
     WavPlayerApp* app = malloc(sizeof(WavPlayerApp));
     app->samples_count_half = 1024 * 4;
@@ -88,30 +103,36 @@ static WavPlayerApp* app_alloc() {
     app->storage = furi_record_open(RECORD_STORAGE);
     app->stream = file_stream_alloc(app->storage);
     app->parser = wav_parser_alloc();
-    app->sample_buffer = malloc(sizeof(uint16_t) * app->samples_count);
-    app->tmp_buffer = malloc(sizeof(uint8_t) * app->samples_count);
+    app->sample_buffer = malloc(sizeof(*app->sample_buffer) * app->samples_count);
+    app->tmp_buffer = malloc(sizeof(*app->tmp_buffer) * app->samples_count);
     app->queue = furi_message_queue_alloc(10, sizeof(WavPlayerEvent));
 
     app->volume = 10.0f;
     app->play = true;
 
     app->gui = furi_record_open(RECORD_GUI);
-    app->view_dispatcher = view_dispatcher_alloc();
+    app->view_holder = view_holder_alloc();
     app->view = wav_player_view_alloc();
 
-    view_dispatcher_add_view(app->view_dispatcher, 0, wav_player_view_get_view(app->view));
-    view_dispatcher_attach_to_gui(app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
-    view_dispatcher_switch_to_view(app->view_dispatcher, 0);
+    app->path = furi_string_alloc();
+
+    view_holder_set_back_callback(app->view_holder, exit_callback, app->queue);
+    view_holder_attach_to_gui(app->view_holder, app->gui);
+    view_holder_set_view(app->view_holder, wav_player_view_get_view(app->view));
+    view_holder_send_to_front(app->view_holder);
 
     app->notification = furi_record_open(RECORD_NOTIFICATION);
     notification_message(app->notification, &sequence_display_backlight_enforce_on);
+
+    furi_thread_set_signal_callback(
+        furi_thread_get_current(), thread_exit_signal_callback, app->queue);
 
     return app;
 }
 
 static void app_free(WavPlayerApp* app) {
-    view_dispatcher_remove_view(app->view_dispatcher, 0);
-    view_dispatcher_free(app->view_dispatcher);
+    view_holder_set_view(app->view_holder, NULL);
+    view_holder_free(app->view_holder);
     wav_player_view_free(app->view);
     furi_record_close(RECORD_GUI);
 
@@ -122,6 +143,8 @@ static void app_free(WavPlayerApp* app) {
     stream_free(app->stream);
     furi_record_close(RECORD_STORAGE);
 
+    furi_string_free(app->path);
+
     notification_message(app->notification, &sequence_display_backlight_enforce_auto);
     furi_record_close(RECORD_NOTIFICATION);
     free(app);
@@ -130,7 +153,7 @@ static void app_free(WavPlayerApp* app) {
 // TODO: that works only with 8-bit 2ch audio
 static bool fill_data(WavPlayerApp* app, size_t index) {
     if(app->num_channels == 1 && app->bits_per_sample == 8) {
-        uint16_t* sample_buffer_start = &app->sample_buffer[index];
+        uint8_t* sample_buffer_start = &app->sample_buffer[index];
         size_t count = stream_read(app->stream, app->tmp_buffer, app->samples_count_half);
 
         for(size_t i = count; i < app->samples_count_half; i++) {
@@ -169,7 +192,7 @@ static bool fill_data(WavPlayerApp* app, size_t index) {
     }
 
     if(app->num_channels == 1 && app->bits_per_sample == 16) {
-        uint16_t* sample_buffer_start = &app->sample_buffer[index];
+        uint8_t* sample_buffer_start = &app->sample_buffer[index];
         size_t count = stream_read(app->stream, app->tmp_buffer, app->samples_count);
 
         for(size_t i = count; i < app->samples_count; i++) {
@@ -207,7 +230,7 @@ static bool fill_data(WavPlayerApp* app, size_t index) {
     }
 
     if(app->num_channels == 2 && app->bits_per_sample == 16) {
-        uint16_t* sample_buffer_start = &app->sample_buffer[index];
+        uint8_t* sample_buffer_start = &app->sample_buffer[index];
         size_t count = stream_read(app->stream, app->tmp_buffer, app->samples_count);
 
         for(size_t i = 0; i < app->samples_count; i += 4) {
@@ -270,7 +293,7 @@ static bool fill_data(WavPlayerApp* app, size_t index) {
     }
 
     if(app->num_channels == 2 && app->bits_per_sample == 8) {
-        uint16_t* sample_buffer_start = &app->sample_buffer[index];
+        uint8_t* sample_buffer_start = &app->sample_buffer[index];
         size_t count = stream_read(app->stream, app->tmp_buffer, app->samples_count);
 
         for(size_t i = count; i < app->samples_count; i++) {
@@ -334,17 +357,14 @@ static void ctrl_callback(WavPlayerCtrl ctrl, void* ctx) {
         event.type = WavPlayerEventCtrlOk;
         furi_message_queue_put(event_queue, &event, 0);
         break;
-    case WavPlayerCtrlBack:
-        event.type = WavPlayerEventCtrlBack;
-        furi_message_queue_put(event_queue, &event, 0);
-        break;
     default:
         break;
     }
 }
 
 static void app_run(WavPlayerApp* app) {
-    if(!open_wav_stream(app->stream)) return;
+    if(!open_wav_stream(app)) return;
+
     if(!wav_parser_parse(app->parser, app->stream, app)) return;
 
     wav_player_view_set_volume(app->view, app->volume);
@@ -449,7 +469,8 @@ static void app_run(WavPlayerApp* app) {
 }
 
 int32_t wav_player_app(void* p) {
-    UNUSED(p);
+    const char* args = p;
+
     WavPlayerApp* app = app_alloc();
 
     Storage* storage = furi_record_open(RECORD_STORAGE);
@@ -457,6 +478,10 @@ int32_t wav_player_app(void* p) {
         FURI_LOG_E(TAG, "Could not create folder %s", WAVPLAYER_FOLDER);
     }
     furi_record_close(RECORD_STORAGE);
+
+    if(args && strlen(args)) {
+        furi_string_set(app->path, args);
+    }
 
     app_run(app);
     app_free(app);

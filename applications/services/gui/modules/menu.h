@@ -21,7 +21,7 @@ typedef void (*MenuItemCallback)(void* context, uint32_t index);
  *
  * @return     Menu instance
  */
-Menu* menu_alloc();
+Menu* menu_alloc(void);
 
 /** Free menu
  *
@@ -60,6 +60,14 @@ void menu_add_item(
  * @param      menu  Menu instance
  */
 void menu_reset(Menu* menu);
+
+/** Get current menu item
+ *
+ * @param      menu   Menu instance
+ *
+ * @return     Index of the selected item
+ */
+uint32_t menu_get_selected_item(Menu* menu);
 
 /** Set current menu item
  *

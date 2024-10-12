@@ -12,7 +12,7 @@
 #include <m-dict.h>
 #include <loader/loader.h>
 
-#define TEXT_BOX_STORE_SIZE (4096)
+#define TEXT_BOX_STORE_SIZE   (4096)
 #define TEXT_INPUT_STORE_SIZE (512)
 
 typedef enum {

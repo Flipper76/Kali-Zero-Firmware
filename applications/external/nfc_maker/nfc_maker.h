@@ -17,11 +17,11 @@
 #include <applications/main/nfc/nfc_app_i.h>
 #include <furi_hal_bt.h>
 
-#define MAC_INPUT_LEN GAP_MAC_ADDR_SIZE
-#define MAIL_INPUT_LEN 128
+#define MAC_INPUT_LEN   GAP_MAC_ADDR_SIZE
+#define MAIL_INPUT_LEN  128
 #define PHONE_INPUT_LEN 17
 
-#define BIG_INPUT_LEN 248
+#define BIG_INPUT_LEN   248
 #define SMALL_INPUT_LEN 90
 
 #define NTAG_DATA_AREA_UNIT_SIZE 2 * MF_ULTRALIGHT_PAGE_SIZE

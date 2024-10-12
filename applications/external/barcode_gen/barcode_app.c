@@ -4,7 +4,6 @@
 #include <assets_icons.h>
 #include <notification/notification.h>
 #include <notification/notification_messages.h>
-#include <notification/notification_app.h>
 
 /**
  * Opens a file browser dialog and returns the filepath of the selected file
@@ -15,7 +14,14 @@
  * @returns true if a file is selected
 */
 
-NotificationApp* notifications = 0;
+static NotificationApp* barcode_notifications;
+
+const NotificationSequence sequence_display_backlight_barcode = {
+    &message_force_display_brightness_setting_1f,
+    &message_display_backlight_on,
+    &message_do_not_reset,
+    NULL,
+};
 
 static bool select_file(const char* folder, FuriString* file_path) {
     DialogsApp* dialogs = furi_record_open(RECORD_DIALOGS);
@@ -42,15 +48,15 @@ ErrorCode read_raw_data(FuriString* file_path, FuriString* raw_type, FuriString*
     ErrorCode reason = OKCode;
 
     if(!flipper_format_file_open_existing(ff, furi_string_get_cstr(file_path))) {
-        FURI_LOG_E(TAG, "Impossible d'ouvrir le fichier %s", furi_string_get_cstr(file_path));
+        FURI_LOG_E(TAG, "Could not open file %s", furi_string_get_cstr(file_path));
         reason = FileOpening;
     } else {
         if(!flipper_format_read_string(ff, "Type", raw_type)) {
-            FURI_LOG_E(TAG, "Impossible de lire \"Type\" string");
+            FURI_LOG_E(TAG, "Could not read \"Type\" string");
             reason = InvalidFileData;
         }
         if(!flipper_format_read_string(ff, "Data", raw_data)) {
-            FURI_LOG_E(TAG, "Impossible de lire les \"Données\" string");
+            FURI_LOG_E(TAG, "Could not read \"Data\" string");
             reason = InvalidFileData;
         }
     }
@@ -94,11 +100,11 @@ bool get_file_name_from_path(FuriString* file_path, FuriString* file_name, bool 
 */
 void init_folder() {
     Storage* storage = furi_record_open(RECORD_STORAGE);
-    FURI_LOG_I(TAG, "Création d'un dossier de codes-barres");
+    FURI_LOG_I(TAG, "Creating barcodes folder");
     if(storage_simply_mkdir(storage, DEFAULT_USER_BARCODES)) {
-        FURI_LOG_I(TAG, "Dossier de codes-barres créé avec succès!");
+        FURI_LOG_I(TAG, "Barcodes folder successfully created!");
     } else {
-        FURI_LOG_I(TAG, "Le dossier Codes-barres existe déjà.");
+        FURI_LOG_I(TAG, "Barcodes folder already exists.");
     }
     furi_record_close(RECORD_STORAGE);
 }
@@ -114,13 +120,13 @@ void select_barcode_item(BarcodeApp* app) {
 
     bool file_selected = select_file(DEFAULT_USER_BARCODES, file_path);
     if(file_selected) {
-        FURI_LOG_I(TAG, "Le fichier sélectionné est %s", furi_string_get_cstr(file_path));
+        FURI_LOG_I(TAG, "The file selected is %s", furi_string_get_cstr(file_path));
         Barcode* barcode = app->barcode_view;
 
         reason = read_raw_data(file_path, raw_type, raw_data);
         if(reason != OKCode) {
             loaded_success = false;
-            FURI_LOG_E(TAG, "Impossible de lire les données correctement");
+            FURI_LOG_E(TAG, "Could not read data correctly");
         }
 
         //Free the data from the previous barcode
@@ -148,6 +154,8 @@ void select_barcode_item(BarcodeApp* app) {
             },
             true);
 
+        notification_message(barcode_notifications, &sequence_display_backlight_barcode);
+
         view_dispatcher_switch_to_view(app->view_dispatcher, BarcodeView);
     }
 
@@ -167,12 +175,12 @@ void edit_barcode_item(BarcodeApp* app) {
 
     bool file_selected = select_file(DEFAULT_USER_BARCODES, file_path);
     if(file_selected) {
-        FURI_LOG_I(TAG, "Le fichier sélectionné est %s", furi_string_get_cstr(file_path));
+        FURI_LOG_I(TAG, "The file selected is %s", furi_string_get_cstr(file_path));
         CreateView* create_view_object = app->create_view;
 
         reason = read_raw_data(file_path, raw_type, raw_data);
         if(reason != OKCode) {
-            FURI_LOG_E(TAG, "Impossible de lire les données correctement");
+            FURI_LOG_E(TAG, "Could not read data correctly");
             with_view_model(
                 app->message_view->view,
                 MessageViewModel * model,
@@ -266,7 +274,7 @@ uint32_t exit_callback(void* context) {
 }
 
 void free_app(BarcodeApp* app) {
-    FURI_LOG_I(TAG, "Libérer les données");
+    FURI_LOG_I(TAG, "Freeing Data");
 
     init_folder();
     free_types();
@@ -303,11 +311,11 @@ void free_app(BarcodeApp* app) {
     free(app);
 }
 
-void set_backlight_brightness(float brightness) {
-    NotificationApp* notifications = furi_record_open(RECORD_NOTIFICATION);
-    notifications->settings.display_brightness = brightness;
-    notification_message(notifications, &sequence_display_backlight_on);
-}
+/*void set_backlight_brightness(float brightness) {
+    NotificationApp* barcode_notifications = furi_record_open(RECORD_NOTIFICATION);
+    barcode_notifications->settings.display_brightness = brightness;
+    notification_message(barcode_notifications, &sequence_display_backlight_on);
+}*/
 
 int32_t barcode_main(void* p) {
     UNUSED(p);
@@ -319,22 +327,22 @@ int32_t barcode_main(void* p) {
     app->gui = furi_record_open(RECORD_GUI);
 
     app->view_dispatcher = view_dispatcher_alloc();
-    view_dispatcher_enable_queue(app->view_dispatcher);
+
     view_dispatcher_attach_to_gui(app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
 
     app->main_menu = submenu_alloc();
-    submenu_add_item(app->main_menu, "Charger code-barres", SelectBarcodeItem, submenu_callback, app);
+    submenu_add_item(app->main_menu, "Load Barcode", SelectBarcodeItem, submenu_callback, app);
     view_set_previous_callback(submenu_get_view(app->main_menu), exit_callback);
     view_dispatcher_add_view(app->view_dispatcher, MainMenuView, submenu_get_view(app->main_menu));
 
-    submenu_add_item(app->main_menu, "Editer code-barres", EditBarcodeItem, submenu_callback, app);
+    submenu_add_item(app->main_menu, "Edit Barcode", EditBarcodeItem, submenu_callback, app);
 
-    NotificationApp* notifications = furi_record_open(RECORD_NOTIFICATION);
+    barcode_notifications = furi_record_open(RECORD_NOTIFICATION);
     // Save original brightness
-    float originalBrightness = notifications->settings.display_brightness;
+    //float originalBrightness = barcode_notifications->settings.display_brightness;
     // force backlight and increase brightness
-    notification_message_block(notifications, &sequence_display_backlight_enforce_on);
-    set_backlight_brightness(10); // set to highest
+    //notification_message(barcode_notifications, &sequence_display_backlight_enforce_on);
+    //set_backlight_brightness(10); // set to highest
 
     /*****************************
      * Creating Text Input View
@@ -355,7 +363,7 @@ int32_t barcode_main(void* p) {
      * Creating Create View
      ******************************/
     app->create_view = create_view_allocate(app);
-    submenu_add_item(app->main_menu, "Créer un code-barres", CreateBarcodeItem, submenu_callback, app);
+    submenu_add_item(app->main_menu, "Create Barcode", CreateBarcodeItem, submenu_callback, app);
     view_set_previous_callback(create_get_view(app->create_view), main_menu_callback);
     view_dispatcher_add_view(
         app->view_dispatcher, CreateBarcodeView, create_get_view(app->create_view));
@@ -413,12 +421,15 @@ int32_t barcode_main(void* p) {
         0,
         128,
         64,
-        "Un générateur de codes-barres\n"
-        "capable de générer UPC-A,\n"
+        "This is a barcode generator\n"
+        "capable of generating UPC-A,\n"
         "EAN-8, EAN-13, Code-39,\n"
-        "Codabar, et Code-128\n"
-        "Pour plus d'informations ou\n"
-        "problèmes, allez à\n"
+        "Codabar, and Code-128\n"
+        "\n"
+        "author: @Kingal1337\n"
+        "\n"
+        "For more information or\n"
+        "issues, go to\n"
         "https://github.com/Kingal1337/flipper-barcode-generator");
     view_set_previous_callback(widget_get_view(app->about_widget), main_menu_callback);
     view_dispatcher_add_view(
@@ -438,8 +449,9 @@ int32_t barcode_main(void* p) {
     view_dispatcher_run(app->view_dispatcher);
 
     free_app(app);
-    notification_message_block(notifications, &sequence_display_backlight_enforce_auto);
-    set_backlight_brightness(originalBrightness);
+    notification_message_block(barcode_notifications, &sequence_display_backlight_enforce_auto);
+    //set_backlight_brightness(originalBrightness);
+    furi_record_close(RECORD_NOTIFICATION);
 
     return 0;
 }

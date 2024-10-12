@@ -1,5 +1,7 @@
 #include "mousejacker_ducky.h"
 
+#include "stdstring.h"
+
 static const char ducky_cmd_comment[] = {"REM"};
 static const char ducky_cmd_delay[] = {"DELAY "};
 static const char ducky_cmd_string[] = {"STRING "};
@@ -17,13 +19,13 @@ static bool holding_shift = false;
 static bool holding_alt = false;
 static bool holding_gui = false;
 
-#define RT_THRESHOLD 50
-#define LOGITECH_MIN_CHANNEL 2
-#define LOGITECH_MAX_CHANNEL 83
-#define LOGITECH_KEEPALIVE_SIZE 5
+#define RT_THRESHOLD               50
+#define LOGITECH_MIN_CHANNEL       2
+#define LOGITECH_MAX_CHANNEL       83
+#define LOGITECH_KEEPALIVE_SIZE    5
 #define LOGITECH_HID_TEMPLATE_SIZE 10
-#define LOGITECH_HELLO_SIZE 10
-#define TAG "mousejacker_ducky"
+#define LOGITECH_HELLO_SIZE        10
+#define TAG                        "mousejacker_ducky"
 
 MJDuckyKey mj_ducky_keys[] = {{" ", 44, 0},         {"!", 30, 2},         {"\"", 52, 2},
                               {"#", 32, 2},         {"$", 33, 2},         {"%", 34, 2},
@@ -111,7 +113,8 @@ static void checksum(uint8_t* payload, size_t len) {
     // This is also from the KeyKeriki paper
     // Thanks Thorsten and Max!
     uint8_t cksum = 0xff;
-    for(size_t n = 0; n < len - 2; n++) cksum = (cksum - payload[n]) & 0xff;
+    for(size_t n = 0; n < len - 2; n++)
+        cksum = (cksum - payload[n]) & 0xff;
     cksum = (cksum + 1) & 0xff;
     payload[len - 1] = cksum;
 }
@@ -442,7 +445,7 @@ void mj_process_ducky_script(
 
     inject_packet(
         handle, addr, addr_size, rate, LOGITECH_HELLO, LOGITECH_HELLO_SIZE, plugin_state);
-    char* line = strtok(script, "\n");
+    char* line = nrf_strtok(script, "\n");
     while(line != NULL) {
         if(strcmp(&line[strlen(line) - 1], "\r") == 0) line[strlen(line) - 1] = (char)0;
 
@@ -450,7 +453,7 @@ void mj_process_ducky_script(
             FURI_LOG_D(TAG, "unable to process ducky script line: %s", line);
 
         prev_line = line;
-        line = strtok(NULL, "\n");
+        line = nrf_strtok(NULL, "\n");
     }
     build_hid_packet(0, 0, hid_payload);
     inject_packet(

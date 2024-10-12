@@ -15,28 +15,28 @@ typedef struct {
 static void power_off_draw_callback(Canvas* canvas, void* _model) {
     furi_assert(_model);
     PowerOffModel* model = _model;
-    char buff[32];
+    char buff[42];
 
     canvas_set_color(canvas, ColorBlack);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str_aligned(canvas, 64, 1, AlignCenter, AlignTop, "Battery low!");
+    canvas_draw_str_aligned(canvas, 64, 1, AlignCenter, AlignTop, "Batterie faible!");
     canvas_draw_icon(canvas, 0, 18, &I_BatteryBody_52x28);
     canvas_draw_icon(canvas, 16, 25, &I_FaceNopower_29x14);
     elements_bubble(canvas, 54, 17, 70, 30);
 
     canvas_set_font(canvas, FontSecondary);
     if(model->response == PowerOffResponseDefault) {
-        snprintf(buff, sizeof(buff), "Charge me!\nOff in %lus!", model->time_left_sec);
+        snprintf(buff, sizeof(buff), "Chargez-moi !\nDésactivé dans %lus!", model->time_left_sec);
         elements_multiline_text_aligned(canvas, 70, 23, AlignLeft, AlignTop, buff);
 
-        elements_button_left(canvas, "Cancel");
+        elements_button_left(canvas, "Annuler");
         elements_button_center(canvas, "OK");
-        elements_button_right(canvas, "Hide");
+        elements_button_right(canvas, "Cacher");
     } else {
-        snprintf(buff, sizeof(buff), "Charge me!\nDont't forget!");
+        snprintf(buff, sizeof(buff), "Chargez-moi ! N'oubliez pas!");
         elements_multiline_text_aligned(canvas, 70, 23, AlignLeft, AlignTop, buff);
 
-        canvas_draw_str_aligned(canvas, 64, 60, AlignCenter, AlignBottom, "Hold a second...");
+        canvas_draw_str_aligned(canvas, 64, 60, AlignCenter, AlignBottom, "Attends une seconde...");
     }
 }
 
@@ -62,7 +62,7 @@ static bool power_off_input_callback(InputEvent* event, void* context) {
     return true;
 }
 
-PowerOff* power_off_alloc() {
+PowerOff* power_off_alloc(void) {
     PowerOff* power_off = malloc(sizeof(PowerOff));
 
     power_off->view = view_alloc();

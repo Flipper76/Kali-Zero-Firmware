@@ -101,7 +101,7 @@ void to_bust_state(const void* ctx, Canvas* const canvas) {
     const GameState* game_state = ctx;
     if(game_state->settings.message_duration == 0) return;
     popup_frame(canvas);
-    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Ã‰clatÃ©e!");
+    elements_multiline_text_aligned(canvas, 64, 22, AlignCenter, AlignCenter, "Éclatée!");
 }
 
 void to_draw_state(const void* ctx, Canvas* const canvas) {
@@ -466,14 +466,18 @@ void init(GameState* game_state) {
     start_round(game_state);
 }
 
-static void input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void input_callback(InputEvent* input_event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
+
     AppEvent event = {.type = EventTypeKey, .input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
 }
 
-static void update_timer_callback(FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void update_timer_callback(void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
+
     AppEvent event = {.type = EventTypeTick};
     furi_message_queue_put(event_queue, &event, 0);
 }
@@ -556,7 +560,7 @@ int32_t blackjack_app(void* p) {
 
     game_state->mutex = furi_mutex_alloc(FuriMutexTypeNormal);
     if(!game_state->mutex) {
-        FURI_LOG_E(APP_NAME, "impossible de crÃ©er un mutex\r\n");
+        FURI_LOG_E(APP_NAME, "impossible de créer un mutex\r\n");
         return_code = 255;
         goto free_and_exit;
     }

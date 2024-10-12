@@ -1,9 +1,9 @@
 App(
     appid="example_custom_font",
-    name="Example: custom font",
+    name="Exemple: police perso.",
     apptype=FlipperAppType.EXTERNAL,
     entry_point="example_custom_font_main",
     requires=["gui"],
     stack_size=1 * 1024,
-    fap_category="Examples",
+    fap_category="Exemples",
 )

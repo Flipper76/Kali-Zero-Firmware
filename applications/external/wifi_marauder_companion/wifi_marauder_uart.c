@@ -1,9 +1,9 @@
 #include "wifi_marauder_app_i.h"
 #include "wifi_marauder_uart.h"
 
-#include <xtreme/xtreme.h>
+#include <kalizero/kalizero.h>
 
-#define UART_CH (kalizero_settings.uart_esp_channel)
+#define UART_CH  (kalizero_settings.uart_esp_channel)
 #define BAUDRATE (115200)
 
 struct WifiMarauderUart {
@@ -168,12 +168,13 @@ WifiMarauderUart* wifi_marauder_usart_init(WifiMarauderApp* app) {
 void wifi_marauder_uart_free(WifiMarauderUart* uart) {
     furi_assert(uart);
 
+    furi_hal_serial_async_rx_stop(uart->serial_handle);
+    furi_hal_serial_deinit(uart->serial_handle);
+    furi_hal_serial_control_release(uart->serial_handle);
+
     furi_thread_flags_set(furi_thread_get_id(uart->rx_thread), WorkerEvtStop);
     furi_thread_join(uart->rx_thread);
     furi_thread_free(uart->rx_thread);
-
-    furi_hal_serial_deinit(uart->serial_handle);
-    furi_hal_serial_control_release(uart->serial_handle);
 
     free(uart);
 }

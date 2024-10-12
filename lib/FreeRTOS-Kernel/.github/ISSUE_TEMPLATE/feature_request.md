@@ -26,5 +26,5 @@ Timeline for milestones such as design completion, testing and validation, and p
 Add any other context or screenshots about the feature request here.
 
 
-If you have the same (or similar) feature request, please upvote this issue with thumbs up 👍
+If you have the same (or similar) feature request, please upvote this issue with thumbs up üëç
 and use the comments section to provide answers to the questions above.

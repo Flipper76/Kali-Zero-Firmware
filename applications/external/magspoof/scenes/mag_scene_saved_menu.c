@@ -17,24 +17,8 @@ void mag_scene_saved_menu_on_enter(void* context) {
     Mag* mag = context;
     Submenu* submenu = mag->submenu;
 
-    // messy code to quickly check which tracks are available for emulation/display
-    // there's likely a better spot to do this, but the MagDevice functions don't have access to the full mag struct...
-    bool is_empty_t1 = furi_string_empty(mag->mag_dev->dev_data.track[0].str);
-    bool is_empty_t2 = furi_string_empty(mag->mag_dev->dev_data.track[1].str);
-    bool is_empty_t3 = furi_string_empty(mag->mag_dev->dev_data.track[2].str);
-
-    if(!is_empty_t1 && !is_empty_t2) {
-        mag->setting->track = MagTrackStateOneAndTwo;
-    } else if(!is_empty_t1) {
-        mag->setting->track = MagTrackStateOne;
-    } else if(!is_empty_t2) {
-        mag->setting->track = MagTrackStateTwo;
-    } else if(!is_empty_t3) {
-        mag->setting->track = MagTrackStateThree;
-    } // TODO: what happens if no track data present?
-
     submenu_add_item(
-        submenu, "Emulate (WIP)", SubmenuIndexEmulate, mag_scene_saved_menu_submenu_callback, mag);
+        submenu, "Emulate", SubmenuIndexEmulate, mag_scene_saved_menu_submenu_callback, mag);
     //submenu_add_item(
     //    submenu, "Edit (WIP)", SubmenuIndexEdit, mag_scene_saved_menu_submenu_callback, mag);
     submenu_add_item(

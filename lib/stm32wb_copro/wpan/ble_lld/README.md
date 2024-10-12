@@ -1,4 +1,4 @@
-﻿# Introduction
+# Introduction
 BLE LLD is a radio communication layer. It relies on BLE radio hardware, but it is a proprietary radio abstraction layer, not a BLE stack.
 
 BLE LLD provides a light and simple layer to develop proprietary protocols and applications.

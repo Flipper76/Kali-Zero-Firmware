@@ -41,7 +41,8 @@ static void
     app->save_settings = true;
 }
 
-static void kali_zero_app_scene_interface_lockscreen_lockscreen_poweroff_changed(VariableItem* item) {
+static void
+    kali_zero_app_scene_interface_lockscreen_lockscreen_poweroff_changed(VariableItem* item) {
     KaliZeroApp* app = variable_item_get_context(item);
     bool value = variable_item_get_current_value_index(item);
     variable_item_set_current_value_text(item, value ? "ON" : "OFF");
@@ -57,7 +58,8 @@ static void kali_zero_app_scene_interface_lockscreen_lockscreen_time_changed(Var
     app->save_settings = true;
 }
 
-static void kali_zero_app_scene_interface_lockscreen_lockscreen_seconds_changed(VariableItem* item) {
+static void
+    kali_zero_app_scene_interface_lockscreen_lockscreen_seconds_changed(VariableItem* item) {
     KaliZeroApp* app = variable_item_get_context(item);
     bool value = variable_item_get_current_value_index(item);
     variable_item_set_current_value_text(item, value ? "ON" : "OFF");
@@ -139,7 +141,8 @@ void kali_zero_app_scene_interface_lockscreen_on_enter(void* context) {
         kali_zero_app_scene_interface_lockscreen_lockscreen_poweroff_changed,
         app);
     variable_item_set_current_value_index(item, kalizero_settings.lockscreen_poweroff);
-    variable_item_set_current_value_text(item, kalizero_settings.lockscreen_poweroff ? "ON" : "OFF");
+    variable_item_set_current_value_text(
+        item, kalizero_settings.lockscreen_poweroff ? "ON" : "OFF");
 
     item = variable_item_list_add(
         var_item_list,
@@ -157,7 +160,8 @@ void kali_zero_app_scene_interface_lockscreen_on_enter(void* context) {
         kali_zero_app_scene_interface_lockscreen_lockscreen_seconds_changed,
         app);
     variable_item_set_current_value_index(item, kalizero_settings.lockscreen_seconds);
-    variable_item_set_current_value_text(item, kalizero_settings.lockscreen_seconds ? "ON" : "OFF");
+    variable_item_set_current_value_text(
+        item, kalizero_settings.lockscreen_seconds ? "ON" : "OFF");
 
     item = variable_item_list_add(
         var_item_list,

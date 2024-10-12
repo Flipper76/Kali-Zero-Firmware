@@ -2,6 +2,7 @@
 
 enum VarItemListIndex {
     VarItemListIndexDolphinLevel,
+    VarItemListIndexDolphinXp,
     VarItemListIndexDolphinAngry,
     VarItemListIndexButthurtTimer,
 };
@@ -13,20 +14,66 @@ void kali_zero_app_scene_misc_dolphin_var_item_list_callback(void* context, uint
 
 static void kali_zero_app_scene_misc_dolphin_dolphin_level_changed(VariableItem* item) {
     KaliZeroApp* app = variable_item_get_context(item);
-    app->dolphin_level = variable_item_get_current_value_index(item) + 1;
+
+    uint8_t index = variable_item_get_current_value_index(item);
+    uint32_t xp = index > 0 ? DOLPHIN_LEVELS[index - 1] : 0;
+    app->dolphin_xp = xp + 1; // Prevent levelup animation
+
+    uint8_t level = dolphin_get_level(app->dolphin_xp);
     char level_str[4];
-    snprintf(level_str, 4, "%li", app->dolphin_level);
+    snprintf(level_str, sizeof(level_str), "%u", level);
     variable_item_set_current_value_text(item, level_str);
-    app->save_level = true;
+    app->save_xp = true;
+    app->save_dolphin = true;
+
+    item = variable_item_list_get(app->var_item_list, VarItemListIndexDolphinXp);
+    variable_item_set_current_value_index(
+        item,
+        app->dolphin_xp == 0              ? 0 :
+        app->dolphin_xp == DOLPHIN_MAX_XP ? 2 :
+                                            1);
+    char xp_str[6];
+    snprintf(xp_str, sizeof(xp_str), "%lu", app->dolphin_xp);
+    variable_item_set_current_value_text(item, xp_str);
+}
+
+static void kali_zero_app_scene_misc_dolphin_dolphin_xp_changed(VariableItem* item) {
+    KaliZeroApp* app = variable_item_get_context(item);
+
+    // uin8_t index too small for all levels, use 3 fake items to
+    // show buttons and change values in callback
+    uint8_t direction = variable_item_get_current_value_index(item);
+    if(app->dolphin_xp == DOLPHIN_MAX_XP) direction = 0;
+    if(app->dolphin_xp == 0) direction = 2;
+    if(direction == 0) app->dolphin_xp--;
+    if(direction == 2) app->dolphin_xp++;
+
+    variable_item_set_current_value_index(
+        item,
+        app->dolphin_xp == 0              ? 0 :
+        app->dolphin_xp == DOLPHIN_MAX_XP ? 2 :
+                                            1);
+    char xp_str[6];
+    snprintf(xp_str, sizeof(xp_str), "%lu", app->dolphin_xp);
+    variable_item_set_current_value_text(item, xp_str);
+    app->save_xp = true;
+    app->save_dolphin = true;
+
+    uint8_t level = dolphin_get_level(app->dolphin_xp);
+    char level_str[4];
+    snprintf(level_str, sizeof(level_str), "%u", level);
+    variable_item_set_current_value_text(
+        variable_item_list_get(app->var_item_list, VarItemListIndexDolphinLevel), level_str);
 }
 
 static void kali_zero_app_scene_misc_dolphin_dolphin_angry_changed(VariableItem* item) {
     KaliZeroApp* app = variable_item_get_context(item);
     app->dolphin_angry = variable_item_get_current_value_index(item);
     char angry_str[4];
-    snprintf(angry_str, 4, "%li", app->dolphin_angry);
+    snprintf(angry_str, sizeof(angry_str), "%lu", app->dolphin_angry);
     variable_item_set_current_value_text(item, angry_str);
     app->save_angry = true;
+    app->save_dolphin = true;
 }
 
 const char* const butthurt_timer_names[] = {
@@ -59,7 +106,7 @@ static void kali_zero_app_scene_misc_dolphin_butthurt_timer_changed(VariableItem
     variable_item_set_current_value_text(item, butthurt_timer_names[index]);
     kalizero_settings.butthurt_timer = butthurt_timer_values[index];
     app->save_settings = true;
-    app->require_reboot = true;
+    app->save_dolphin = true;
 }
 
 void kali_zero_app_scene_misc_dolphin_on_enter(void* context) {
@@ -67,20 +114,36 @@ void kali_zero_app_scene_misc_dolphin_on_enter(void* context) {
     VariableItemList* var_item_list = app->var_item_list;
     VariableItem* item;
     uint8_t value_index;
+    DolphinSettings settings;
+    dolphin_get_settings(app->dolphin, &settings);
 
+    uint8_t level = dolphin_get_level(app->dolphin_xp);
     char level_str[4];
-    snprintf(level_str, 4, "%li", app->dolphin_level);
+    snprintf(level_str, sizeof(level_str), "%u", level);
     item = variable_item_list_add(
         var_item_list,
         "Niveau du Dauphin",
         DOLPHIN_LEVEL_COUNT + 1,
         kali_zero_app_scene_misc_dolphin_dolphin_level_changed,
         app);
-    variable_item_set_current_value_index(item, app->dolphin_level - 1);
+    variable_item_set_current_value_index(item, level - 1);
     variable_item_set_current_value_text(item, level_str);
 
+    char xp_str[6];
+    snprintf(xp_str, sizeof(xp_str), "%lu", app->dolphin_xp);
+    // uin8_t index too small for all levels, use 3 fake items to
+    // show buttons and change values in callback
+    item = variable_item_list_add(
+        var_item_list, "Dolphin XP", 3, kali_zero_app_scene_misc_dolphin_dolphin_xp_changed, app);
+    variable_item_set_current_value_index(
+        item,
+        app->dolphin_xp == 0              ? 0 :
+        app->dolphin_xp == DOLPHIN_MAX_XP ? 2 :
+                                            1);
+    variable_item_set_current_value_text(item, xp_str);
+
     char angry_str[4];
-    snprintf(angry_str, 4, "%li", app->dolphin_angry);
+    snprintf(angry_str, sizeof(angry_str), "%lu", app->dolphin_angry);
     item = variable_item_list_add(
         var_item_list,
         "Dauphin en colère",
@@ -89,6 +152,13 @@ void kali_zero_app_scene_misc_dolphin_on_enter(void* context) {
         app);
     variable_item_set_current_value_index(item, app->dolphin_angry);
     variable_item_set_current_value_text(item, angry_str);
+    variable_item_set_locked(
+        item,
+        settings.happy_mode,
+        "Settings >\n"
+        "Desktop >\n"
+        "Happy Mode\n"
+        "is enabled!");
 
     item = variable_item_list_add(
         var_item_list,
@@ -100,6 +170,13 @@ void kali_zero_app_scene_misc_dolphin_on_enter(void* context) {
         kalizero_settings.butthurt_timer, butthurt_timer_values, COUNT_OF(butthurt_timer_values));
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, butthurt_timer_names[value_index]);
+    variable_item_set_locked(
+        item,
+        settings.happy_mode,
+        "Settings >\n"
+        "Desktop >\n"
+        "Happy Mode\n"
+        "is enabled!");
 
     variable_item_list_set_enter_callback(
         var_item_list, kali_zero_app_scene_misc_dolphin_var_item_list_callback, app);
@@ -116,9 +193,13 @@ bool kali_zero_app_scene_misc_dolphin_on_event(void* context, SceneManagerEvent 
     bool consumed = false;
 
     if(event.type == SceneManagerEventTypeCustom) {
-        scene_manager_set_scene_state(app->scene_manager, KaliZeroAppSceneMiscDolphin, event.event);
+        scene_manager_set_scene_state(
+            app->scene_manager, KaliZeroAppSceneMiscDolphin, event.event);
         consumed = true;
         switch(event.event) {
+        case VarItemListIndexDolphinXp:
+            scene_manager_next_scene(app->scene_manager, KaliZeroAppSceneMiscDolphinXp);
+            break;
         default:
             break;
         }

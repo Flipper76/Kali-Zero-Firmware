@@ -1,6 +1,6 @@
 from pathlib import Path
-import subprocess
 import posixpath
+import os
 
 # For more details on these options, run 'fbt -h'
 
@@ -18,14 +18,41 @@ DEBUG = 0
 # Suffix to add to files when building distribution
 # If OS environment has DIST_SUFFIX set, it will be used instead
 
-# How about we add the timestamp automatically. Solves some problems
-DIST_SUFFIX = f"KZFW-MAIN_@{subprocess.check_output(['git', 'rev-parse', '--short=7', 'HEAD']).decode().strip().upper()}"
+if not os.environ.get("DIST_SUFFIX"):
+    # Check scripts/get_env.py to mirror CI naming
+    def git(*args):
+        import subprocess
+
+        return (
+            subprocess.check_output(["git", *args], stderr=subprocess.DEVNULL)
+            .decode()
+            .strip()
+        )
+
+    try:
+        # For tags, dist name is just the tag name: kzfw-(ver)
+        DIST_SUFFIX = git("describe", "--tags", "--abbrev=0", "--exact-match")
+    except Exception:
+        # If not a tag, dist name is: kzfw-(branch)-(commmit)
+        branch_name = git("rev-parse", "--abbrev-ref", "HEAD").removeprefix("kzfw-")
+        commit_sha = git("rev-parse", "HEAD")[:8]
+        DIST_SUFFIX = f"kzfw-{branch_name}-{commit_sha}"
+    # Dist name is only for naming of output files
+    DIST_SUFFIX = DIST_SUFFIX.replace("/", "-")
+    # Instead, FW version uses tag name (kzfw-xxx), or "kzfw-dev" if not a tag (see scripts/version.py)
+    # You can get commit and branch info in firmware with appropriate version_get_*() calls
+
+# Skip external apps by default
+SKIP_EXTERNAL = False
+
+# Appid's to include even when skipping externals
+EXTRA_EXT_APPS = []
 
 # Coprocessor firmware
 COPRO_OB_DATA = "scripts/ob.data"
 
 # Must match lib/stm32wb_copro version
-COPRO_CUBE_VERSION = "1.17.3"
+COPRO_CUBE_VERSION = "1.20.0"
 
 COPRO_CUBE_DIR = "lib/stm32wb_copro"
 
@@ -74,6 +101,17 @@ FIRMWARE_APPS = {
         "settings_apps",
     ],
     "unit_tests": [
+        # Svc
+        "basic_services",
+        # Apps
+        "main_apps",
+        "system_apps",
+        # Settings
+        "settings_apps",
+        # Tests
+        "unit_tests",
+    ],
+    "unit_tests_min": [
         "basic_services",
         "updater_app",
         "radio_device_cc1101_ext",

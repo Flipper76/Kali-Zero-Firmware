@@ -1,11 +1,11 @@
 /*****************************************************************************
  * @file    ble_const.h
- * @author  MDG
+ *
  * @brief   This file contains the definitions which are compiler dependent.
  *****************************************************************************
  * @attention
  *
- * Copyright (c) 2018-2023 STMicroelectronics.
+ * Copyright (c) 2018-2024 STMicroelectronics.
  * All rights reserved.
  *
  * This software is licensed under terms that can be found in the LICENSE file
@@ -44,14 +44,17 @@
 #define BEACON_ONLY 0
 #endif
 
+/* Defintion to determine BLE Host stack presence */
+#define BLE_HOST_PRESENT (!(LL_ONLY || LL_ONLY_BASIC || BEACON_ONLY))
+
 
 /* Size of command/events buffers:
  *
  * To change the size of commands and events parameters used in the
  * auto-generated files, you need to update 2 defines:
  *
- *  - BLE_CMD_MAX_PARAM_LEN          
- *  - BLE_EVT_MAX_PARAM_LEN          
+ *  - BLE_CMD_MAX_PARAM_LEN
+ *  - BLE_EVT_MAX_PARAM_LEN
  *
  * These 2 defines are set below with default values and can be changed.
  *

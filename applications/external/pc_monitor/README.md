@@ -1,4 +1,4 @@
-# Moniteur PC
-Application Flipper pour surveiller les ressources du PC
+# PC Monitor
+Flipper Application for monitoring PC resources
 
-**[Un backend fonctionnant sur votre PC est requis](https://github.com/Flipper76/flipper-pc-monitor-backend/releases)**
+**[A backend running on your PC is required](https://github.com/TheSainEyereg/flipper-pc-monitor-backend/releases)**

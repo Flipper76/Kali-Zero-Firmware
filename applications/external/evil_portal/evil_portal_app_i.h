@@ -16,16 +16,16 @@
 #include <gui/view_stack.h>
 #include <dialogs/dialogs.h>
 
-#include <xtreme/xtreme.h>
+#include <kalizero/kalizero.h>
 
 #define NUM_MENU_ITEMS (6)
 
 #define EVIL_PORTAL_TEXT_BOX_STORE_SIZE (4096)
-#define UART_CH (kalizero_settings.uart_esp_channel)
+#define UART_CH                         (kalizero_settings.uart_esp_channel)
 
 #define SET_HTML_CMD "sethtml"
-#define SET_AP_CMD "setap"
-#define RESET_CMD "reset"
+#define SET_AP_CMD   "setap"
+#define RESET_CMD    "reset"
 
 struct Evil_PortalApp {
     Gui* gui;

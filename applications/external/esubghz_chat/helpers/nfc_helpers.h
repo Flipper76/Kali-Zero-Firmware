@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-#define NFC_MAX_BYTES 256
+#define NFC_MAX_BYTES    256
 #define NFC_CONFIG_PAGES 4
 
 struct FreqNfcEntry {

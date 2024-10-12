@@ -99,11 +99,12 @@ static void updater_main_draw_callback(Canvas* canvas, void* _model) {
         canvas_draw_str_aligned(
             canvas, 64, 51, AlignCenter, AlignTop, furi_string_get_cstr(model->status));
         canvas_draw_icon(canvas, 4, 5, &I_Updating_32x40);
-        elements_progress_bar(canvas, 42, 29, 80, (float)model->progress / 100);
+        canvas_draw_icon(canvas, 50, 16, &I_Updating_Logo_62x15);
+        elements_progress_bar(canvas, 42, 36, 80, (float)model->progress / 100);
     }
 }
 
-UpdaterMainView* updater_main_alloc() {
+UpdaterMainView* updater_main_alloc(void) {
     UpdaterMainView* main_view = malloc(sizeof(UpdaterMainView));
 
     main_view->view = view_alloc();

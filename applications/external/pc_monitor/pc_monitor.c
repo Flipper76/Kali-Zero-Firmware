@@ -99,11 +99,11 @@ static void render_callback(Canvas* canvas, void* ctx) {
             32,
             AlignCenter,
             AlignCenter,
-            app->bt_state == BtStateChecking ? "Vérification BLE..." :
+            app->bt_state == BtStateChecking ? "Checking BLE..." :
             app->bt_state == BtStateInactive ? "BLE inactive!" :
-            app->bt_state == BtStateWaiting  ? "En attente de données..." :
-            app->bt_state == BtStateLost     ? "Connexion perdue!" :
-                                               "Aucune donnée!");
+            app->bt_state == BtStateWaiting  ? "Waiting for data..." :
+            app->bt_state == BtStateLost     ? "Connection lost!" :
+                                               "No data!");
     }
 }
 
@@ -120,7 +120,7 @@ static uint16_t bt_serial_callback(SerialServiceEvent event, void* ctx) {
     if(event.event == SerialServiceEventTypeDataReceived) {
         FURI_LOG_D(
             TAG,
-            "SerialServiceEventTypeDataReceived. Taille: %u/%u. Donnée: %s",
+            "SerialServiceEventTypeDataReceived. Size: %u/%u. Data: %s",
             event.data.size,
             sizeof(DataStruct),
             (char*)event.data.buffer);
@@ -183,7 +183,7 @@ int32_t pc_monitor_app(void* p) {
     furi_hal_bt_start_advertising();
 
     app->bt_state = BtStateWaiting;
-    FURI_LOG_D(TAG, "Bluetooth est actif!");
+    FURI_LOG_D(TAG, "Bluetooth is active!");
 
     // Main loop
     InputEvent event;

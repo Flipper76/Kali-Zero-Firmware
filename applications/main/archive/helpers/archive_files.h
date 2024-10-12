@@ -5,7 +5,7 @@
 #include <m-algo.h>
 #include <storage/storage.h>
 #include "toolbox/path.h"
-#include <xtreme/xtreme.h>
+#include <kalizero/kalizero.h>
 
 #define FAP_MANIFEST_MAX_ICON_SIZE 32
 
@@ -19,6 +19,8 @@ typedef enum {
     ArchiveFileTypeSubghzRemote,
     ArchiveFileTypeInfraredRemote,
     ArchiveFileTypeBadKb,
+    ArchiveFileTypeWAV,
+    ArchiveFileTypeMag,
     ArchiveFileTypeU2f,
     ArchiveFileTypeApplication,
     ArchiveFileTypeJS,

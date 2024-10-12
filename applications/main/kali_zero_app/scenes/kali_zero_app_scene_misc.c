@@ -3,9 +3,10 @@
 enum VarItemListIndex {
     VarItemListIndexScreen,
     VarItemListIndexDolphin,
-    VarItemListIndexChangeDeviceName,
+    VarItemListIndexSpoof,
+    VarItemListIndexVgm,
     VarItemListIndexChargeCap,
-    VarItemListIndexShowXtremeIntro,
+    VarItemListIndexShowKaliZeroIntro,
 };
 
 void kali_zero_app_scene_misc_var_item_list_callback(void* context, uint32_t index) {
@@ -18,7 +19,7 @@ static void kali_zero_app_scene_misc_charge_cap_changed(VariableItem* item) {
     KaliZeroApp* app = variable_item_get_context(item);
     char cap_str[6];
     uint32_t value = (variable_item_get_current_value_index(item) + 1) * CHARGE_CAP_INTV;
-    snprintf(cap_str, 6, "%lu%%", value);
+    snprintf(cap_str, sizeof(cap_str), "%lu%%", value);
     variable_item_set_current_value_text(item, cap_str);
     kalizero_settings.charge_cap = value;
     app->save_settings = true;
@@ -36,15 +37,23 @@ void kali_zero_app_scene_misc_on_enter(void* context) {
     item = variable_item_list_add(var_item_list, "Dauphin", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
-    variable_item_list_add(var_item_list, "Changer le nom du Flipper", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "Changer le nom du Flipper", 0, NULL, app);
+    variable_item_set_current_value_text(item, ">");
+
+    item = variable_item_list_add(var_item_list, "VGM Options", 0, NULL, app);
+    variable_item_set_current_value_text(item, ">");
 
     char cap_str[6];
     value_index = kalizero_settings.charge_cap / CHARGE_CAP_INTV;
     snprintf(cap_str, 6, "%lu%%", (uint32_t)value_index * CHARGE_CAP_INTV);
-    item = variable_item_list_add(var_item_list, "Cap. de Charge", 100 / CHARGE_CAP_INTV, kali_zero_app_scene_misc_charge_cap_changed, app);
+    item = variable_item_list_add(
+        var_item_list,
+        "Cap. de Charge",
+        100 / CHARGE_CAP_INTV,
+        kali_zero_app_scene_misc_charge_cap_changed,
+        app);
     variable_item_set_current_value_index(item, value_index - 1);
     variable_item_set_current_value_text(item, cap_str);
-
 
     variable_item_list_add(var_item_list, "Afficher Intro Kali Zéro", 0, NULL, app);
 
@@ -73,16 +82,18 @@ bool kali_zero_app_scene_misc_on_event(void* context, SceneManagerEvent event) {
             scene_manager_set_scene_state(app->scene_manager, KaliZeroAppSceneMiscDolphin, 0);
             scene_manager_next_scene(app->scene_manager, KaliZeroAppSceneMiscDolphin);
             break;
-        case VarItemListIndexChangeDeviceName:
-            scene_manager_set_scene_state(app->scene_manager, KaliZeroAppSceneMiscRename, 0);
-            scene_manager_next_scene(app->scene_manager, KaliZeroAppSceneMiscRename);
+        case VarItemListIndexSpoof:
+            scene_manager_set_scene_state(app->scene_manager, KaliZeroAppSceneMiscSpoof, 0);
+            scene_manager_next_scene(app->scene_manager, KaliZeroAppSceneMiscSpoof);
             break;
-        case VarItemListIndexShowXtremeIntro: {
+        case VarItemListIndexVgm:
+            scene_manager_set_scene_state(app->scene_manager, KaliZeroAppSceneMiscVgm, 0);
+            scene_manager_next_scene(app->scene_manager, KaliZeroAppSceneMiscVgm);
+            break;
+        case VarItemListIndexShowKaliZeroIntro: {
             for(int i = 0; i < 10; i++) {
                 if(storage_common_copy(
-                       furi_record_open(RECORD_STORAGE),
-                       EXT_PATH("dolphin/xfwfirstboot.bin"),
-                       EXT_PATH(".slideshow"))) {
+                       app->storage, EXT_PATH("dolphin/firstboot.bin"), SLIDESHOW_FS_PATH)) {
                     app->show_slideshow = true;
                     kali_zero_app_apply(app);
                     break;

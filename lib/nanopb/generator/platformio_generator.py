@@ -1,31 +1,34 @@
 import os
 import hashlib
 import pathlib
+import shlex
+import subprocess
+
+import SCons.Action
 from platformio import fs
 
 Import("env")
 
+# We don't use `env.Execute` because it does not handle spaces in path
+# See https://github.com/nanopb/nanopb/pull/834
+# So, we resolve the path to the executable and then use `subprocess.run`
+python_exe = env.subst("$PYTHONEXE")
+
 try:
     import protobuf
 except ImportError:
-    env.Execute(
-        env.VerboseAction(
-            # We need to speicify protobuf version. In other case got next (on Ubuntu 20.04):
-            # Requirement already satisfied: protobuf in /usr/lib/python3/dist-packages (3.6.1)
-            '$PYTHONEXE -m pip install "protobuf>=3.19.1"',
-            "Installing Protocol Buffers dependencies",
-        )
-    )
+    print("[nanopb] Installing Protocol Buffers dependencies");
+
+    # We need to specify protobuf version. In other case got next (on Ubuntu 20.04):
+    # Requirement already satisfied: protobuf in /usr/lib/python3/dist-packages (3.6.1)
+    subprocess.run([python_exe, '-m', 'pip', 'install', "protobuf>=3.19.1"])
 
 try:
     import grpc_tools.protoc
 except ImportError:
-    env.Execute(
-        env.VerboseAction(
-            '$PYTHONEXE -m pip install "grpcio-tools>=1.43.0"',
-            "Installing GRPC dependencies",
-        )
-    )
+    print("[nanopb] Installing gRPC dependencies");
+    subprocess.run([python_exe, '-m', 'pip', 'install', "grpcio-tools>=1.43.0"])
+
 
 nanopb_root = os.path.join(os.getcwd(), '..')
 
@@ -36,7 +39,7 @@ generated_src_dir = os.path.join(build_dir, 'nanopb', 'generated-src')
 generated_build_dir = os.path.join(build_dir, 'nanopb', 'generated-build')
 md5_dir = os.path.join(build_dir, 'nanopb', 'md5')
 
-nanopb_protos = env.GetProjectOption("custom_nanopb_protos", "")
+nanopb_protos =  env.subst(env.GetProjectOption("custom_nanopb_protos", ""))
 nanopb_plugin_options = env.GetProjectOption("custom_nanopb_options", "")
 
 if not nanopb_protos:
@@ -45,7 +48,7 @@ else:
     if isinstance(nanopb_plugin_options, (list, tuple)):
         nanopb_plugin_options = " ".join(nanopb_plugin_options)
 
-    nanopb_plugin_options = nanopb_plugin_options.split()
+    nanopb_plugin_options = shlex.split(nanopb_plugin_options)
 
     protos_files = fs.match_src_files(project_dir, nanopb_protos)
     if not len(protos_files):
@@ -53,12 +56,12 @@ else:
         print(f"custom_nanopb_protos: {nanopb_protos}")
         exit(1)
 
-    protoc_generator = os.path.join(nanopb_root, 'generator', 'protoc')
+    nanopb_generator = os.path.join(nanopb_root, 'generator', 'nanopb_generator.py')
 
-    nanopb_options = ""
-    nanopb_options += f" --nanopb_out={generated_src_dir}"
+    nanopb_options = []
+    nanopb_options.extend(["--output-dir", generated_src_dir])
     for opt in nanopb_plugin_options:
-        nanopb_options += (" --nanopb_opt=" + opt)
+        nanopb_options.append(opt)
 
     try:
         os.makedirs(generated_src_dir)
@@ -78,8 +81,7 @@ else:
         proto_include_dirs.add(proto_dir)
 
     for proto_include_dir in proto_include_dirs:
-        nanopb_options += (" --proto_path=" + proto_include_dir)
-        nanopb_options += (" --nanopb_opt=-I" + proto_include_dir)
+        nanopb_options.extend(["--proto-path", proto_include_dir])
 
     for proto_file in protos_files:
         proto_file_abs = os.path.join(project_dir, proto_file)
@@ -132,8 +134,9 @@ else:
             print(f"[nanopb] Skipping '{proto_file}' ({options_info})")
         else:
             print(f"[nanopb] Processing '{proto_file}' ({options_info})")
-            cmd = protoc_generator + " " + nanopb_options + " " + proto_file_basename
-            result = env.Execute(cmd)
+            cmd = [python_exe, nanopb_generator] + nanopb_options + [proto_file_basename]
+            action = SCons.Action.CommandAction(cmd)
+            result = env.Execute(action)
             if result != 0:
                 print(f"[nanopb] ERROR: ({result}) processing cmd: '{cmd}'")
                 exit(1)

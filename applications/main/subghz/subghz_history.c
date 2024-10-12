@@ -4,8 +4,9 @@
 
 #include <furi.h>
 
-#define SUBGHZ_HISTORY_MAX 65535 // uint16_t index max, ram limit below
+#define SUBGHZ_HISTORY_MAX       65535 // uint16_t index max, ram limit below
 #define SUBGHZ_HISTORY_FREE_HEAP (10240 * (3 - MIN(rpc_get_sessions_count(instance->rpc), 2U)))
+
 #define TAG "SubGhzHistory"
 
 typedef struct {
@@ -192,8 +193,9 @@ FlipperFormat* subghz_history_get_raw_data(SubGhzHistory* instance, uint16_t idx
 bool subghz_history_get_text_space_left(
     SubGhzHistory* instance,
     FuriString* output,
-    uint8_t sats,
-    bool ignore_full) {
+    bool ignore_full,
+    bool show_sats,
+    uint8_t sats) {
     furi_assert(instance);
     if(!ignore_full) {
         if(memmgr_get_free_heap() < SUBGHZ_HISTORY_FREE_HEAP) {
@@ -206,14 +208,10 @@ bool subghz_history_get_text_space_left(
         }
     }
     if(output != NULL) {
-        if(sats == 0) {
-            furi_string_printf(output, "%02u", instance->last_index_write);
+        if(show_sats) {
+            furi_string_printf(output, "%d", sats);
         } else {
-            if(furi_hal_rtc_get_timestamp() % 2) {
-                furi_string_printf(output, "%02u", instance->last_index_write);
-            } else {
-                furi_string_printf(output, "%d sats", sats);
-            }
+            furi_string_printf(output, "%02u", instance->last_index_write);
         }
     }
     return false;
@@ -245,7 +243,7 @@ bool subghz_history_add_to_history(
     SubGhzProtocolDecoderBase* decoder_base = context;
     uint32_t hash_data = subghz_protocol_decoder_base_get_hash_data_long(decoder_base);
     if((instance->code_last_hash_data == hash_data) &&
-       ((furi_get_tick() - instance->last_update_timestamp) < 500)) {
+       ((furi_get_tick() - instance->last_update_timestamp) < 600)) {
         instance->last_update_timestamp = furi_get_tick();
         return false;
     }
@@ -265,10 +263,14 @@ bool subghz_history_add_to_history(
     instance->code_last_hash_data = hash_data;
     instance->last_update_timestamp = furi_get_tick();
 
-    FuriString* text = furi_string_alloc();
     SubGhzHistoryItem* item = SubGhzHistoryItemArray_push_raw(instance->history->data);
     item->preset = malloc(sizeof(SubGhzRadioPreset));
     item->type = decoder_base->protocol->type;
+    if(decoder_base->protocol->filter & SubGhzProtocolFilter_Weather) {
+        // Other code uses protocol type to check if signal is usable
+        // so we can't change the actual protocol type, we fake it here
+        item->type = SubGhzProtocolWeatherStation;
+    }
     item->preset->frequency = preset->frequency;
     item->preset->name = furi_string_alloc();
     furi_string_set(item->preset->name, preset->name);
@@ -284,6 +286,15 @@ bool subghz_history_add_to_history(
     item->item_str = furi_string_alloc();
     item->flipper_string = flipper_format_string_alloc();
     subghz_protocol_decoder_base_serialize(decoder_base, item->flipper_string, preset);
+
+    if(decoder_base->protocol && decoder_base->protocol->decoder &&
+       decoder_base->protocol->decoder->get_string_brief) {
+        decoder_base->protocol->decoder->get_string_brief(decoder_base, item->item_str);
+        instance->last_index_write++;
+        return true;
+    }
+
+    FuriString* text = furi_string_alloc();
 
     do {
         if(!flipper_format_rewind(item->flipper_string)) {

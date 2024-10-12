@@ -61,7 +61,7 @@ static void
         remaining_stage_time_string);
 
     furi_string_free(timer_string);
-};
+}
 
 static void draw_str_with_drop_shadow(
     Canvas* canvas,
@@ -163,7 +163,7 @@ static void flipp_pomodoro_view_timer_draw_callback(Canvas* canvas, void* _model
     canvas_set_font(canvas, FontSecondary);
     elements_button_right(canvas, flipp_pomodoro__next_stage_label(model->state));
     flipp_pomodoro_view_timer_draw_hint(canvas, model);
-};
+}
 
 bool flipp_pomodoro_view_timer_input_callback(InputEvent* event, void* ctx) {
     furi_assert(ctx);
@@ -186,12 +186,12 @@ bool flipp_pomodoro_view_timer_input_callback(InputEvent* event, void* ctx) {
     default:
         return ViewInputNotConusmed;
     }
-};
+}
 
 View* flipp_pomodoro_view_timer_get_view(FlippPomodoroTimerView* timer) {
     furi_assert(timer);
     return timer->view;
-};
+}
 
 void flipp_pomodoro_view_timer_display_hint(View* view, char* hint) {
     with_view_model(
@@ -240,7 +240,7 @@ FlippPomodoroTimerView* flipp_pomodoro_view_timer_alloc() {
         false);
 
     return timer;
-};
+}
 
 void flipp_pomodoro_view_timer_set_callback_context(
     FlippPomodoroTimerView* timer,
@@ -256,7 +256,7 @@ void flipp_pomodoro_view_timer_set_on_right_cb(
     furi_assert(timer);
     furi_assert(right_cb);
     timer->right_cb = right_cb;
-};
+}
 
 void flipp_pomodoro_view_timer_set_on_ok_cb(
     FlippPomodoroTimerView* timer,
@@ -278,7 +278,7 @@ void flipp_pomodoro_view_timer_set_state(View* view, FlippPomodoroState* state) 
         },
         false);
     flipp_pomodoro_view_timer_assign_animation(view);
-};
+}
 
 void flipp_pomodoro_view_timer_free(FlippPomodoroTimerView* timer) {
     furi_assert(timer);
@@ -290,4 +290,4 @@ void flipp_pomodoro_view_timer_free(FlippPomodoroTimerView* timer) {
     view_free(timer->view);
 
     free(timer);
-};
+}

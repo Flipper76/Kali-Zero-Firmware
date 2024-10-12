@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.24]
+### Added
+- Gpio: 5V control messages: GetOtgMode, GetOtgModeResponse, SetOtgMode
+
+## [0.23]
+### Added
+- Storage: New TarExtract request to unpack a tar archive to a given directory
+
 ## [0.22]
 ### Added
 - StartVirtualDisplayRequest: optional send_input to request input from device

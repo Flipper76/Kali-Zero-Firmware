@@ -24,7 +24,7 @@ typedef struct {
     Gui* gui; // container gui
     ViewPort* view_port; // current viewport
     FuriMessageQueue* input_queue; // Input Events queue
-    FuriMutex** model_mutex; // mutex for safe threads
+    FuriMutex* model_mutex; // mutex for safe threads
     uint16_t bet;
     double money, winamount;
     SlotColumn* columns[4];
@@ -35,10 +35,10 @@ typedef struct {
     int highscore;
 } SlotsHighscore;
 
-#define START_MONEY 1500;
-#define START_BET 300;
-#define SLOTS_RAND_MAX 5;
-#define DEFAULT_SPEED 16;
+#define START_MONEY         1500;
+#define START_BET           300;
+#define SLOTS_RAND_MAX      5;
+#define DEFAULT_SPEED       16;
 #define HIGHSCORES_FILENAME APP_DATA_PATH("slotmachine.save")
 
 uint8_t DEFAULT_SPINNING_TIMES = 10;
@@ -89,9 +89,15 @@ void game_results(SlotMachineApp* app) {
     }
 
     if(total > 0) {
-        app->money += total;
+        app->money += total; // Add winnings to the player's money
         app->winamount = total;
         app->winview = true;
+
+        // Add the bet amount back to the player's money
+        app->money += app->bet;
+
+        // Reset the bet amount, uncomment me if you want to do this
+        //app->bet = 0;
 
         if(total > highscore.highscore) {
             highscore.highscore = total;

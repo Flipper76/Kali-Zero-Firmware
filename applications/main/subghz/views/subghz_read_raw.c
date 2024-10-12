@@ -1,15 +1,15 @@
 #include "subghz_read_raw.h"
-#include "../subghz_i.h"
 
-#include <math.h>
 #include <furi.h>
 #include <furi_hal.h>
 #include <input/input.h>
 #include <gui/elements.h>
 
 #include <assets_icons.h>
-#define SUBGHZ_READ_RAW_RSSI_HISTORY_SIZE 100
+
 #define TAG "SubGhzReadRaw"
+
+#define SUBGHZ_READ_RAW_RSSI_HISTORY_SIZE 100
 
 struct SubGhzReadRAW {
     View* view;
@@ -74,7 +74,7 @@ void subghz_read_raw_add_data_rssi(SubGhzReadRAW* instance, float rssi, bool tra
     if(rssi < SUBGHZ_RAW_THRESHOLD_MIN) {
         u_rssi = 0;
     } else {
-        u_rssi = (uint8_t)((rssi - SUBGHZ_RAW_THRESHOLD_MIN) / 2.7);
+        u_rssi = (uint8_t)((rssi - SUBGHZ_RAW_THRESHOLD_MIN) / 2.7f);
     }
 
     with_view_model(
@@ -88,7 +88,7 @@ void subghz_read_raw_add_data_rssi(SubGhzReadRAW* instance, float rssi, bool tra
                 model->rssi_history[model->ind_write] = u_rssi;
             }
 
-            if(model->ind_write > SUBGHZ_READ_RAW_RSSI_HISTORY_SIZE) {
+            if(model->ind_write >= SUBGHZ_READ_RAW_RSSI_HISTORY_SIZE) {
                 model->rssi_history_end = true;
                 model->ind_write = 0;
             }

@@ -1,6 +1,6 @@
 #include "multi_converter_units.h"
 
-#define MULTI_CONVERTER_CHAR_OVERFLOW '#'
+#define MULTI_CONVERTER_CHAR_OVERFLOW    '#'
 #define MULTI_CONVERTER_MAX_SUPORTED_INT 999999999
 
 #define multi_converter_unit_set_overflow(b)                  \

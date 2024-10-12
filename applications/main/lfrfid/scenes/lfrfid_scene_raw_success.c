@@ -13,7 +13,7 @@ void lfrfid_scene_raw_success_on_enter(void* context) {
         AlignLeft,
         AlignTop,
         FontSecondary,
-		"Lecture RAW RFID OKÂ !\nMaintenant, vous pouvez \nanalyser les fichiers");
+		"Lecture RAW RFID OK !\nMaintenant, vous pouvez \nanalyser les fichiers");
 
     view_dispatcher_switch_to_view(app->view_dispatcher, LfRfidViewWidget);
 }

@@ -17,10 +17,10 @@
 
 #define TAG "SubGhzProtocoSecPlusV2"
 
-#define SECPLUS_V2_HEADER 0x3C0000000000
+#define SECPLUS_V2_HEADER      0x3C0000000000
 #define SECPLUS_V2_HEADER_MASK 0xFFFF3C0000000000
-#define SECPLUS_V2_PACKET_1 0x000000000000
-#define SECPLUS_V2_PACKET_2 0x010000000000
+#define SECPLUS_V2_PACKET_1    0x000000000000
+#define SECPLUS_V2_PACKET_2    0x010000000000
 #define SECPLUS_V2_PACKET_MASK 0x30000000000
 
 static const SubGhzBlockConst subghz_protocol_secplus_v2_const = {
@@ -60,10 +60,12 @@ const SubGhzProtocolDecoder subghz_protocol_secplus_v2_decoder = {
     .feed = subghz_protocol_decoder_secplus_v2_feed,
     .reset = subghz_protocol_decoder_secplus_v2_reset,
 
-    .get_hash_data = subghz_protocol_decoder_secplus_v2_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_secplus_v2_get_hash_data,
     .serialize = subghz_protocol_decoder_secplus_v2_serialize,
     .deserialize = subghz_protocol_decoder_secplus_v2_deserialize,
     .get_string = subghz_protocol_decoder_secplus_v2_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_secplus_v2_encoder = {
@@ -380,7 +382,7 @@ static uint64_t subghz_protocol_secplus_v2_encode_half(uint8_t roll_array[], uin
  * Basic set | 0x68 | 0x80 | 0x81 | 0xE2 | 0x78
  * @return Button code
  */
-static uint8_t subghz_protocol_secplus_v2_get_btn_code();
+static uint8_t subghz_protocol_secplus_v2_get_btn_code(void);
 
 /** 
  * Security+ 2.0 message encoding
@@ -614,7 +616,8 @@ bool subghz_protocol_secplus_v2_create_data(
     uint8_t btn,
     uint32_t cnt,
     SubGhzRadioPreset* preset) {
-    furi_assert(context);
+    furi_check(context);
+
     SubGhzProtocolEncoderSecPlus_v2* instance = context;
     instance->generic.serial = serial;
     instance->generic.cnt = cnt;
@@ -833,7 +836,7 @@ SubGhzProtocolStatus
     return ret;
 }
 
-static uint8_t subghz_protocol_secplus_v2_get_btn_code() {
+static uint8_t subghz_protocol_secplus_v2_get_btn_code(void) {
     uint8_t custom_btn_id = subghz_custom_btn_get();
     uint8_t original_btn_code = subghz_custom_btn_get_original();
     uint8_t btn = original_btn_code;

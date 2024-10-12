@@ -103,45 +103,45 @@ BarcodeTypeObj* get_type(FuriString* type_string) {
 const char* get_error_code_name(ErrorCode error_code) {
     switch(error_code) {
     case WrongNumberOfDigits:
-        return "Mauvais nombre de chiffres";
+        return "Wrong # Of Characters";
     case InvalidCharacters:
-        return "Caractères invalides";
+        return "Invalid Characters";
     case UnsupportedType:
-        return "Type non pris en charge";
+        return "Unsupported Type";
     case FileOpening:
-        return "Impossible ouvrir fichier";
+        return "File Opening Error";
     case InvalidFileData:
-        return "Données fichier invalides";
+        return "Invalid File Data";
     case MissingEncodingTable:
-        return "Tableau encodage manquant";
+        return "Missing Encoding Table";
     case EncodingTableError:
-        return "Erreur table d'encodage";
+        return "Encoding Table Error";
     case OKCode:
         return "OK";
     default:
-        return "Code inconnu";
+        return "Unknown Code";
     };
 }
 
 const char* get_error_code_message(ErrorCode error_code) {
     switch(error_code) {
     case WrongNumberOfDigits:
-        return "Nbr caractères incorrect";
+        return "The barcode has too many or\ntoo few characters.";
     case InvalidCharacters:
-        return "Caractères invalides";
+        return "The barcode data has invalid\ncharacters";
     case UnsupportedType:
-        return "Type non pris en charge";
+        return "This barcode type is not\nsupported by this application";
     case FileOpening:
-        return "Impossible ouvrir fichier";
+        return "The barcode file could not\nbe opened";
     case InvalidFileData:
-        return "Données fichier invalides";
+        return "File data contains incorrect\ninformation";
     case MissingEncodingTable:
-        return "Table encodage manquante";
+        return "The encoding table files are\nmissing. Please redownload \nthis app, or consult the \ngithub readme";
     case EncodingTableError:
-        return "Erreur table d'encodage";
+        return "Either the characters you\nentered are incorrect or there\nis a problem with the\nencoding table";
     case OKCode:
         return "OK";
     default:
-        return "Lecture données impossible";
+        return "Could not read barcode data";
     };
 }

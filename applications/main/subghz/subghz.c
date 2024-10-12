@@ -6,7 +6,7 @@
 #include <float_tools.h>
 #include "subghz_i.h"
 #include <applications/main/archive/helpers/archive_helpers_ext.h>
-#include <xtreme/xtreme.h>
+#include <kalizero/kalizero.h>
 
 #include "subghz_fap.h"
 
@@ -73,10 +73,6 @@ static void subghz_load_custom_presets(SubGhzSetting* setting) {
         // Pagers
         {"Pagers",
          "02 0D 07 04 08 32 0B 06 10 64 11 93 12 0C 13 02 14 00 15 15 18 18 19 16 1B 07 1C 00 1D 91 20 FB 21 56 22 10 00 00 C0 00 00 00 00 00 00 00"},
-
-        // # HND - FM preset
-        {"HND_1",
-         "02 0D 0B 06 08 32 07 04 14 00 13 02 12 04 11 36 10 69 15 32 18 18 19 16 1D 91 1C 00 1B 07 20 FB 22 10 21 56 00 00 C0 00 00 00 00 00 00 00"},
     };
 
     FlipperFormat* fff_temp = flipper_format_string_alloc();
@@ -106,7 +102,6 @@ SubGhz* subghz_alloc(bool alloc_for_tx_only) {
 
     // View Dispatcher
     subghz->view_dispatcher = view_dispatcher_alloc();
-    view_dispatcher_enable_queue(subghz->view_dispatcher);
 
     subghz->scene_manager = scene_manager_alloc(&subghz_scene_handlers, subghz);
     view_dispatcher_set_event_callback_context(subghz->view_dispatcher, subghz);
@@ -207,16 +202,31 @@ SubGhz* subghz_alloc(bool alloc_for_tx_only) {
     subghz->last_settings = subghz_last_settings_alloc();
     size_t preset_count = subghz_setting_get_preset_count(setting);
     subghz_last_settings_load(subghz->last_settings, preset_count);
-#ifdef FURI_DEBUG
-    subghz_last_settings_log(subghz->last_settings);
-#endif
     if(!alloc_for_tx_only) {
-#if SUBGHZ_LAST_SETTING_SAVE_PRESET
+        // Make sure we select a frequency available in loaded setting configuration
+        uint32_t last_frequency = subghz->last_settings->frequency;
+        size_t count = subghz_setting_get_frequency_count(setting);
+        bool found_last = false;
+        bool found_default = false;
+        for(size_t i = 0; i < count; i++) {
+            uint32_t frequency = subghz_setting_get_frequency(setting, i);
+            if(frequency == last_frequency) {
+                found_last = true;
+                break;
+            }
+            if(frequency == SUBGHZ_LAST_SETTING_DEFAULT_FREQUENCY) found_default = true;
+        }
+        if(!found_last) {
+            if(found_default) {
+                last_frequency = SUBGHZ_LAST_SETTING_DEFAULT_FREQUENCY;
+            } else if(count > 0) {
+                last_frequency = subghz_setting_get_frequency(setting, 0);
+            }
+            subghz->last_settings->frequency = last_frequency;
+        }
+
         subghz_txrx_set_preset_internal(
             subghz->txrx, subghz->last_settings->frequency, subghz->last_settings->preset_index);
-#else
-        subghz_txrx_set_default_preset(subghz->txrx, subghz->last_settings->frequency);
-#endif
         subghz->history = subghz_history_alloc();
     }
 
@@ -234,6 +244,7 @@ SubGhz* subghz_alloc(bool alloc_for_tx_only) {
         subghz->remove_duplicates = false;
     }
     subghz_txrx_receiver_set_filter(subghz->txrx, subghz->filter);
+    subghz_txrx_receiver_set_ignore_filter(subghz->txrx, subghz->ignore_filter);
     subghz_txrx_set_need_save_callback(subghz->txrx, subghz_save_to_file, subghz);
 
     if(!alloc_for_tx_only) {
@@ -250,10 +261,8 @@ SubGhz* subghz_alloc(bool alloc_for_tx_only) {
     //Init Error_str
     subghz->error_str = furi_string_alloc();
 
-    subghz->gps = subghz_gps_init();
     if(subghz->last_settings->gps_baudrate != 0) {
-        subghz_gps_set_baudrate(subghz->gps, subghz->last_settings->gps_baudrate);
-        subghz_gps_start(subghz->gps);
+        subghz->gps = subghz_gps_plugin_init(subghz->last_settings->gps_baudrate);
     }
 
     return subghz;
@@ -351,10 +360,9 @@ void subghz_free(SubGhz* subghz, bool alloc_for_tx_only) {
     furi_string_free(subghz->file_path_tmp);
 
     // GPS
-    if(subghz->last_settings->gps_baudrate != 0) {
-        subghz_gps_stop(subghz->gps);
+    if(subghz->gps) {
+        subghz_gps_plugin_deinit(subghz->gps);
     }
-    subghz_gps_deinit(subghz->gps);
 
     subghz_last_settings_free(subghz->last_settings);
 

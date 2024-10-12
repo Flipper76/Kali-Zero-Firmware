@@ -27,14 +27,15 @@
 #include "../scope_app_i.h"
 #include "flipperscope_icons.h"
 
-#define DIGITAL_SCALE_12BITS ((uint32_t)0xFFF)
-#define VAR_CONVERTED_DATA_INIT_VALUE (DIGITAL_SCALE_12BITS + 1)
+#define USE_TIMEOUT                          0
+#define DIGITAL_SCALE_12BITS                 ((uint32_t)0xFFF)
+#define VAR_CONVERTED_DATA_INIT_VALUE        (DIGITAL_SCALE_12BITS + 1)
 #define VAR_CONVERTED_DATA_INIT_VALUE_16BITS (0xFFFF + 1U)
 #define __ADC_CALC_DATA_VOLTAGE(__VREFANALOG_VOLTAGE__, __ADC_DATA__) \
     ((__ADC_DATA__) * (__VREFANALOG_VOLTAGE__) / DIGITAL_SCALE_12BITS)
-#define VDDA_APPLI ((uint32_t)2500)
-#define TIMER_FREQUENCY_RANGE_MIN (1UL)
-#define TIMER_PRESCALER_MAX_VALUE (0xFFFF - 1UL)
+#define VDDA_APPLI                        ((uint32_t)2500)
+#define TIMER_FREQUENCY_RANGE_MIN         (1UL)
+#define TIMER_PRESCALER_MAX_VALUE         (0xFFFF - 1UL)
 #define ADC_DELAY_CALIB_ENABLE_CPU_CYCLES (LL_ADC_DELAY_CALIB_ENABLE_ADC_CYCLES * 32)
 
 // ramVector found from - https://community.nxp.com/t5/i-MX-Processors/Relocate-vector-table-to-ITCM/m-p/1302304

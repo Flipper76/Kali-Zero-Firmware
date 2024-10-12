@@ -40,7 +40,7 @@ void avr_isp_scene_input_name_on_enter(void* context) {
     dev_name_empty = true;
 
     strncpy(app->file_name_tmp, furi_string_get_cstr(file_name), AVR_ISP_MAX_LEN_NAME);
-    text_input_set_header_text(text_input, "Nom dump");
+    text_input_set_header_text(text_input, "Name dump");
     text_input_set_result_callback(
         text_input,
         avr_isp_scene_input_name_text_callback,

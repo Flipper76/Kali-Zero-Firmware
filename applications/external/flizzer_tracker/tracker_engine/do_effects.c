@@ -5,6 +5,8 @@
 #include "../sound_engine/sound_engine_filter.h"
 #include "tracker_engine.h"
 
+#include "../flizzer_tracker_hal.h"
+
 void do_command(
     uint16_t opcode,
     TrackerEngine* tracker_engine,
@@ -427,6 +429,14 @@ void do_command(
         break;
     }
 
+    case TE_EFFECT_SET_RATE: {
+        if(tick == 0 && (opcode & 0xff) > 0) {
+            tracker_engine_set_rate(opcode & 0xff);
+        }
+
+        break;
+    }
+
     case TE_EFFECT_PORTA_UP_SEMITONE: {
         uint32_t prev = te_channel->note;
 
@@ -447,6 +457,11 @@ void do_command(
         break;
     }
 
+    case TE_EFFECT_PITCH: {
+        te_channel->finetune_note = ((int16_t)(opcode & 0xff) - 0x80) * 2;
+        break;
+    }
+
     case TE_EFFECT_ARPEGGIO_ABS: {
         te_channel->arpeggio_note = 0;
         te_channel->fixed_note = ((opcode & 0xff) << 8);
@@ -455,7 +470,9 @@ void do_command(
     }
 
     case TE_EFFECT_TRIGGER_RELEASE: {
-        sound_engine_enable_gate(tracker_engine->sound_engine, se_channel, 0);
+        if(tick == (opcode & 0xff)) {
+            sound_engine_enable_gate(tracker_engine->sound_engine, se_channel, 0);
+        }
 
         break;
     }

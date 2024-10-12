@@ -58,10 +58,12 @@ const SubGhzProtocolDecoder subghz_protocol_clemsa_decoder = {
     .feed = subghz_protocol_decoder_clemsa_feed,
     .reset = subghz_protocol_decoder_clemsa_reset,
 
-    .get_hash_data = subghz_protocol_decoder_clemsa_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_clemsa_get_hash_data,
     .serialize = subghz_protocol_decoder_clemsa_serialize,
     .deserialize = subghz_protocol_decoder_clemsa_deserialize,
     .get_string = subghz_protocol_decoder_clemsa_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_clemsa_encoder = {
@@ -267,13 +269,12 @@ void subghz_protocol_decoder_clemsa_feed(void* context, bool level, uint32_t dur
             } else if(
                 DURATION_DIFF(duration, subghz_protocol_clemsa_const.te_short * 51) <
                 subghz_protocol_clemsa_const.te_delta * 25) {
-                if((DURATION_DIFF(
-                        instance->decoder.te_last, subghz_protocol_clemsa_const.te_short) <
-                    subghz_protocol_clemsa_const.te_delta)) {
+                if(DURATION_DIFF(instance->decoder.te_last, subghz_protocol_clemsa_const.te_short) <
+                   subghz_protocol_clemsa_const.te_delta) {
                     subghz_protocol_blocks_add_bit(&instance->decoder, 0);
-                } else if((DURATION_DIFF(
-                               instance->decoder.te_last, subghz_protocol_clemsa_const.te_long) <
-                           subghz_protocol_clemsa_const.te_delta * 3)) {
+                } else if(
+                    DURATION_DIFF(instance->decoder.te_last, subghz_protocol_clemsa_const.te_long) <
+                    subghz_protocol_clemsa_const.te_delta * 3) {
                     subghz_protocol_blocks_add_bit(&instance->decoder, 1);
                 } else {
                     instance->decoder.parser_step = ClemsaDecoderStepReset;

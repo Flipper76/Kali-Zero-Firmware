@@ -4,7 +4,7 @@
 #include <assets_icons.h>
 #include <locale/locale.h>
 
-#define LOW_CHARGE_THRESHOLD (10)
+#define LOW_CHARGE_THRESHOLD         (10)
 #define HIGH_DRAIN_CURRENT_THRESHOLD (-100)
 
 static void draw_stat(Canvas* canvas, int x, int y, const Icon* icon, char* val) {
@@ -64,7 +64,7 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
             ABS(current),
             current < HIGH_DRAIN_CURRENT_THRESHOLD ? "mA!" : "mA");
     } else if(data->vbus_voltage > 0) {
-        if(data->charge_voltage_limit < 4.2) {
+        if(data->charge_voltage_limit < 4.2f) {
             // Non-default battery charging limit, mention it
             snprintf(emote, sizeof(emote), "Chargée!");
             snprintf(header, sizeof(header), "Limité à");
@@ -83,16 +83,16 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
     }
 
     if(data->alt) {
-        if(!strcmp(value, "")) {
+        if(!value[0]) {
             canvas_draw_str_aligned(canvas, x + 92, y + 14, AlignCenter, AlignCenter, header);
-        } else if(!strcmp(header, "")) {
+        } else if(!header[0]) {
             canvas_draw_str_aligned(canvas, x + 92, y + 14, AlignCenter, AlignCenter, value);
         } else {
             canvas_draw_str_aligned(canvas, x + 92, y + 9, AlignCenter, AlignCenter, header);
             canvas_draw_str_aligned(canvas, x + 92, y + 19, AlignCenter, AlignCenter, value);
         }
     } else {
-        if(!strcmp(emote, "")) {
+        if(!emote[0] && header[0] && value[0]) {
             canvas_draw_str_aligned(canvas, x + 92, y + 9, AlignCenter, AlignCenter, header);
             canvas_draw_str_aligned(canvas, x + 92, y + 21, AlignCenter, AlignCenter, value);
         } else {
@@ -172,7 +172,7 @@ static bool battery_info_input_callback(InputEvent* event, void* context) {
     return false;
 }
 
-BatteryInfo* battery_info_alloc() {
+BatteryInfo* battery_info_alloc(void) {
     BatteryInfo* battery_info = malloc(sizeof(BatteryInfo));
     battery_info->view = view_alloc();
     view_set_context(battery_info->view, battery_info);

@@ -31,7 +31,7 @@ void move_menu(Menu* menu, int8_t direction) {
     for(int8_t i = 0; i < max; i++) {
         FURI_LOG_D(
             "MENU",
-            "ItÃ©ration %i, actuel %i, direction %i, Ã©tat %i",
+            "Itération %i, actuel %i, direction %i, état %i",
             i,
             menu->current_menu,
             direction,
@@ -43,7 +43,7 @@ void move_menu(Menu* menu, int8_t direction) {
         }
         FURI_LOG_D(
             "MENU",
-            "AprÃ¨s le processus %i actuel, direction %i, Ã©tat %i",
+            "Après le processus %i actuel, direction %i, état %i",
             menu->current_menu,
             direction,
             menu->items[menu->current_menu].enabled ? 1 : 0);
@@ -52,7 +52,7 @@ void move_menu(Menu* menu, int8_t direction) {
             return;
         }
     }
-    FURI_LOG_D("MENU", "Introuvable, dÃ©fini sur false");
+    FURI_LOG_D("MENU", "Introuvable, défini sur false");
     menu->enabled = false;
 }
 

@@ -9,11 +9,14 @@
 
 #define TAG "Arkanoid"
 
-#define FLIPPER_LCD_WIDTH 128
+#define FLIPPER_LCD_WIDTH  128
 #define FLIPPER_LCD_HEIGHT 64
-#define MAX_SPEED 3
+#define MAX_SPEED          3
 
-typedef enum { EventTypeTick, EventTypeKey } EventType;
+typedef enum {
+    EventTypeTick,
+    EventTypeKey
+} EventType;
 
 typedef struct {
     //Brick Bounds used in collision detection
@@ -355,15 +358,17 @@ static void arkanoid_draw_callback(Canvas* const canvas, void* ctx) {
     furi_mutex_release(arkanoid_state->mutex);
 }
 
-static void arkanoid_input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void arkanoid_input_callback(InputEvent* input_event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     GameEvent event = {.type = EventTypeKey, .input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
 }
 
-static void arkanoid_update_timer_callback(FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void arkanoid_update_timer_callback(void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     GameEvent event = {.type = EventTypeTick};
     furi_message_queue_put(event_queue, &event, 0);
@@ -380,7 +385,7 @@ int32_t arkanoid_game_app(void* p) {
 
     arkanoid_state->mutex = furi_mutex_alloc(FuriMutexTypeNormal);
     if(!arkanoid_state->mutex) {
-        FURI_LOG_E(TAG, "Impossible de créer un mutex\r\n");
+        FURI_LOG_E(TAG, "Cannot create mutex\r\n");
         return_code = 255;
         goto free_and_exit;
     }

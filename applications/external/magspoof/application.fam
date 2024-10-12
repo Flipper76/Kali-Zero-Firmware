@@ -10,16 +10,16 @@ App(
         "notification",
         "dialogs",
     ],
-    resources="resources",
     provides=[],
     stack_size=6 * 1024,
-    order=64,  # keep it at the bottom of the list while still WIP
+    order=64,
     fap_icon="icons/mag_10px.png",
     fap_category="GPIO",
     fap_icon_assets="icons",
     fap_icon_assets_symbol="mag",
-    fap_version=(0, 5),  # major, minor
-    fap_description="WIP MagSpoof port using the RFID subsystem",
+    fap_version=(0, 10),
+    fap_description="Enables wireless transmission of magstripe data",
     fap_author="Zachary Weiss",
     fap_weburl="https://github.com/zacharyweiss/magspoof_flipper",
+    fap_file_assets="resources",
 )

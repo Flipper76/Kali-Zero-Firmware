@@ -21,7 +21,7 @@ void subghz_view_receiver_set_callback(
     SubGhzViewReceiverCallback callback,
     void* context);
 
-SubGhzViewReceiver* subghz_view_receiver_alloc();
+SubGhzViewReceiver* subghz_view_receiver_alloc(void);
 
 void subghz_view_receiver_free(SubGhzViewReceiver* subghz_receiver);
 
@@ -34,6 +34,7 @@ void subghz_view_receiver_add_data_statusbar(
     const char* history_stat_str,
     bool hopping_enabled,
     bool bin_raw_enabled,
+    bool show_sats,
     SubGhzRepeaterState repeater_enabled);
 
 void subghz_view_receiver_set_radio_device_type(

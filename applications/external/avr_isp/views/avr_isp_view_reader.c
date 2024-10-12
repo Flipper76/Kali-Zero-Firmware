@@ -59,15 +59,15 @@ void avr_isp_reader_view_draw(Canvas* canvas, AvrIspReaderViewModel* model) {
     canvas_set_font(canvas, FontPrimary);
     switch(model->status) {
     case AvrIspReaderViewStatusIDLE:
-        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Démarrer pour dump");
+        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Press start to dump");
         canvas_set_font(canvas, FontSecondary);
-        elements_button_center(canvas, "Démarrer");
+        elements_button_center(canvas, "Start");
         break;
     case AvrIspReaderViewStatusReading:
-        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Lecture dump");
+        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Reading dump");
         break;
     case AvrIspReaderViewStatusVerification:
-        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Vérification dump");
+        canvas_draw_str_aligned(canvas, 64, 5, AlignCenter, AlignCenter, "Verifyng dump");
         break;
 
     default:

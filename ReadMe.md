@@ -1,6 +1,6 @@
 <h1 align="center">KZFW - <code>Firmware Kali Zero</code> pour Flipper Zero</h1>
 
-Ce firmware est une tentative de traduction en français du firmware [Xtreme](https://github.com/Flipper-XFW/Xtreme-Firmware).
+Ce firmware est une tentative de traduction en français du firmware firmware pour Flipper zero
 -----
 <br>
 <h2 align="center">Paramètres KaliZero:</h2>
@@ -18,12 +18,12 @@ Nous avons écrit une application puissante mais facile à utiliser spécifiquem
 
 -----
 <br>
-<h2 align="center">Animations / Packs de ressources :
-   <h3 align="center">Vous voulez essayer quelques packs de ressources ? Vérifiez <a href="https://flipper-xtre.me/asset-packs">ici</a> et <a href="https://lab.flipper.net/apps">ici</a>
+<h2 align="center">Animations / Packs de ressources :
+   <h3 align="center">Vous voulez essayer quelques packs de ressources ? Vérifiez <a href="https://flipper-xtre.me/asset-packs">ici</a> et <a href="https://lab.flipper.net/apps">ici</a>
    </h3>
 </h2>
 
-Nous avons créé notre propre système d'animation/actifs, nouveau et amélioré, que nous pouvons enfin révéler. Il vous permet de créer et de parcourir vos propres « packs d'actifs » en appuyant seulement sur quelques boutons, vous permettant de charger facilement des animations et des icônes personnalisées comme jamais auparavant.
+Nous avons créé notre propre système d'animation/actifs, nouveau et amélioré, que nous pouvons enfin révéler. Il vous permet de créer et de parcourir vos propres « packs d'actifs » en appuyant seulement sur quelques boutons, vous permettant de charger facilement des animations et des icônes personnalisées comme jamais auparavant.
 
 <img src="https://github.com/Flipper76/Kali-Zero-Firmware/assets/798505/b6e34132-ee0a-43b6-9d18-a7c411207499" align="left" width="200px"/>
 Vous pouvez facilement créer votre propre pack ou en trouver des créés par les utilisateurs. Essentiellement, nous avons nos propres dossiers <code>Anims</code> et <code>Icônes</code>, à l'intérieur de chaque <code>Asset Pack</code>.
@@ -39,7 +39,7 @@ Une fois que vous avez quelques packs, téléchargez-les sur votre Flipper dans 
 <br><img src="https://github.com/Flipper76/Kali-Zero-Firmware/assets/798505/396bfec4-30a7-46f2-a33c-c1bf03ac9420" align="left" width="200px"/>
 <img align="left" height="180vh" width="10" src="https://upload.wikimedia.org/wikipedia/commons/3/3d/1_120_transparent.png">
 Après avoir installé les packs sur Flipper, appuyez sur le bouton <code>Flèche HAUT</code> dans le menu principal et accédez à <code>Paramètres Kali Zero</code>. 
-Choisissez ici le pack que vous souhaitez et modifiez les autres paramètres comme vous préférez, puis appuyez sur Retour pour redémarrer et profiter de vos nouveaux actifs pour toutes les applications (par exemple, l'actif d'analyse Subghz) et les animations !
+Choisissez ici le pack que vous souhaitez et modifiez les autres paramètres comme vous préférez, puis appuyez sur Retour pour redémarrer et profiter de vos nouveaux actifs pour toutes les applications (par exemple, l'actif d'analyse Subghz) et les animations !
 
 
 
@@ -47,16 +47,16 @@ Choisissez ici le pack que vous souhaitez et modifiez les autres paramètres com
 
 -----
 <br>
-<h2 align="center">Mauvais clavier :</h2>
+<h2 align="center">Mauvais clavier :</h2>
 <img src="https://github.com/Flipper76/Kali-Zero-Firmware/assets/798505/0ebd008f-e54e-404e-90fe-252f176e698c" align="left" width="250px"/>
 <! -- Cette connerie a besoin d'une image capturée, mais à cause du blocage, je n'arrive pas à en obtenir une. que quelqu'un fasse de la magie s'il vous plait -- !>
-BadUSB est une application merveilleuse, mais elle ne dispose pas de fonctionnalités Bluetooth. Maintenant, certains pourraient affirmer que cela ne sert à rien car vous aurez toujours besoin d’une authentification des deux côtés, mais et si je vous disais que nous avons trouvé une solution à ce problème ?
+BadUSB est une application merveilleuse, mais elle ne dispose pas de fonctionnalités Bluetooth. Maintenant, certains pourraient affirmer que cela ne sert à rien car vous aurez toujours besoin d’une authentification des deux côtés, mais et si je vous disais que nous avons trouvé une solution à ce problème ?
 <br><br>
 Le Mauvais clavier vous permet de basculer entre les modes USB et Bluetooth pour vos attaques. En mode Bluetooth, il vous permet d'usurper le nom et le MAC de l'appareil comme vous le souhaitez. Être un haut-parleur JBL ou un clavier Razer sans fil est facilement réalisable, vous permettant de tromper les gens afin que vous puissiez exécuter vos charges utiles sans avoir besoin d'un câble à portée de main.
 
 -----
 <br>
-<h2 align="center">Niveaux :</h2>
+<h2 align="center">Niveaux :</h2>
 
 Ce firmware a 30 niveaux, pas seulement les 3 de base du niveau officiel.
 
@@ -67,7 +67,7 @@ Avec ce nouveau système en place, cela permet des choses intéressantes comme v
 ​
 <h2 align="center">Installation:</h2>
 <br>
-Il existe plusieurs méthodes pour installer Kali Zero, choisissez celle que vous préférez :
+Il existe plusieurs méthodes pour installer Kali Zero, choisissez celle que vous préférez :
 
 <br>
 
@@ -88,13 +88,13 @@ Il existe plusieurs méthodes pour installer Kali Zero, choisissez celle que vou
 
 -----
 <br>
-<h2 align="center">Construisez-le vous-même :</h2>
+<h2 align="center">Construisez-le vous-même :</h2>
 
 > **Avertissement**
-> Nous ne fournirons pas de support de base pour la compilation sur notre serveur. Ceci est destiné aux personnes qui *savent* déjà ce qu'elles font !
+> Nous ne fournirons pas de support de base pour la compilation sur notre serveur. Ceci est destiné aux personnes qui *savent* déjà ce qu'elles font !
 
 ```bash
-Pour télécharger les outils nécessaires :
+Pour télécharger les outils nécessaires :
 $ git clone --recursive --jobs 8 https://github.com/Flipper76/Kali-Zero-Firmware.git
 $ cd Kali-Zero-Firmware/
 
@@ -104,8 +104,7 @@ $ ./fbt flash_usb_full
 Pour compiler un package TGZ :
 $ ./fbt updater_package
 
-Pour créer et lancer une seule application :
+Pour créer et lancer une seule application :
 $ ./fbt launch APPSRC=your_appid
 ```
-
 

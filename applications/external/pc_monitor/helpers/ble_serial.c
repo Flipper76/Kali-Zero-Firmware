@@ -10,7 +10,7 @@ typedef struct {
 
     BleServiceSerial* serial_svc;
 } BleProfileSerial;
-_Static_assert(offsetof(BleProfileSerial, base) == 0, "Mauvaise mise en page");
+_Static_assert(offsetof(BleProfileSerial, base) == 0, "Wrong layout");
 
 static FuriHalBleProfileBase* ble_profile_serial_start(FuriHalBleProfileParams profile_params) {
     UNUSED(profile_params);

@@ -1,6 +1,6 @@
 App(
     appid="accessor",
-    name="Accesseur",
+    name="Accessor",
     apptype=FlipperAppType.DEBUG,
     targets=["f7"],
     entry_point="accessor_app",

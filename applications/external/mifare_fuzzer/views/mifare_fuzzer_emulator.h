@@ -14,6 +14,7 @@ typedef enum MifareCard {
     MifareCardClassic1k = 1,
     MifareCardClassic4k,
     MifareCardUltralight,
+    MifareCardUnsupported,
 } MifareCard;
 
 typedef enum MifareFuzzerAttack {

@@ -43,17 +43,17 @@ const SensorType SCD30 = {
 
 #define SCD30_ID 0x61
 
-#define COMMAND_CONTINUOUS_MEASUREMENT 0x0010
-#define COMMAND_SET_MEASUREMENT_INTERVAL 0x4600
-#define COMMAND_GET_DATA_READY 0x0202
-#define COMMAND_READ_MEASUREMENT 0x0300
-#define COMMAND_AUTOMATIC_SELF_CALIBRATION 0x5306
+#define COMMAND_CONTINUOUS_MEASUREMENT          0x0010
+#define COMMAND_SET_MEASUREMENT_INTERVAL        0x4600
+#define COMMAND_GET_DATA_READY                  0x0202
+#define COMMAND_READ_MEASUREMENT                0x0300
+#define COMMAND_AUTOMATIC_SELF_CALIBRATION      0x5306
 #define COMMAND_SET_FORCED_RECALIBRATION_FACTOR 0x5204
-#define COMMAND_SET_TEMPERATURE_OFFSET 0x5403
-#define COMMAND_SET_ALTITUDE_COMPENSATION 0x5102
-#define COMMAND_RESET 0xD304 // Soft reset
-#define COMMAND_STOP_MEAS 0x0104
-#define COMMAND_READ_FW_VER 0xD100
+#define COMMAND_SET_TEMPERATURE_OFFSET          0x5403
+#define COMMAND_SET_ALTITUDE_COMPENSATION       0x5102
+#define COMMAND_RESET                           0xD304 // Soft reset
+#define COMMAND_STOP_MEAS                       0x0104
+#define COMMAND_READ_FW_VER                     0xD100
 
 static bool dataAvailable(Sensor* sensor) __attribute__((unused));
 static bool readMeasurement(Sensor* sensor) __attribute__((unused));

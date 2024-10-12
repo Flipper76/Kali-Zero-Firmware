@@ -1,4 +1,5 @@
 #pragma once
+#define ASN_EMIT_DEBUG 0
 
 #include "seader_i.h"
 #include "seader_worker.h"
@@ -13,7 +14,7 @@
 #include <PAC.h>
 #include <SamVersion.h>
 
-#define SEADER_POLLER_MAX_FWT (200000U)
+#define SEADER_POLLER_MAX_FWT         (200000U)
 #define SEADER_POLLER_MAX_BUFFER_SIZE (255U)
 
 struct SeaderWorker {

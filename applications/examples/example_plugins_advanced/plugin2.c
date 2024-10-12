@@ -18,14 +18,14 @@ static void advanced_plugin2_method1(int arg1) {
     app_api_accumulator_mul(arg1);
 }
 
-static void advanced_plugin2_method2() {
+static void advanced_plugin2_method2(void) {
     /* Accumulator value is stored inside host application */
-    FURI_LOG_I("TEST", "Plugin 2, accumulator: %lu", app_api_accumulator_get());
+    FURI_LOG_I("TEST", "Plugin 2, accumulateur: %lu", app_api_accumulator_get());
 }
 
 /* Actual implementation of app<>plugin interface */
 static const AdvancedPlugin advanced_plugin2 = {
-    .name = "Advanced Plugin 2",
+    .name = "Plugin avancé 2",
     .method1 = &advanced_plugin2_method1,
     .method2 = &advanced_plugin2_method2,
 };
@@ -38,6 +38,6 @@ static const FlipperAppPluginDescriptor advanced_plugin2_descriptor = {
 };
 
 /* Plugin entry point - must return a pointer to const descriptor */
-const FlipperAppPluginDescriptor* advanced_plugin2_ep() {
+const FlipperAppPluginDescriptor* advanced_plugin2_ep(void) {
     return &advanced_plugin2_descriptor;
 }

@@ -23,7 +23,6 @@ typedef struct {
     bool back_pressed;
     bool connected;
     char key_string[5];
-    HidTransport transport;
 } HidNumpadModel;
 
 typedef struct {
@@ -39,12 +38,12 @@ typedef struct {
     int8_t y;
 } HidNumpadPoint;
 
-#define MARGIN_TOP 32
-#define MARGIN_LEFT 1
-#define KEY_WIDTH 20
-#define KEY_HEIGHT 15
-#define KEY_PADDING 1
-#define ROW_COUNT 6
+#define MARGIN_TOP   32
+#define MARGIN_LEFT  1
+#define KEY_WIDTH    20
+#define KEY_HEIGHT   15
+#define KEY_PADDING  1
+#define ROW_COUNT    6
 #define COLUMN_COUNT 3
 
 const HidNumpadKey hid_numpad_keyset[ROW_COUNT][COLUMN_COUNT] = {
@@ -56,8 +55,8 @@ const HidNumpadKey hid_numpad_keyset[ROW_COUNT][COLUMN_COUNT] = {
     },
     {
         {.width = 1, .height = 1, .icon = NULL, .key = "7", .value = HID_KEYPAD_7},
-        {.width = 1, .height = 1, .icon = NULL, .key = "8", .value = HID_KEYPAD_8},
-        {.width = 1, .height = 1, .icon = NULL, .key = "9", .value = HID_KEYPAD_9},
+        {.width = 1, .height = 1, .icon = NULL, .key = "8", .value = HID_KEYBOARD_8},
+        {.width = 1, .height = 1, .icon = NULL, .key = "9", .value = HID_KEYBOARD_9},
         // {.width = 1, .height = 2, .icon = NULL, .key = "+", .value = HID_KEYPAD_PLUS},
     },
     {
@@ -72,13 +71,13 @@ const HidNumpadKey hid_numpad_keyset[ROW_COUNT][COLUMN_COUNT] = {
         // {.width = 1, .height = 2, .icon = NULL, .key = "En", .value = HID_KEYPAD_ENTER},
     },
     {
-        {.width = 2, .height = 1, .icon = NULL, .key = "0", .value = HID_KEYPAD_0},
-        {.width = 0, .height = 0, .icon = NULL, .key = "0", .value = HID_KEYPAD_0},
+        {.width = 2, .height = 1, .icon = NULL, .key = "0", .value = HID_KEYBOARD_0},
+        {.width = 0, .height = 0, .icon = NULL, .key = "0", .value = HID_KEYBOARD_0},
         {.width = 1, .height = 1, .icon = NULL, .key = ".", .value = HID_KEYPAD_DOT},
     },
     {
         {.width = 1, .height = 1, .icon = NULL, .key = "En", .value = HID_KEYPAD_ENTER},
-        {.width = 1, .height = 1, .icon = NULL, .key = "-", .value = HID_KEYBOARD_MINUS},
+        {.width = 1, .height = 1, .icon = NULL, .key = "-", .value = HID_KEYPAD_MINUS},
         {.width = 1, .height = 1, .icon = NULL, .key = "+", .value = HID_KEYPAD_PLUS},
     },
 };
@@ -135,27 +134,29 @@ static void hid_numpad_draw_callback(Canvas* canvas, void* context) {
 
     // Header
     canvas_set_font(canvas, FontPrimary);
-    if(model->transport == HidTransportBle) {
-        if(model->connected) {
-            canvas_draw_icon(canvas, 0, 0, &I_Ble_connected_15x15);
-        } else {
-            canvas_draw_icon(canvas, 0, 0, &I_Ble_disconnected_15x15);
-            elements_multiline_text_aligned(
-                canvas, 7, 60, AlignLeft, AlignBottom, "Attend la\nConnexion...");
-        }
-        elements_multiline_text_aligned(canvas, 20, 3, AlignLeft, AlignTop, "Numpad");
-
+#ifdef HID_TRANSPORT_BLE
+    if(model->connected) {
+        canvas_draw_icon(canvas, 0, 0, &I_Ble_connected_15x15);
     } else {
-        elements_multiline_text_aligned(canvas, 12, 3, AlignLeft, AlignTop, "Numpad");
+        canvas_draw_icon(canvas, 0, 0, &I_Ble_disconnected_15x15);
+        elements_multiline_text_aligned(
+            canvas, 7, 60, AlignLeft, AlignBottom, "Attend la\nConnexion...");
     }
+    elements_multiline_text_aligned(canvas, 20, 3, AlignLeft, AlignTop, "Numpad");
 
-    canvas_draw_icon(canvas, 1, 18, &I_Pin_back_arrow_10x8);
+#else
+    elements_multiline_text_aligned(canvas, 12, 3, AlignLeft, AlignTop, "Numpad");
+#endif
+
+    canvas_draw_icon(canvas, 3, 18, &I_Pin_back_arrow_10x8);
     canvas_set_font(canvas, FontSecondary);
     elements_multiline_text_aligned(canvas, 12, 19, AlignLeft, AlignTop, "Tenir=Quit.");
 
-    if(!model->connected && (model->transport == HidTransportBle)) {
+#ifdef HID_TRANSPORT_BLE
+    if(!model->connected) {
         return;
     }
+#endif
 
     canvas_set_font(canvas, FontKeyboard);
     uint8_t initY = 0; // = model->y == 0 ? 0 : 1;
@@ -288,14 +289,7 @@ HidNumpad* hid_numpad_alloc(Hid* bt_hid) {
     view_set_draw_callback(hid_numpad->view, hid_numpad_draw_callback);
     view_set_input_callback(hid_numpad->view, hid_numpad_input_callback);
 
-    with_view_model(
-        hid_numpad->view,
-        HidNumpadModel * model,
-        {
-            model->transport = bt_hid->transport;
-            model->y = 0;
-        },
-        true);
+    with_view_model(hid_numpad->view, HidNumpadModel * model, { model->y = 0; }, true);
 
     return hid_numpad;
 }

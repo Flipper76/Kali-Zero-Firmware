@@ -6,7 +6,10 @@
 #include "../flipp_pomodoro_app.h"
 #include "../views/flipp_pomodoro_timer_view.h"
 
-enum { SceneEventConusmed = true, SceneEventNotConusmed = false };
+enum {
+    SceneEventConusmed = true,
+    SceneEventNotConusmed = false
+};
 
 static char* work_hints[] = {
     "Can you explain the problem as if I'm five?",
@@ -58,7 +61,7 @@ void flipp_pomodoro_scene_timer_sync_view_state(void* ctx) {
 
     flipp_pomodoro_view_timer_set_state(
         flipp_pomodoro_view_timer_get_view(app->timer_view), app->state);
-};
+}
 
 void flipp_pomodoro_scene_timer_on_next_stage(void* ctx) {
     furi_assert(ctx);
@@ -66,7 +69,7 @@ void flipp_pomodoro_scene_timer_on_next_stage(void* ctx) {
     FlippPomodoroApp* app = ctx;
 
     view_dispatcher_send_custom_event(app->view_dispatcher, FlippPomodoroAppCustomEventStageSkip);
-};
+}
 
 void flipp_pomodoro_scene_timer_on_ask_hint(void* ctx) {
     FlippPomodoroApp* app = ctx;
@@ -94,7 +97,7 @@ void flipp_pomodoro_scene_timer_on_enter(void* ctx) {
 
     flipp_pomodoro_view_timer_set_on_right_cb(
         app->timer_view, flipp_pomodoro_scene_timer_on_next_stage);
-};
+}
 
 char* flipp_pomodoro_scene_timer_get_contextual_hint(FlippPomodoroApp* app) {
     switch(flipp_pomodoro__get_stage(app->state)) {
@@ -130,7 +133,7 @@ void flipp_pomodoro_scene_timer_handle_custom_event(
         // optional: code to be executed if custom_event doesn't match any cases
         break;
     }
-};
+}
 
 bool flipp_pomodoro_scene_timer_on_event(void* ctx, SceneManagerEvent event) {
     furi_assert(ctx);
@@ -147,8 +150,8 @@ bool flipp_pomodoro_scene_timer_on_event(void* ctx, SceneManagerEvent event) {
         break;
     };
     return SceneEventNotConusmed;
-};
+}
 
 void flipp_pomodoro_scene_timer_on_exit(void* ctx) {
     UNUSED(ctx);
-};
+}

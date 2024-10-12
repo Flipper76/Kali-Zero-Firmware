@@ -10,9 +10,9 @@
 extern "C" {
 #endif
 
-#define PULSE_READER_NO_EDGE (0xFFFFFFFFUL)
+#define PULSE_READER_NO_EDGE   (0xFFFFFFFFUL)
 #define PULSE_READER_LOST_EDGE (0xFFFFFFFEUL)
-#define F_TIM2 (64000000UL)
+#define F_TIM2                 (64000000UL)
 
 /**
  * unit of the edge durations to return
@@ -69,7 +69,7 @@ void pulse_reader_stop(PulseReader* signal);
  * number of bit times measured.
  *
  * @param[in]  signal      previously allocated PulseReader object.
- * @param[in]  timeout_us  time to wait for a signal [µs]
+ * @param[in]  timeout_us  time to wait for a signal [Âµs]
  *
  * @returns the scaled value of the pulse duration
  */

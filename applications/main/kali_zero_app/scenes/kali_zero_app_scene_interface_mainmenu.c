@@ -16,7 +16,7 @@ void kali_zero_app_scene_interface_mainmenu_var_item_list_callback(void* context
 
 const char* const menu_style_names[MenuStyleCount] = {
     "List",
-    "Wii",
+    "KaliZero",
     "DSi",
     "PS4",
     "Vertical",
@@ -39,7 +39,7 @@ static void kali_zero_app_scene_interface_mainmenu_app_changed(VariableItem* ite
         item, *CharList_get(app->mainmenu_app_labels, app->mainmenu_app_index));
     size_t count = CharList_size(app->mainmenu_app_labels);
     char label[20];
-    snprintf(label, 20, "App  %u/%u", 1 + app->mainmenu_app_index, count);
+    snprintf(label, sizeof(label), "App  %u/%u", 1 + app->mainmenu_app_index, count);
     variable_item_set_item_label(item, label);
 }
 
@@ -141,13 +141,12 @@ bool kali_zero_app_scene_interface_mainmenu_on_event(void* context, SceneManager
             /* fall through */
         case VarItemListIndexMoveApp: {
             app->save_mainmenu_apps = true;
-            app->require_reboot = true;
             size_t count = CharList_size(app->mainmenu_app_labels);
             VariableItem* item = variable_item_list_get(app->var_item_list, VarItemListIndexApp);
             if(count) {
                 app->mainmenu_app_index = CLAMP(app->mainmenu_app_index, count - 1, 0U);
                 char label[20];
-                snprintf(label, 20, "App  %u/%u", 1 + app->mainmenu_app_index, count);
+                snprintf(label, sizeof(label), "App  %u/%u", 1 + app->mainmenu_app_index, count);
                 variable_item_set_item_label(item, label);
                 variable_item_set_current_value_text(
                     item, *CharList_get(app->mainmenu_app_labels, app->mainmenu_app_index));

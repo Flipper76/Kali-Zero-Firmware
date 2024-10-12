@@ -109,9 +109,9 @@ static void draw_callback(Canvas* canvas, void* ctx) {
         canvas_draw_str_aligned(canvas, 0, 22, AlignLeft, AlignBottom, "Hash: MD5");
 
     if(mutexDraw.range == 0)
-        canvas_draw_str_aligned(canvas, 0, 34, AlignLeft, AlignBottom, "Plage : 0-1");
+        canvas_draw_str_aligned(canvas, 0, 34, AlignLeft, AlignBottom, "Range: 0-1");
     else
-        canvas_draw_str_aligned(canvas, 0, 34, AlignLeft, AlignBottom, "Plage: 1-6");
+        canvas_draw_str_aligned(canvas, 0, 34, AlignLeft, AlignBottom, "Range: 1-6");
 
     if(mutexDraw.pause == 0) {
         canvas_set_font(canvas, FontBigNumbers);
@@ -207,7 +207,8 @@ int32_t flipper_atomicdiceroller_app() {
     }
 
     uint8_t diceBuffer[64];
-    for(uint8_t i = 0; i < 64; i++) diceBuffer[i] = 0;
+    for(uint8_t i = 0; i < 64; i++)
+        diceBuffer[i] = 0;
 
     uint8_t diceBufferCounter = 0;
     uint8_t diceBufferPositionWrite = 0;

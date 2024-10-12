@@ -25,9 +25,9 @@ static const uint8_t reset_display_mask = 1 << 5;
 static const uint8_t reset_blink_mask = 1 << 6;
 
 static void notification_vibro_on(bool force);
-static void notification_vibro_off();
+static void notification_vibro_off(void);
 static void notification_sound_on(float freq, float volume, bool force);
-static void notification_sound_off();
+static void notification_sound_off(void);
 
 static uint8_t notification_settings_get_display_brightness(NotificationApp* app, uint8_t value);
 static uint8_t notification_settings_get_rgb_led_brightness(NotificationApp* app, uint8_t value);
@@ -144,17 +144,16 @@ static void notification_apply_notification_leds(NotificationApp* app, const uin
 
 // settings
 uint8_t notification_settings_get_display_brightness(NotificationApp* app, uint8_t value) {
-    return (value * app->settings.display_brightness);
+    return value * app->settings.display_brightness;
 }
 
 static uint8_t notification_settings_get_rgb_led_brightness(NotificationApp* app, uint8_t value) {
-    return (value * app->settings.led_brightness);
+    return value * app->settings.led_brightness;
 }
 
 static uint32_t notification_settings_display_off_delay_ticks(NotificationApp* app) {
-    return (
-        (float)(app->settings.display_off_delay_ms) /
-        (1000.0f / furi_kernel_get_tick_frequency()));
+    return (float)(app->settings.display_off_delay_ms) /
+           (1000.0f / furi_kernel_get_tick_frequency());
 }
 
 // generics
@@ -164,7 +163,7 @@ static void notification_vibro_on(bool force) {
     }
 }
 
-static void notification_vibro_off() {
+static void notification_vibro_off(void) {
     furi_hal_vibro_on(false);
 }
 
@@ -176,7 +175,7 @@ static void notification_sound_on(float freq, float volume, bool force) {
     }
 }
 
-static void notification_sound_off() {
+static void notification_sound_off(void) {
     if(furi_hal_speaker_is_mine()) {
         furi_hal_speaker_stop();
         furi_hal_speaker_release();
@@ -424,8 +423,8 @@ static void
     }
 }
 
-static bool notification_save_settings(NotificationApp* app) {
-    return saved_struct_save(
+static bool notification_load_settings(NotificationApp* app) {
+    return saved_struct_load(
         NOTIFICATION_SETTINGS_PATH,
         &app->settings,
         sizeof(NotificationSettings),
@@ -433,8 +432,8 @@ static bool notification_save_settings(NotificationApp* app) {
         NOTIFICATION_SETTINGS_VERSION);
 }
 
-static bool notification_load_settings(NotificationApp* app) {
-    return saved_struct_load(
+static bool notification_save_settings(NotificationApp* app) {
+    return saved_struct_save(
         NOTIFICATION_SETTINGS_PATH,
         &app->settings,
         sizeof(NotificationSettings),
@@ -461,7 +460,7 @@ static void ascii_event_callback(const void* value, void* context) {
 }
 
 // App alloc
-static NotificationApp* notification_app_alloc() {
+static NotificationApp* notification_app_alloc(void) {
     NotificationApp* app = malloc(sizeof(NotificationApp));
     app->queue = furi_message_queue_alloc(8, sizeof(NotificationAppMessage));
     app->display_timer = furi_timer_alloc(notification_display_timer, FuriTimerTypeOnce, app);
@@ -472,26 +471,24 @@ static NotificationApp* notification_app_alloc() {
     app->settings.display_off_delay_ms = 30000;
     app->settings.vibro_on = true;
 
-    // malloc() also does memset(0), no need to init 0 values
-    _Static_assert(LayerInternal == 0, "need to init layer values");
-    // app->display.value[LayerInternal] = 0x00;
-    // app->display.value[LayerNotification] = 0x00;
-    // app->display.index = LayerInternal;
+    app->display.value[LayerInternal] = 0x00;
+    app->display.value[LayerNotification] = 0x00;
+    app->display.index = LayerInternal;
     app->display.light = LightBacklight;
 
-    // app->led[0].value[LayerInternal] = 0x00;
-    // app->led[0].value[LayerNotification] = 0x00;
-    // app->led[0].index = LayerInternal;
+    app->led[0].value[LayerInternal] = 0x00;
+    app->led[0].value[LayerNotification] = 0x00;
+    app->led[0].index = LayerInternal;
     app->led[0].light = LightRed;
 
-    // app->led[1].value[LayerInternal] = 0x00;
-    // app->led[1].value[LayerNotification] = 0x00;
-    // app->led[1].index = LayerInternal;
+    app->led[1].value[LayerInternal] = 0x00;
+    app->led[1].value[LayerNotification] = 0x00;
+    app->led[1].index = LayerInternal;
     app->led[1].light = LightGreen;
 
-    // app->led[2].value[LayerInternal] = 0x00;
-    // app->led[2].value[LayerNotification] = 0x00;
-    // app->led[2].index = LayerInternal;
+    app->led[2].value[LayerInternal] = 0x00;
+    app->led[2].value[LayerNotification] = 0x00;
+    app->led[2].index = LayerInternal;
     app->led[2].light = LightBlue;
 
     app->settings.version = NOTIFICATION_SETTINGS_VERSION;
@@ -506,12 +503,46 @@ static NotificationApp* notification_app_alloc() {
     return app;
 }
 
+static void notification_storage_callback(const void* message, void* context) {
+    furi_assert(context);
+    NotificationApp* app = context;
+    const StorageEvent* event = message;
+
+    if(event->type == StorageEventTypeCardMount) {
+        NotificationAppMessage m = {
+            .type = LoadSettingsMessage,
+        };
+
+        furi_check(furi_message_queue_put(app->queue, &m, FuriWaitForever) == FuriStatusOk);
+    }
+}
+
+static void notification_apply_settings(NotificationApp* app) {
+    if(!notification_load_settings(app)) {
+        // notification_save_settings(app);
+    }
+
+    notification_apply_lcd_contrast(app);
+}
+
+static void notification_init_settings(NotificationApp* app) {
+    Storage* storage = furi_record_open(RECORD_STORAGE);
+    furi_pubsub_subscribe(storage_get_pubsub(storage), notification_storage_callback, app);
+
+    if(storage_sd_status(storage) != FSE_OK) {
+        FURI_LOG_D(TAG, "SD Card not ready, skipping settings");
+        return;
+    }
+
+    notification_apply_settings(app);
+}
+
 // App
 int32_t notification_srv(void* p) {
     UNUSED(p);
     NotificationApp* app = notification_app_alloc();
 
-    notification_load_settings(app);
+    notification_init_settings(app);
 
     notification_vibro_off();
     notification_sound_off();
@@ -519,7 +550,6 @@ int32_t notification_srv(void* p) {
     notification_apply_internal_led_layer(&app->led[0], 0x00);
     notification_apply_internal_led_layer(&app->led[1], 0x00);
     notification_apply_internal_led_layer(&app->led[2], 0x00);
-    notification_apply_lcd_contrast(app);
 
     furi_record_create(RECORD_NOTIFICATION, app);
 
@@ -537,6 +567,9 @@ int32_t notification_srv(void* p) {
         case SaveSettingsMessage:
             notification_save_settings(app);
             break;
+        case LoadSettingsMessage:
+            notification_load_settings(app);
+            break;
         }
 
         if(message.back_event != NULL) {
@@ -545,4 +578,4 @@ int32_t notification_srv(void* p) {
     }
 
     return 0;
-};
+}

@@ -65,7 +65,7 @@
 
 /* Version of the nanopb library. Just in case you want to check it in
  * your own program. */
-#define NANOPB_VERSION "nanopb-0.4.6"
+#define NANOPB_VERSION "nanopb-0.4.8"
 
 /* Include all the system headers needed by nanopb. You will need the
  * definitions of the following:
@@ -169,6 +169,9 @@ extern "C" {
 #  ifndef PB_STATIC_ASSERT
 #    if defined(__ICCARM__)
        /* IAR has static_assert keyword but no _Static_assert */
+#      define PB_STATIC_ASSERT(COND,MSG) static_assert(COND,#MSG);
+#    elif defined(_MSC_VER) && (!defined(__STDC_VERSION__) || __STDC_VERSION__ < 201112)
+       /* MSVC in C89 mode supports static_assert() keyword anyway */
 #      define PB_STATIC_ASSERT(COND,MSG) static_assert(COND,#MSG);
 #    elif defined(PB_C99_STATIC_ASSERT)
        /* Classic negative-size-array static assert mechanism */
@@ -902,10 +905,13 @@ struct pb_extension_s {
 #define PB_INLINE_CONSTEXPR PB_CONSTEXPR
 #endif  // __cplusplus >= 201703L
 
+extern "C++"
+{
 namespace nanopb {
 // Each type will be partially specialized by the generator.
 template <typename GenMessageT> struct MessageDescriptor;
 }  // namespace nanopb
+}
 #endif  /* __cplusplus */
 
 #endif

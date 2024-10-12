@@ -43,7 +43,7 @@ size_t subghz_tx_rx_worker_available(SubGhzTxRxWorker* instance);
 size_t subghz_tx_rx_worker_read(SubGhzTxRxWorker* instance, uint8_t* data, size_t size);
 
 /** 
- * Сallback SubGhzTxRxWorker when there is data to read in an empty buffer
+ * Ð¡allback SubGhzTxRxWorker when there is data to read in an empty buffer
  * @param instance Pointer to a SubGhzTxRxWorker instance
  * @param callback SubGhzTxRxWorkerCallbackHaveRead callback
  * @param context
@@ -57,7 +57,7 @@ void subghz_tx_rx_worker_set_callback_have_read(
  * Allocate SubGhzTxRxWorker
  * @return SubGhzTxRxWorker* Pointer to a SubGhzTxRxWorker instance
  */
-SubGhzTxRxWorker* subghz_tx_rx_worker_alloc();
+SubGhzTxRxWorker* subghz_tx_rx_worker_alloc(void);
 
 /** 
  * Free SubGhzTxRxWorker

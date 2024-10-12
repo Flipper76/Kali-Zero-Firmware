@@ -116,11 +116,11 @@ static void extra_config(Ctx* ctx) {
     VariableItemList* list = ctx->variable_item_list;
     VariableItem* item;
 
-    item = variable_item_list_add(list, "Nom d'affichage", 0, NULL, NULL);
+    item = variable_item_list_add(list, "Display Name", 0, NULL, NULL);
     variable_item_set_current_value_text(
-        item, payload->mode == PayloadModeRandom ? "Aléatoire" : cfg->name);
+        item, payload->mode == PayloadModeRandom ? "Random" : cfg->name);
 
-    variable_item_list_add(list, "Voir les paramètres BT", 0, NULL, NULL);
+    variable_item_list_add(list, "See in phone BT settings", 0, NULL, NULL);
 
     variable_item_list_set_enter_callback(list, config_callback, ctx);
 }
@@ -142,7 +142,7 @@ static void name_callback(void* _ctx) {
     Ctx* ctx = _ctx;
     Payload* payload = &ctx->attack->payload;
     payload->mode = PayloadModeValue;
-    scene_manager_previous_scene(ctx->scene_manager);
+    view_dispatcher_send_custom_event(ctx->view_dispatcher, 0);
 }
 void scene_nameflood_name_on_enter(void* _ctx) {
     Ctx* ctx = _ctx;
@@ -150,7 +150,7 @@ void scene_nameflood_name_on_enter(void* _ctx) {
     NamefloodCfg* cfg = &payload->cfg.nameflood;
     TextInput* text_input = ctx->text_input;
 
-    text_input_set_header_text(text_input, "Retour pour aléatoire");
+    text_input_set_header_text(text_input, "Press back for random");
 
     text_input_set_result_callback(
         text_input, name_callback, ctx, cfg->name, sizeof(cfg->name), true);
@@ -162,6 +162,10 @@ void scene_nameflood_name_on_enter(void* _ctx) {
 bool scene_nameflood_name_on_event(void* _ctx, SceneManagerEvent event) {
     Ctx* ctx = _ctx;
     Payload* payload = &ctx->attack->payload;
+    if(event.type == SceneManagerEventTypeCustom) {
+        scene_manager_previous_scene(ctx->scene_manager);
+        return true;
+    }
     if(event.type == SceneManagerEventTypeBack) {
         payload->mode = PayloadModeRandom;
     }

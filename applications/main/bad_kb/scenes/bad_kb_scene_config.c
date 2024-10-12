@@ -1,7 +1,4 @@
 #include "../bad_kb_app_i.h"
-#include "furi_hal_power.h"
-#include "furi_hal_usb.h"
-#include <xtreme/xtreme.h>
 
 enum VarItemListIndex {
     VarItemListIndexKeyboardLayout,
@@ -10,6 +7,7 @@ enum VarItemListIndex {
 
 enum VarItemListIndexBt {
     VarItemListIndexBtRemember = VarItemListIndexConnection + 1,
+    VarItemListIndexBtPairing,
     VarItemListIndexBtDeviceName,
     VarItemListIndexBtMacAddress,
     VarItemListIndexBtRandomizeMac,
@@ -31,9 +29,33 @@ void bad_kb_scene_config_connection_callback(VariableItem* item) {
 
 void bad_kb_scene_config_bt_remember_callback(VariableItem* item) {
     BadKbApp* bad_kb = variable_item_get_context(item);
-    bad_kb->bt_remember = variable_item_get_current_value_index(item);
-    variable_item_set_current_value_text(item, bad_kb->bt_remember ? "ON" : "OFF");
+    bool value = variable_item_get_current_value_index(item);
+    // Set user config and remember
+    bad_kb->config.ble.bonding = value;
+    // Apply to ID config so its temporarily overridden (currently can't set bonding with BT_ID anyway)
+    if(bad_kb->set_bt_id) {
+        bad_kb->id_config.ble.bonding = value;
+    }
+    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
     view_dispatcher_send_custom_event(bad_kb->view_dispatcher, VarItemListIndexBtRemember);
+}
+
+const char* const bt_pairing_names[GapPairingCount] = {
+    "YesNo",
+    "PIN Type",
+    "PIN Y/N",
+};
+void bad_kb_scene_config_bt_pairing_callback(VariableItem* item) {
+    BadKbApp* bad_kb = variable_item_get_context(item);
+    uint8_t index = variable_item_get_current_value_index(item);
+    // Set user config and remember
+    bad_kb->config.ble.pairing = index;
+    // Apply to ID config so its temporarily overridden (currently can't set pairing with BT_ID anyway)
+    if(bad_kb->set_bt_id) {
+        bad_kb->id_config.ble.pairing = index;
+    }
+    variable_item_set_current_value_text(item, bt_pairing_names[index]);
+    view_dispatcher_send_custom_event(bad_kb->view_dispatcher, VarItemListIndexBtPairing);
 }
 
 void bad_kb_scene_config_var_item_list_callback(void* context, uint32_t index) {
@@ -52,56 +74,43 @@ void bad_kb_scene_config_on_enter(void* context) {
         var_item_list, "Connection", 2, bad_kb_scene_config_connection_callback, bad_kb);
     variable_item_set_current_value_index(item, bad_kb->is_bt);
     variable_item_set_current_value_text(item, bad_kb->is_bt ? "BT" : "USB");
-    /*if(bad_kb->has_usb_id) {
-        variable_item_set_locked(item, true, "Le script a \n""un ID cmd ! \nLock en mode USB!");											  										   
-    } else if(bad_kb->has_bt_id) {
-        variable_item_set_locked(item, true, "Le script a \n""un BT_ID cmd!\nLock en mode BT!");
-    }*/
 
     if(bad_kb->is_bt) {
+        BadKbConfig* cfg = bad_kb->set_bt_id ? &bad_kb->id_config : &bad_kb->config;
+
         item = variable_item_list_add(
             var_item_list, "Se souvenir BT", 2, bad_kb_scene_config_bt_remember_callback, bad_kb);
-        variable_item_set_current_value_index(item, bad_kb->bt_remember);
-        variable_item_set_current_value_text(item, bad_kb->bt_remember ? "ON" : "OFF");
+        variable_item_set_current_value_index(item, cfg->ble.bonding);
+        variable_item_set_current_value_text(item, cfg->ble.bonding ? "ON" : "OFF");
+
+        item = variable_item_list_add(
+            var_item_list,
+            "Nom de l'appareil BT",
+            GapPairingCount,
+            bad_kb_scene_config_bt_pairing_callback,
+            bad_kb);
+        variable_item_set_current_value_index(item, cfg->ble.pairing);
+        variable_item_set_current_value_text(item, bt_pairing_names[cfg->ble.pairing]);
 
         item = variable_item_list_add(var_item_list, "Nom de l'appareil BT", 0, NULL, bad_kb);
-        if(bad_kb->set_bt_id) {
-            variable_item_set_locked(item, true, "Le script a \n""un BT_ID cmd ! \nLock sur\nset le nom!");
-        }
 
         item = variable_item_list_add(var_item_list, "Adresse MAC BT", 0, NULL, bad_kb);
-        if(bad_kb->bt_remember) {
+        if(cfg->ble.bonding) {
             variable_item_set_locked(item, true, "Rappelez-vous\ndoit être Off!");
-        } else if(bad_kb->set_bt_id) {
-            variable_item_set_locked(item, true, "Le script a \n""un BT_ID cmd ! \nLock sur\nset MAC!");
         }
 
         item = variable_item_list_add(var_item_list, "Randomize BT MAC", 0, NULL, bad_kb);
-        if(bad_kb->bt_remember) {
+        if(cfg->ble.bonding) {
             variable_item_set_locked(item, true, "Rappelez-vous\ndoit être Off!");
-        } else if(bad_kb->set_bt_id) {
-            variable_item_set_locked(item, true, "Le script a \n""un BT_ID cmd ! \nLock sur\nset MAC!");
         }
     } else {
         item = variable_item_list_add(var_item_list, "Fabricant USB", 0, NULL, bad_kb);
-        if(bad_kb->set_usb_id) {
-            variable_item_set_locked(item, true, "Le script a \n""un ID cmd ! \nLock sur\nset Mname!");
-        }
 
         item = variable_item_list_add(var_item_list, "Nom du produit USB", 0, NULL, bad_kb);
-        if(bad_kb->set_usb_id) {
-            variable_item_set_locked(item, true, "Le script a \n""un ID cmd ! \nLock sur\nset Pname!");
-        }
 
         item = variable_item_list_add(var_item_list, "USB VID et PID", 0, NULL, bad_kb);
-        if(bad_kb->set_usb_id) {
-            variable_item_set_locked(item, true, "Le script a \n""un ID cmd ! \nLock sur\nset IDs!");
-        }
 
         item = variable_item_list_add(var_item_list, "Randomiser USB VID:PID", 0, NULL, bad_kb);
-        if(bad_kb->set_usb_id) {
-            variable_item_set_locked(item, true, "Le script a \n""un ID cmd ! \nLock sur\nset IDs!");
-        }
     }
 
     variable_item_list_set_enter_callback(
@@ -135,6 +144,9 @@ bool bad_kb_scene_config_on_event(void* context, SceneManagerEvent event) {
             case VarItemListIndexBtRemember:
                 bad_kb_config_refresh(bad_kb);
                 break;
+            case VarItemListIndexBtPairing:
+                bad_kb_config_refresh(bad_kb);
+                break;
             case VarItemListIndexBtDeviceName:
                 scene_manager_next_scene(bad_kb->scene_manager, BadKbSceneConfigBtName);
                 break;
@@ -142,7 +154,15 @@ bool bad_kb_scene_config_on_event(void* context, SceneManagerEvent event) {
                 scene_manager_next_scene(bad_kb->scene_manager, BadKbSceneConfigBtMac);
                 break;
             case VarItemListIndexBtRandomizeMac:
+                // Set user config and remember
                 furi_hal_random_fill_buf(bad_kb->config.ble.mac, sizeof(bad_kb->config.ble.mac));
+                // Apply to ID config so its temporarily overridden
+                if(bad_kb->set_bt_id) {
+                    memcpy(
+                        bad_kb->id_config.ble.mac,
+                        bad_kb->config.ble.mac,
+                        sizeof(bad_kb->id_config.ble.mac));
+                }
                 bad_kb_config_refresh(bad_kb);
                 break;
             default:
@@ -166,8 +186,14 @@ bool bad_kb_scene_config_on_event(void* context, SceneManagerEvent event) {
             case VarItemListIndexUsbRandomizeVidPid:
                 furi_hal_random_fill_buf(
                     (void*)bad_kb->usb_vidpid_buf, sizeof(bad_kb->usb_vidpid_buf));
+                // Set user config and remember
                 bad_kb->config.usb.vid = bad_kb->usb_vidpid_buf[0];
                 bad_kb->config.usb.pid = bad_kb->usb_vidpid_buf[1];
+                // Apply to ID config so its temporarily overridden
+                if(bad_kb->set_usb_id) {
+                    bad_kb->id_config.usb.vid = bad_kb->config.usb.vid;
+                    bad_kb->id_config.usb.pid = bad_kb->config.usb.pid;
+                }
                 bad_kb_config_refresh(bad_kb);
                 break;
             default:

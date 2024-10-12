@@ -1,6 +1,5 @@
 #include "../archive_i.h"
 #include "../helpers/archive_files.h"
-#include "../helpers/archive_apps.h"
 #include "../helpers/archive_favorites.h"
 #include "../helpers/archive_browser.h"
 #include "../helpers/archive_helpers_ext.h"
@@ -9,7 +8,7 @@
 
 #define TAG "ArchiveSceneBrowser"
 
-#define SCENE_STATE_DEFAULT (0)
+#define SCENE_STATE_DEFAULT      (0)
 #define SCENE_STATE_NEED_REFRESH (1)
 
 const char* archive_get_flipper_app_name(ArchiveFileTypeEnum file_type) {
@@ -32,12 +31,16 @@ const char* archive_get_flipper_app_name(ArchiveFileTypeEnum file_type) {
         return EXT_PATH("apps/Infrared/ir_remote.fap");
     case ArchiveFileTypeBadKb:
         return "Bad KB";
+    case ArchiveFileTypeWAV:
+        return EXT_PATH("apps/Media/wav_player.fap");
+    case ArchiveFileTypeMag:
+        return EXT_PATH("apps/GPIO/magspoof.fap");
     case ArchiveFileTypeU2f:
         return "U2F";
     case ArchiveFileTypeUpdateManifest:
         return "UpdaterApp";
     case ArchiveFileTypeDiskImage:
-        return EXT_PATH("apps/USB/mass_storage.fap");		
+        return EXT_PATH("apps/USB/mass_storage.fap");
     case ArchiveFileTypeJS:
         return EXT_PATH("apps/assets/js_app.fap");
     default:
@@ -202,10 +205,8 @@ void archive_scene_browser_on_enter(void* context) {
     archive_update_focus(browser, archive->text_store);
     view_dispatcher_switch_to_view(archive->view_dispatcher, ArchiveViewBrowser);
 
-    Loader* loader = furi_record_open(RECORD_LOADER);
-    archive->loader_stop_subscription =
-        furi_pubsub_subscribe(loader_get_pubsub(loader), archive_loader_callback, archive);
-    furi_record_close(RECORD_LOADER);
+    archive->loader_stop_subscription = furi_pubsub_subscribe(
+        loader_get_pubsub(archive->loader), archive_loader_callback, archive);
 
     uint32_t state = scene_manager_get_scene_state(archive->scene_manager, ArchiveAppSceneBrowser);
 
@@ -457,10 +458,11 @@ bool archive_scene_browser_on_event(void* context, SceneManagerEvent event) {
             if(!archive_is_home(browser)) {
                 archive_leave_dir(browser);
             } else {
-                Loader* loader = furi_record_open(RECORD_LOADER);
-                furi_pubsub_unsubscribe(
-                    loader_get_pubsub(loader), archive->loader_stop_subscription);
-                furi_record_close(RECORD_LOADER);
+                if(archive->loader_stop_subscription) {
+                    furi_pubsub_unsubscribe(
+                        loader_get_pubsub(archive->loader), archive->loader_stop_subscription);
+                    archive->loader_stop_subscription = NULL;
+                }
 
                 view_dispatcher_stop(archive->view_dispatcher);
             }
@@ -476,8 +478,9 @@ bool archive_scene_browser_on_event(void* context, SceneManagerEvent event) {
 
 void archive_scene_browser_on_exit(void* context) {
     ArchiveApp* archive = (ArchiveApp*)context;
-
-    Loader* loader = furi_record_open(RECORD_LOADER);
-    furi_pubsub_unsubscribe(loader_get_pubsub(loader), archive->loader_stop_subscription);
-    furi_record_close(RECORD_LOADER);
+    if(archive->loader_stop_subscription) {
+        furi_pubsub_unsubscribe(
+            loader_get_pubsub(archive->loader), archive->loader_stop_subscription);
+        archive->loader_stop_subscription = NULL;
+    }
 }

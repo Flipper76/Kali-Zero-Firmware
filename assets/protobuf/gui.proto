@@ -30,6 +30,8 @@ enum ScreenOrientation {
 message ScreenFrame {
     bytes data = 1;
     ScreenOrientation orientation = 2;
+    uint32 bg_color = 3;
+    uint32 fg_color = 4;
 }
 
 message StartScreenStreamRequest {

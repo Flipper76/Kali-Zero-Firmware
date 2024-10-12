@@ -17617,7 +17617,7 @@ int sp_mont_red_ex(sp_int* a, const sp_int* m, sp_int_digit mp, int ct)
  *
  * Used when performing Montgomery Reduction.
  * m must be odd.
- * Jeffrey Hurchalla’s method.
+ * Jeffrey Hurchallaâ€™s method.
  *   https://arxiv.org/pdf/2204.04342.pdf
  *
  * @param  [in]   m   SP integer that is the modulus.

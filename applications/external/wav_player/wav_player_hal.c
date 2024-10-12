@@ -14,7 +14,7 @@
 #define SAMPLE_RATE_TIMER TIM2
 
 #define FURI_HAL_SPEAKER_CHANNEL LL_TIM_CHANNEL_CH1
-#define DMA_INSTANCE DMA1, LL_DMA_CHANNEL_1
+#define DMA_INSTANCE             DMA1, LL_DMA_CHANNEL_1
 
 void wav_player_speaker_init(uint32_t sample_rate) {
     // Enable bus
@@ -38,7 +38,8 @@ void wav_player_speaker_init(uint32_t sample_rate) {
     TIM_InitStruct.Prescaler = 0;
     //TIM_InitStruct.Autoreload = 1451; //64 000 000 / 1451 ~= 44100 Hz
 
-    TIM_InitStruct.Autoreload = 64000000 / sample_rate - 1; //to support various sample rates
+    TIM_InitStruct.Autoreload =
+        SystemCoreClock / sample_rate - 1; //to support various sample rates
 
     LL_TIM_Init(SAMPLE_RATE_TIMER, &TIM_InitStruct);
 
@@ -95,7 +96,7 @@ void wav_player_dma_init(uint32_t address, size_t size) {
     LL_DMA_SetPeriphIncMode(DMA_INSTANCE, LL_DMA_PERIPH_NOINCREMENT);
     LL_DMA_SetMemoryIncMode(DMA_INSTANCE, LL_DMA_MEMORY_INCREMENT);
     LL_DMA_SetPeriphSize(DMA_INSTANCE, LL_DMA_PDATAALIGN_HALFWORD);
-    LL_DMA_SetMemorySize(DMA_INSTANCE, LL_DMA_MDATAALIGN_HALFWORD);
+    LL_DMA_SetMemorySize(DMA_INSTANCE, LL_DMA_MDATAALIGN_BYTE);
 
     LL_DMA_EnableIT_TC(DMA_INSTANCE);
     LL_DMA_EnableIT_HT(DMA_INSTANCE);

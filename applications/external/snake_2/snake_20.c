@@ -20,7 +20,7 @@ typedef enum {
     GameStatePause,
     // https://melmagazine.com/en-us/story/snake-nokia-6110-oral-history-taneli-armanto
     // Armanto: While testing the early versions of the game, I noticed it was hard
-    // to control the snake upon getting close to and edge but not crashing — especially
+    // to control the snake upon getting close to and edge but not crashing â€” especially
     // in the highest speed levels. I wanted the highest level to be as fast as I could
     // possibly make the device "run," but on the other hand, I wanted to be friendly
     // and help the player manage that level. Otherwise it might not be fun to play. So
@@ -191,15 +191,17 @@ static void snake_game_render_callback(Canvas* const canvas, void* ctx) {
     furi_mutex_release(snake_state->mutex);
 }
 
-static void snake_game_input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void snake_game_input_callback(InputEvent* input_event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     SnakeEvent event = {.type = EventTypeKey, .input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
 }
 
-static void snake_game_update_timer_callback(FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void snake_game_update_timer_callback(void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     SnakeEvent event = {.type = EventTypeTick};
     furi_message_queue_put(event_queue, &event, 0);

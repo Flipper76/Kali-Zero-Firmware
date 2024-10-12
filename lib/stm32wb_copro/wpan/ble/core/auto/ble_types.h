@@ -1,12 +1,11 @@
 /*****************************************************************************
  * @file    ble_types.h
- * @author  MDG
  * @brief   STM32WB BLE command/event types
  *          Auto-generated file: do not edit!
  *****************************************************************************
  * @attention
  *
- * Copyright (c) 2018-2023 STMicroelectronics.
+ * Copyright (c) 2018-2024 STMicroelectronics.
  * All rights reserved.
  *
  * This software is licensed under terms that can be found in the LICENSE file
@@ -1395,6 +1394,22 @@ typedef __PACKED_STRUCT
 
 typedef __PACKED_STRUCT
 {
+  uint8_t Mode;
+  uint8_t Key[16];
+  uint8_t IV[8];
+  uint16_t In_Data_Length;
+  uint8_t In_Data[BLE_CMD_MAX_PARAM_LEN - 27];
+} aci_hal_ead_encrypt_decrypt_cp0;
+
+typedef __PACKED_STRUCT
+{
+  uint8_t Status;
+  uint16_t Out_Data_Length;
+  uint8_t Out_Data[(BLE_EVT_MAX_PARAM_LEN - 3) - 3];
+} aci_hal_ead_encrypt_decrypt_rp0;
+
+typedef __PACKED_STRUCT
+{
   uint8_t Register_Address;
 } aci_hal_read_radio_reg_cp0;
 
@@ -2116,6 +2131,43 @@ typedef __PACKED_STRUCT
 {
   uint8_t Status;
 } aci_gap_adv_set_random_address_rp0;
+
+typedef __PACKED_STRUCT
+{
+  uint8_t Scan_Mode;
+  uint8_t Procedure;
+  uint8_t Own_Address_Type;
+  uint8_t Filter_Duplicates;
+  uint16_t Duration;
+  uint16_t Period;
+  uint8_t Scanning_Filter_Policy;
+  uint8_t Scanning_PHYs;
+  Scan_Param_Phy_t Scan_Param_Phy[2];
+} aci_gap_ext_start_scan_cp0;
+
+typedef __PACKED_STRUCT
+{
+  uint8_t Status;
+} aci_gap_ext_start_scan_rp0;
+
+typedef __PACKED_STRUCT
+{
+  uint8_t Initiating_Mode;
+  uint8_t Procedure;
+  uint8_t Own_Address_Type;
+  uint8_t Peer_Address_Type;
+  uint8_t Peer_Address[6];
+  uint8_t Advertising_Handle;
+  uint8_t Subevent;
+  uint8_t Initiator_Filter_Policy;
+  uint8_t Initiating_PHYs;
+  Init_Param_Phy_t Init_Param_Phy[3];
+} aci_gap_ext_create_connection_cp0;
+
+typedef __PACKED_STRUCT
+{
+  uint8_t Status;
+} aci_gap_ext_create_connection_rp0;
 
 typedef __PACKED_STRUCT
 {

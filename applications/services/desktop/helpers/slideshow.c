@@ -1,11 +1,10 @@
 #include "slideshow.h"
 
-#include <stddef.h>
 #include <storage/storage.h>
 #include <gui/icon.h>
 #include <core/dangerous_defines.h>
 
-#define SLIDESHOW_MAGIC 0x72676468
+#define SLIDESHOW_MAGIC                 0x72676468
 #define SLIDESHOW_MAX_SUPPORTED_VERSION 1
 
 #pragma pack(push, 1)
@@ -17,16 +16,16 @@ typedef struct {
     uint8_t height;
     uint8_t frame_count;
 } SlideshowFileHeader;
-_Static_assert(sizeof(SlideshowFileHeader) == 8, "Taille SlideshowFileHeader incorrecte");
+_Static_assert(sizeof(SlideshowFileHeader) == 8, "Incorrect SlideshowFileHeader size");
 
 typedef struct {
     uint16_t size;
 } SlideshowFrameHeader;
-_Static_assert(sizeof(SlideshowFrameHeader) == 2, "Taille SlideshowFrameHeader incorrecte");
+_Static_assert(sizeof(SlideshowFrameHeader) == 2, "Incorrect SlideshowFrameHeader size");
 
 #pragma pack(pop)
 
-Slideshow* slideshow_alloc() {
+Slideshow* slideshow_alloc(void) {
     Slideshow* ret = malloc(sizeof(Slideshow));
     ret->loaded = false;
     return ret;

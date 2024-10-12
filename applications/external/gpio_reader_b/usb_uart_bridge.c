@@ -6,7 +6,7 @@
 #include <toolbox/api_lock.h>
 #include "cli/cli.h"
 
-#define USB_CDC_PKT_LEN CDC_DATA_SZ
+#define USB_CDC_PKT_LEN      CDC_DATA_SZ
 #define USB_UART_RX_BUF_SIZE (USB_CDC_PKT_LEN * 5)
 
 #define USB_CDC_BIT_DTR (1 << 0)
@@ -122,6 +122,7 @@ static void usb_uart_serial_init(UsbUartBridge* usb_uart, uint8_t uart_ch) {
 
 static void usb_uart_serial_deinit(UsbUartBridge* usb_uart, uint8_t uart_ch) {
     UNUSED(uart_ch);
+    furi_hal_serial_async_rx_stop(usb_uart->serial_handle);
     furi_hal_serial_deinit(usb_uart->serial_handle);
     furi_hal_serial_control_release(usb_uart->serial_handle);
 }

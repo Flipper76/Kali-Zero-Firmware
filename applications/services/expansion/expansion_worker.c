@@ -11,7 +11,7 @@
 
 #define TAG "ExpansionSrv"
 
-#define EXPANSION_WORKER_STACK_SZIE (768UL)
+#define EXPANSION_WORKER_STACK_SZIE  (768UL)
 #define EXPANSION_WORKER_BUFFER_SIZE (sizeof(ExpansionFrame) + sizeof(ExpansionFrameChecksum))
 
 typedef enum {
@@ -223,7 +223,7 @@ static bool expansion_worker_handle_state_handshake(
 
         if(furi_hal_serial_is_baud_rate_supported(instance->serial_handle, baud_rate)) {
             instance->state = ExpansionWorkerStateConnected;
-            instance->callback(instance->cb_context, ExpansionWorkerCallbackReasonConnected);			
+            instance->callback(instance->cb_context, ExpansionWorkerCallbackReasonConnected);
             // Send response at previous baud rate
             if(!expansion_worker_send_status_response(instance, ExpansionFrameErrorNone)) break;
             furi_hal_serial_set_br(instance->serial_handle, baud_rate);
@@ -246,9 +246,18 @@ static bool expansion_worker_handle_state_connected(
 
     do {
         if(rx_frame->header.type == ExpansionFrameTypeControl) {
-            if(rx_frame->content.control.command != ExpansionFrameControlCommandStartRpc) break;
-            instance->state = ExpansionWorkerStateRpcActive;
-            if(!expansion_worker_rpc_session_open(instance)) break;
+            const uint8_t command = rx_frame->content.control.command;
+            if(command == ExpansionFrameControlCommandStartRpc) {
+                if(!expansion_worker_rpc_session_open(instance)) break;
+                instance->state = ExpansionWorkerStateRpcActive;
+            } else if(command == ExpansionFrameControlCommandEnableOtg) {
+                if(!furi_hal_power_is_otg_enabled()) furi_hal_power_enable_otg();
+            } else if(command == ExpansionFrameControlCommandDisableOtg) {
+                if(furi_hal_power_is_otg_enabled()) furi_hal_power_disable_otg();
+            } else {
+                break;
+            }
+
             if(!expansion_worker_send_status_response(instance, ExpansionFrameErrorNone)) break;
 
         } else if(rx_frame->header.type == ExpansionFrameTypeHeartbeat) {
@@ -280,9 +289,14 @@ static bool expansion_worker_handle_state_rpc_active(
             if(size_consumed != rx_frame->content.data.size) break;
 
         } else if(rx_frame->header.type == ExpansionFrameTypeControl) {
-            if(rx_frame->content.control.command != ExpansionFrameControlCommandStopRpc) break;
-            instance->state = ExpansionWorkerStateConnected;
-            expansion_worker_rpc_session_close(instance);
+            const uint8_t command = rx_frame->content.control.command;
+            if(command == ExpansionFrameControlCommandStopRpc) {
+                instance->state = ExpansionWorkerStateConnected;
+                expansion_worker_rpc_session_close(instance);
+            } else {
+                break;
+            }
+
             if(!expansion_worker_send_status_response(instance, ExpansionFrameErrorNone)) break;
 
         } else if(rx_frame->header.type == ExpansionFrameTypeStatus) {

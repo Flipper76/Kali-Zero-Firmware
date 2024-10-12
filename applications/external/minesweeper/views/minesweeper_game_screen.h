@@ -27,7 +27,7 @@
 // can be visually representen on the screen
 // due to icon sizes
 #define MINESWEEPER_SCREEN_TILE_HEIGHT 7
-#define MINESWEEPER_SCREEN_TILE_WIDTH 16
+#define MINESWEEPER_SCREEN_TILE_WIDTH  16
 
 #define MS_DEBUG_TAG "Mine Sweeper Module/View"
 

@@ -3,9 +3,10 @@
 
 enum SubmenuIndex {
     SubmenuIndexEmulate,
-    SubmenuIndexWriteBlank,
+    SubmenuIndexWriteId,
     SubmenuIndexWriteCopy,
     SubmenuIndexEdit,
+    SubmenuIndexRename,
     SubmenuIndexDelete,
     SubmenuIndexInfo,
 };
@@ -19,17 +20,22 @@ void ibutton_scene_saved_key_menu_on_enter(void* context) {
 
     submenu_add_item(submenu, "Emuler", SubmenuIndexEmulate, ibutton_submenu_callback, ibutton);
 
-    if(features & iButtonProtocolFeatureWriteBlank) {
+    if(features & iButtonProtocolFeatureWriteId) {
         submenu_add_item(
-            submenu, "Ecrire vide", SubmenuIndexWriteBlank, ibutton_submenu_callback, ibutton);
+            submenu, "Ecrire vide", iButtonProtocolFeatureWriteId, ibutton_submenu_callback, ibutton);
     }
 
     if(features & iButtonProtocolFeatureWriteCopy) {
         submenu_add_item(
-            submenu, "Ecrire Copie", SubmenuIndexWriteCopy, ibutton_submenu_callback, ibutton);
+            submenu,
+            "Écriture complète sur le même type",
+            SubmenuIndexWriteCopy,
+            ibutton_submenu_callback,
+            ibutton);
     }
 
     submenu_add_item(submenu, "Editer", SubmenuIndexEdit, ibutton_submenu_callback, ibutton);
+    submenu_add_item(submenu, "Renommer", SubmenuIndexRename, ibutton_submenu_callback, ibutton);
     submenu_add_item(submenu, "Supprimer", SubmenuIndexDelete, ibutton_submenu_callback, ibutton);
     submenu_add_item(submenu, "Info", SubmenuIndexInfo, ibutton_submenu_callback, ibutton);
 
@@ -49,14 +55,16 @@ bool ibutton_scene_saved_key_menu_on_event(void* context, SceneManagerEvent even
         if(event.event == SubmenuIndexEmulate) {
             scene_manager_next_scene(scene_manager, iButtonSceneEmulate);
             dolphin_deed(DolphinDeedIbuttonEmulate);
-        } else if(event.event == SubmenuIndexWriteBlank) {
-            ibutton->write_mode = iButtonWriteModeBlank;
+        } else if(event.event == SubmenuIndexWriteId) {
+            ibutton->write_mode = iButtonWriteModeId;
             scene_manager_next_scene(scene_manager, iButtonSceneWrite);
         } else if(event.event == SubmenuIndexWriteCopy) {
             ibutton->write_mode = iButtonWriteModeCopy;
             scene_manager_next_scene(scene_manager, iButtonSceneWrite);
         } else if(event.event == SubmenuIndexEdit) {
             scene_manager_next_scene(scene_manager, iButtonSceneAddValue);
+        } else if(event.event == SubmenuIndexRename) {
+            scene_manager_next_scene(scene_manager, iButtonSceneSaveName);
         } else if(event.event == SubmenuIndexDelete) {
             scene_manager_next_scene(scene_manager, iButtonSceneDeleteConfirm);
         } else if(event.event == SubmenuIndexInfo) {

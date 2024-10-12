@@ -1,4 +1,4 @@
-#include "subghz_txrx_i.h"
+#include "subghz_txrx_i.h" // IWYU pragma: keep
 
 #include <lib/subghz/protocols/protocol_items.h>
 #include <applications/drivers/subghz/cc1101_ext/cc1101_ext_interconnect.h>
@@ -22,7 +22,7 @@ static void subghz_txrx_radio_device_power_off(SubGhzTxRx* instance) {
     if(furi_hal_power_is_otg_enabled()) furi_hal_power_disable_otg();
 }
 
-SubGhzTxRx* subghz_txrx_alloc() {
+SubGhzTxRx* subghz_txrx_alloc(void) {
     SubGhzTxRx* instance = malloc(sizeof(SubGhzTxRx));
     instance->setting = subghz_setting_alloc();
     subghz_setting_load(instance->setting, EXT_PATH("subghz/assets/setting_user"));
@@ -158,18 +158,14 @@ void subghz_txrx_get_frequency_and_modulation(
     }
 }
 
-void subghz_txrx_get_latitude_and_longitude(
-    SubGhzTxRx* instance,
-    FuriString* latitude,
-    FuriString* longitude) {
+float subghz_txrx_get_latitude(SubGhzTxRx* instance) {
     furi_assert(instance);
-    SubGhzRadioPreset* preset = instance->preset;
-    if(latitude != NULL) {
-        furi_string_printf(latitude, "%f", (double)preset->latitude);
-    }
-    if(longitude != NULL) {
-        furi_string_printf(longitude, "%f", (double)preset->longitude);
-    }
+    return instance->preset->latitude;
+}
+
+float subghz_txrx_get_longitude(SubGhzTxRx* instance) {
+    furi_assert(instance);
+    return instance->preset->longitude;
 }
 
 static void subghz_txrx_begin(SubGhzTxRx* instance, uint8_t* preset_data) {
@@ -381,7 +377,7 @@ void subghz_txrx_stop(SubGhzTxRx* instance) {
     }
 }
 
-void subghz_txrx_hopper_update(SubGhzTxRx* instance) {
+void subghz_txrx_hopper_update(SubGhzTxRx* instance, float stay_threshold) {
     furi_assert(instance);
 
     switch(instance->hopper_state) {
@@ -404,7 +400,7 @@ void subghz_txrx_hopper_update(SubGhzTxRx* instance) {
         float rssi = subghz_devices_get_rssi(instance->radio_device);
 
         // Stay if RSSI is high enough
-        if(rssi > -90.0f) {
+        if(rssi > stay_threshold) {
             instance->hopper_timeout = 10;
             instance->hopper_state = SubGhzHopperStateRSSITimeOut;
             return;
@@ -546,27 +542,31 @@ SubGhzProtocolDecoderBase* subghz_txrx_get_decoder(SubGhzTxRx* instance) {
 
 bool subghz_txrx_protocol_is_serializable(SubGhzTxRx* instance) {
     furi_assert(instance);
-    return (
-        (instance->decoder_result->protocol->flag & SubGhzProtocolFlag_Save) ==
-        SubGhzProtocolFlag_Save);
+    return (instance->decoder_result->protocol->flag & SubGhzProtocolFlag_Save) ==
+           SubGhzProtocolFlag_Save;
 }
 
 bool subghz_txrx_protocol_is_transmittable(SubGhzTxRx* instance, bool check_type) {
     furi_assert(instance);
     const SubGhzProtocol* protocol = instance->decoder_result->protocol;
     if(check_type) {
-        return (
-            ((protocol->flag & SubGhzProtocolFlag_Send) == SubGhzProtocolFlag_Send) &&
-            protocol->encoder->deserialize && protocol->type == SubGhzProtocolTypeStatic);
+        return ((protocol->flag & SubGhzProtocolFlag_Send) == SubGhzProtocolFlag_Send) &&
+               protocol->encoder->deserialize && protocol->type == SubGhzProtocolTypeStatic;
     }
-    return (
-        ((protocol->flag & SubGhzProtocolFlag_Send) == SubGhzProtocolFlag_Send) &&
-        protocol->encoder->deserialize);
+    return ((protocol->flag & SubGhzProtocolFlag_Send) == SubGhzProtocolFlag_Send) &&
+           protocol->encoder->deserialize;
 }
 
 void subghz_txrx_receiver_set_filter(SubGhzTxRx* instance, SubGhzProtocolFlag filter) {
     furi_assert(instance);
     subghz_receiver_set_filter(instance->receiver, filter);
+}
+
+void subghz_txrx_receiver_set_ignore_filter(
+    SubGhzTxRx* instance,
+    SubGhzProtocolFilter ignore_filter) {
+    furi_assert(instance);
+    subghz_receiver_set_ignore_filter(instance->receiver, ignore_filter);
 }
 
 void subghz_txrx_set_rx_callback(
@@ -649,22 +649,9 @@ bool subghz_txrx_radio_device_is_frequency_valid(SubGhzTxRx* instance, uint32_t 
     return subghz_devices_is_frequency_valid(instance->radio_device, frequency);
 }
 
-bool subghz_txrx_radio_device_is_tx_allowed(SubGhzTxRx* instance, uint32_t frequency) {
-    // TODO: Remake this function to check if the frequency is allowed on specific module - for modules not based on CC1101
+SubGhzTx subghz_txrx_radio_device_check_tx(SubGhzTxRx* instance, uint32_t frequency) {
     furi_assert(instance);
-    UNUSED(frequency);
-    /*
-    furi_assert(instance->txrx_state != SubGhzTxRxStateSleep);
-
-    subghz_devices_idle(instance->radio_device);
-    subghz_devices_set_frequency(instance->radio_device, frequency);
-
-    bool ret = subghz_devices_set_tx(instance->radio_device);
-    subghz_devices_idle(instance->radio_device);
-
-    return ret;
-    */
-    return true;
+    return subghz_devices_check_tx(instance->radio_device, frequency);
 }
 
 void subghz_txrx_set_debug_pin_state(SubGhzTxRx* instance, bool state) {
@@ -698,7 +685,7 @@ void subghz_txrx_set_default_preset(SubGhzTxRx* instance, uint32_t frequency) {
     if(frequency == 0) {
         frequency = subghz_setting_get_default_frequency(subghz_txrx_get_setting(instance));
     }
-    subghz_txrx_set_preset(instance, default_modulation, frequency, 0, 0, NULL, 0);
+    subghz_txrx_set_preset(instance, default_modulation, frequency, NAN, NAN, NULL, 0);
 }
 
 const char*
@@ -713,8 +700,8 @@ const char*
         instance,
         preset_name,
         frequency,
-        0,
-        0,
+        NAN,
+        NAN,
         subghz_setting_get_preset_data(setting, index),
         subghz_setting_get_preset_data_size(setting, index));
 

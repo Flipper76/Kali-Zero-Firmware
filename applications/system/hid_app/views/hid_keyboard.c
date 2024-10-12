@@ -23,7 +23,6 @@ typedef struct {
     bool ok_pressed;
     bool back_pressed;
     bool connected;
-    HidTransport transport;
 } HidKeyboardModel;
 
 typedef struct {
@@ -31,6 +30,7 @@ typedef struct {
     char* key;
     char* shift_key;
     const Icon* icon;
+    const Icon* icon_shift;
     const Icon* icon_toggled;
     uint8_t value;
 } HidKeyboardKey;
@@ -178,8 +178,45 @@ static void hid_keyboard_draw_key(
             keyWidth,
             KEY_HEIGHT);
     }
+
+    if(model->shift && key.icon_shift != NULL) {
+        // Icon and shift
+        const Icon* key_icon = key.icon_shift;
+
+        if((model->ctrl && key.value == HID_KEYBOARD_L_CTRL) ||
+           (model->alt && key.value == HID_KEYBOARD_L_ALT) ||
+           (key.value == HID_KEYBOARD_L_SHIFT) ||
+           (model->gui && key.value == HID_KEYBOARD_L_GUI)) {
+            if(key.icon_toggled) {
+                key_icon = key.icon_toggled;
+            }
+        }
+        // Draw the icon centered on the button
+        canvas_draw_icon(
+            canvas,
+            MARGIN_LEFT + x * (KEY_WIDTH + KEY_PADDING) + keyWidth / 2 - key_icon->width / 2,
+            MARGIN_TOP + y * (KEY_HEIGHT + KEY_PADDING) + KEY_HEIGHT / 2 - key_icon->height / 2,
+            key_icon);
+
+        return;
+    }
+if (model->shift && key.shift_key != 0) {
+    const char* key_str = key.shift_key;  // Utilisation d'un simple 'char*'
+    canvas_draw_str_aligned(
+        canvas,
+        MARGIN_LEFT + x * (KEY_WIDTH + KEY_PADDING) + keyWidth / 2 + 1,
+        MARGIN_TOP + y * (KEY_HEIGHT + KEY_PADDING) + KEY_HEIGHT / 2 + 1,
+        AlignCenter,
+        AlignCenter,
+        key_str);  // 'key_str' est maintenant de type 'const char*'
+    return;
+}
+
+
     if(key.icon != NULL) {
+        // Icon with no shift
         const Icon* key_icon = key.icon;
+
         if((model->ctrl && key.value == HID_KEYBOARD_L_CTRL) ||
            (model->alt && key.value == HID_KEYBOARD_L_ALT) ||
            (model->shift && key.value == HID_KEYBOARD_L_SHIFT) ||
@@ -194,18 +231,31 @@ static void hid_keyboard_draw_key(
             MARGIN_LEFT + x * (KEY_WIDTH + KEY_PADDING) + keyWidth / 2 - key_icon->width / 2,
             MARGIN_TOP + y * (KEY_HEIGHT + KEY_PADDING) + KEY_HEIGHT / 2 - key_icon->height / 2,
             key_icon);
-    } else {
-		char* key_str[2] = {NULL, NULL};
-        // Si Shift est activé, utilisez la touche Shift lorsqu'elle est disponible
-        key_str[0] = (model->shift && key.shift_key != 0) ? key.shift_key : key.key;
-        canvas_draw_str_aligned(
-            canvas,
-            MARGIN_LEFT + x * (KEY_WIDTH + KEY_PADDING) + keyWidth / 2 + 1,
-            MARGIN_TOP + y * (KEY_HEIGHT + KEY_PADDING) + KEY_HEIGHT / 2,
-            AlignCenter,
-            AlignCenter,
-             key_str[0]);
+
+        return;
     }
+
+// Pour les autres cas sans shift
+if (key.key != 0) {
+    const char* key_str = key.key;  // Changez de 'char*[]' à 'const char*'
+    uint8_t key_offset = 0;
+
+    // Cas spécial pour les chiffres
+    if (key.value >= HID_KEYBOARD_1 && key.value <= HID_KEYBOARD_0) {
+        key_offset = 1;
+    }
+
+    canvas_draw_str_aligned(
+        canvas,
+        MARGIN_LEFT + x * (KEY_WIDTH + KEY_PADDING) + keyWidth / 2 + 1,
+        MARGIN_TOP + y * (KEY_HEIGHT + KEY_PADDING) + KEY_HEIGHT / 2 + key_offset,
+        AlignCenter,
+        AlignCenter,
+        key_str);  // 'key_str' est maintenant de type 'const char*'
+
+    return;
+}
+
 }
 
 static void hid_keyboard_draw_callback(Canvas* canvas, void* context) {
@@ -213,8 +263,9 @@ static void hid_keyboard_draw_callback(Canvas* canvas, void* context) {
     HidKeyboardModel* model = context;
 
     // Header
-    if((!model->connected) && (model->transport == HidTransportBle)) {
-        canvas_draw_icon(canvas, 0, 0, &I_Ble_disconnected_15x15);
+#ifdef HID_TRANSPORT_BLE
+    if(!model->connected) {
+    	canvas_draw_icon(canvas, 0, 0, &I_Ble_disconnected_15x15);
         canvas_set_font(canvas, FontPrimary);
         elements_multiline_text_aligned(canvas, 17, 3, AlignLeft, AlignTop, "Clavier");
 
@@ -226,6 +277,7 @@ static void hid_keyboard_draw_callback(Canvas* canvas, void* context) {
             canvas, 4, 60, AlignLeft, AlignBottom, "Attente de connexion...");
         return; // Dont render the keyboard if we are not yet connected
     }
+#endif
 
     canvas_set_font(canvas, FontKeyboard);
     // Start shifting the all keys up if on the next row (Scrolling)
@@ -382,14 +434,7 @@ HidKeyboard* hid_keyboard_alloc(Hid* bt_hid) {
     view_set_draw_callback(hid_keyboard->view, hid_keyboard_draw_callback);
     view_set_input_callback(hid_keyboard->view, hid_keyboard_input_callback);
 
-    with_view_model(
-        hid_keyboard->view,
-        HidKeyboardModel * model,
-        {
-            model->transport = bt_hid->transport;
-            model->y = 1;
-        },
-        true);
+    with_view_model(hid_keyboard->view, HidKeyboardModel * model, { model->y = 1; }, true);
 
     return hid_keyboard;
 }

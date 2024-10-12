@@ -20,7 +20,7 @@ static const SubGhzBlockConst ws_oregon2_const = {
 
 #define OREGON2_PREAMBLE_BITS 19
 #define OREGON2_PREAMBLE_MASK 0b1111111111111111111
-#define OREGON2_SENSOR_ID(d) (((d) >> 16) & 0xFFFF)
+#define OREGON2_SENSOR_ID(d)  (((d) >> 16) & 0xFFFF)
 #define OREGON2_CHECKSUM_BITS 8
 
 // 15 ones + 0101 (inverted A)
@@ -32,34 +32,34 @@ static const SubGhzBlockConst ws_oregon2_const = {
 /// Documentation for Oregon Scientific protocols can be found here:
 /// http://wmrx00.sourceforge.net/Arduino/OregonScientific-RF-Protocols.pdf
 // Sensors ID
-#define ID_THGR122N 0x1d20
-#define ID_THGR968 0x1d30
-#define ID_BTHR918 0x5d50
-#define ID_BHTR968 0x5d60
-#define ID_RGR968 0x2d10
-#define ID_THR228N 0xec40
-#define ID_THN132N 0xec40 // same as THR228N but different packet size
-#define ID_RTGN318 0x0cc3 // warning: id is from 0x0cc3 and 0xfcc3
-#define ID_RTGN129 0x0cc3 // same as RTGN318 but different packet size
-#define ID_THGR810 0xf824 // This might be ID_THGR81, but what's true is lost in (git) history
-#define ID_THGR810a 0xf8b4 // unconfirmed version
-#define ID_THN802 0xc844
-#define ID_PCR800 0x2914
-#define ID_PCR800a 0x2d14 // Different PCR800 ID - AU version I think
-#define ID_WGR800 0x1984
-#define ID_WGR800a 0x1994 // unconfirmed version
-#define ID_WGR968 0x3d00
-#define ID_UV800 0xd874
-#define ID_THN129 0xcc43 // THN129 Temp only
-#define ID_RTHN129 0x0cd3 // RTHN129 Temp, clock sensors
-#define ID_RTHN129_1 0x9cd3
-#define ID_RTHN129_2 0xacd3
-#define ID_RTHN129_3 0xbcd3
-#define ID_RTHN129_4 0xccd3
-#define ID_RTHN129_5 0xdcd3
-#define ID_BTHGN129 0x5d53 // Baro, Temp, Hygro sensor
-#define ID_UVR128 0xec70
-#define ID_THGR328N 0xcc23 // Temp & Hygro sensor similar to THR228N with 5 channel instead of 3
+#define ID_THGR122N   0x1d20
+#define ID_THGR968    0x1d30
+#define ID_BTHR918    0x5d50
+#define ID_BHTR968    0x5d60
+#define ID_RGR968     0x2d10
+#define ID_THR228N    0xec40
+#define ID_THN132N    0xec40 // same as THR228N but different packet size
+#define ID_RTGN318    0x0cc3 // warning: id is from 0x0cc3 and 0xfcc3
+#define ID_RTGN129    0x0cc3 // same as RTGN318 but different packet size
+#define ID_THGR810    0xf824 // This might be ID_THGR81, but what's true is lost in (git) history
+#define ID_THGR810a   0xf8b4 // unconfirmed version
+#define ID_THN802     0xc844
+#define ID_PCR800     0x2914
+#define ID_PCR800a    0x2d14 // Different PCR800 ID - AU version I think
+#define ID_WGR800     0x1984
+#define ID_WGR800a    0x1994 // unconfirmed version
+#define ID_WGR968     0x3d00
+#define ID_UV800      0xd874
+#define ID_THN129     0xcc43 // THN129 Temp only
+#define ID_RTHN129    0x0cd3 // RTHN129 Temp, clock sensors
+#define ID_RTHN129_1  0x9cd3
+#define ID_RTHN129_2  0xacd3
+#define ID_RTHN129_3  0xbcd3
+#define ID_RTHN129_4  0xccd3
+#define ID_RTHN129_5  0xdcd3
+#define ID_BTHGN129   0x5d53 // Baro, Temp, Hygro sensor
+#define ID_UVR128     0xec70
+#define ID_THGR328N   0xcc23 // Temp & Hygro sensor similar to THR228N with 5 channel instead of 3
 #define ID_RTGR328N_1 0xdcc3 // RTGR328N_[1-5] RFclock(date &time)&Temp&Hygro sensor
 #define ID_RTGR328N_2 0xccc3
 #define ID_RTGR328N_3 0xbcc3
@@ -376,33 +376,22 @@ static void oregon2_append_check_sum(uint32_t fix_data, uint32_t var_data, FuriS
     // swap calculated sum nibbles
     sum = (((sum >> 4) & 0xF) | (sum << 4)) & 0xFF;
     if(sum == ref_sum)
-        furi_string_cat_printf(output, "Sum ok: 0x%hhX", ref_sum);
+        furi_string_cat_printf(output, "\r\nChkSm: 0x%02hhX ok", ref_sum);
     else
-        furi_string_cat_printf(output, "Sum err: 0x%hhX vs 0x%hhX", ref_sum, sum);
+        furi_string_cat_printf(output, "\r\nChkSm: 0x%02hhX != 0x%02hhX error", ref_sum, sum);
 }
 
 void ws_protocol_decoder_oregon2_get_string(void* context, FuriString* output) {
     furi_assert(context);
     WSProtocolDecoderOregon2* instance = context;
-    furi_string_cat_printf(
-        output,
-        "%s\r\n"
-        "ID: 0x%04lX, ch: %d,\r\nbat: %d, rc: 0x%02lX\r\n",
-        instance->generic.protocol_name,
-        instance->generic.id,
-        instance->generic.channel,
-        instance->generic.battery_low,
-        (uint32_t)(instance->generic.data >> 4) & 0xFF);
+    if(instance->var_bits == 0) {
+        // Funny fix based on old funny code, not sure if this is needed
+        instance->generic.temp = WS_NO_TEMPERATURE;
+        instance->generic.humidity = WS_NO_HUMIDITY;
+    }
+    ws_block_generic_get_string(&instance->generic, output);
 
     if(instance->var_bits > 0) {
-        furi_string_cat_printf(
-            output,
-            "Temp:%d.%d C Hum:%d%%",
-            (int16_t)instance->generic.temp,
-            abs(
-                ((int16_t)(instance->generic.temp * 10) -
-                 (((int16_t)instance->generic.temp) * 10))),
-            instance->generic.humidity);
         oregon2_append_check_sum((uint32_t)instance->generic.data, instance->var_data, output);
     }
 }
@@ -414,10 +403,12 @@ const SubGhzProtocolDecoder ws_protocol_oregon2_decoder = {
     .feed = ws_protocol_decoder_oregon2_feed,
     .reset = ws_protocol_decoder_oregon2_reset,
 
-    .get_hash_data = ws_protocol_decoder_oregon2_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = ws_protocol_decoder_oregon2_get_hash_data,
     .serialize = ws_protocol_decoder_oregon2_serialize,
     .deserialize = ws_protocol_decoder_oregon2_deserialize,
     .get_string = ws_protocol_decoder_oregon2_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocol ws_protocol_oregon2 = {

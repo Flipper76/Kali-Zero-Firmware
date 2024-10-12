@@ -11,6 +11,16 @@ from SCons.Builder import Builder
 from SCons.Errors import StopError
 from SCons.Script import GetOption
 from SCons.Warnings import WarningOnByDefault, warn
+import locale
+import os
+import sys
+
+# Force l'encodage UTF-8 pour tout le script
+locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
+os.environ['LC_ALL'] = 'fr_FR.UTF-8'
+os.environ['LANG'] = 'fr_FR.UTF-8'
+if sys.stdout.encoding.lower() != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8')
 
 # Adding objects for application management to env
 #  AppManager env["APPMGR"] - loads all manifests; manages list of known apps
@@ -46,7 +56,7 @@ class ApplicationsCGenerator:
 
     def get_app_ep_forward(self, app: FlipperApplication):
         if app.apptype == FlipperAppType.STARTUP:
-            return f"extern void {app.entry_point}();"
+            return f"extern void {app.entry_point}(void);"
         return f"extern int32_t {app.entry_point}(void* p);"
 
     def get_app_descr(self, app: FlipperApplication):
@@ -130,7 +140,9 @@ def LoadAppManifest(env, entry):
             )
 
         app_manifest_file_path = manifest_glob[0].rfile().abspath
-        env["APPMGR"].load_manifest(app_manifest_file_path, entry)
+        # Ouverture du fichier .fam en forçant l'encodage UTF-8
+        with open(app_manifest_file_path, "r", encoding="utf-8") as manifest_file:
+            env["APPMGR"].load_manifest(app_manifest_file_path, entry)
     except FlipperManifestException as e:
         if not GetOption("silent"):
             warn(WarningOnByDefault, str(e))
@@ -142,6 +154,7 @@ def PrepareApplicationsBuild(env):
             applist=env["APPS"],
             ext_applist=env["EXTRA_EXT_APPS"],
             hw_target=env.subst("f${TARGET_HW}"),
+            skip_external=env.get("SKIP_EXTERNAL"),
         )
     except Exception as e:
         raise StopError(e)
@@ -172,7 +185,7 @@ def build_apps_c(target, source, env):
     target_file_name = target[0].path
 
     gen = ApplicationsCGenerator(env["APPBUILD"], env.subst("$LOADER_AUTOSTART"))
-    with open(target_file_name, "w") as file:
+    with open(target_file_name, "w", encoding="utf-8") as file:
         file.write(gen.generate())
 
 

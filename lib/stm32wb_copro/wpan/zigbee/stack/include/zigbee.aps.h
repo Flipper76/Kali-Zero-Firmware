@@ -583,7 +583,7 @@ bool ZbApsmeEndpointClusterListAppend(struct ZigBeeT *zb, uint8_t endpoint,
     uint16_t cluster_id, bool is_input);
 
 /**
- * Remove a cluster from an endpoint’s cluster list.
+ * Remove a cluster from an endpointâ€™s cluster list.
  * @param zb Zigbee stack instance
  * @param endpoint endpoint
  * @param cluster_id ID of cluster to be removed

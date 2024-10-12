@@ -1,5 +1,5 @@
 #include "../power_settings_app.h"
-#include <xtreme/xtreme.h>
+#include <dolphin/dolphin.h>
 
 void power_settings_scene_power_off_dialog_callback(DialogExResult result, void* context) {
     furi_assert(context);
@@ -10,16 +10,26 @@ void power_settings_scene_power_off_dialog_callback(DialogExResult result, void*
 void power_settings_scene_power_off_on_enter(void* context) {
     PowerSettingsApp* app = context;
     DialogEx* dialog = app->dialog;
+    Dolphin* dolphin = furi_record_open(RECORD_DOLPHIN);
+    DolphinSettings settings;
+    dolphin_get_settings(dolphin, &settings);
+    furi_record_close(RECORD_DOLPHIN);
 
-    dialog_ex_set_header(dialog, "Éteindre l'appareil?", 64, 2, AlignCenter, AlignTop);
-    if(kalizero_assets.is_nsfw) {
-        dialog_ex_set_text(
-            dialog, "   Je vous \nattendrai\nBOSS", 78, 16, AlignLeft, AlignTop);
+    dialog_ex_set_header(
+        dialog,
+        "Éteindre l'appareil?",
+        64,
+        settings.happy_mode ? 32 : 0,
+        AlignCenter,
+        settings.happy_mode ? AlignCenter : AlignTop);
+    if(!settings.happy_mode) {
+    	dialog_ex_set_text(
+            dialog, "Je vous\nattendrai\nBOSS", 78, 16, AlignLeft, AlignTop);
     } else {
         dialog_ex_set_text(
-            dialog, "   Je vous\nattendrai\n ici", 78, 16, AlignLeft, AlignTop);
+            dialog, "Je vous\nattendrai\nici", 78, 14, AlignLeft, AlignTop);
+        dialog_ex_set_icon(dialog, 14, 10, &I_dolph_cry_49x54);
     }
-    dialog_ex_set_icon(dialog, 21, 13, &I_Cry_dolph_55x52);
     dialog_ex_set_left_button_text(dialog, "Batterie");
     dialog_ex_set_right_button_text(dialog, "OFF");
     dialog_ex_set_result_callback(dialog, power_settings_scene_power_off_dialog_callback);

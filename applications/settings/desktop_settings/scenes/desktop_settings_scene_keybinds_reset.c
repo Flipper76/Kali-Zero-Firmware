@@ -12,10 +12,10 @@ void desktop_settings_scene_keybinds_reset_on_enter(void* context) {
     DesktopSettingsApp* app = context;
     DialogEx* dialog_ex = app->dialog_ex;
 
-    dialog_ex_set_header(dialog_ex, "Retablir raccourcis?", 64, 10, AlignCenter, AlignCenter);
+    dialog_ex_set_header(dialog_ex, "Rétablir raccourcis?", 64, 10, AlignCenter, AlignCenter);
     dialog_ex_set_text(dialog_ex, "Supprime vos modif.!", 64, 32, AlignCenter, AlignCenter);
     dialog_ex_set_left_button_text(dialog_ex, "Annuler");
-    dialog_ex_set_right_button_text(dialog_ex, "Retablir");
+    dialog_ex_set_right_button_text(dialog_ex, "Rétablir");
 
     dialog_ex_set_context(dialog_ex, app);
     dialog_ex_set_result_callback(
@@ -33,7 +33,9 @@ bool desktop_settings_scene_keybinds_reset_on_event(void* context, SceneManagerE
         case DialogExResultRight:
             storage_common_remove(furi_record_open(RECORD_STORAGE), DESKTOP_KEYBINDS_PATH);
             furi_record_close(RECORD_STORAGE);
-            DESKTOP_KEYBINDS_LOAD(&app->desktop->keybinds, sizeof(app->desktop->keybinds));
+            desktop_keybinds_load(furi_record_open(RECORD_DESKTOP), &app->keybinds);
+            furi_record_close(RECORD_DESKTOP);
+            app->save_keybinds = false;
             /* fall through */
         case DialogExResultLeft:
             consumed = scene_manager_previous_scene(app->scene_manager);

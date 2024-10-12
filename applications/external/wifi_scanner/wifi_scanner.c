@@ -17,7 +17,7 @@
 #define WIFI_APP_DEBUG 0
 
 #if WIFI_APP_DEBUG
-#define APP_NAME_TAG "WiFi_Scanner"
+#define APP_NAME_TAG                "WiFi_Scanner"
 #define WIFI_APP_LOG_I(format, ...) FURI_LOG_I(APP_NAME_TAG, format, ##__VA_ARGS__)
 #define WIFI_APP_LOG_D(format, ...) FURI_LOG_D(APP_NAME_TAG, format, ##__VA_ARGS__)
 #define WIFI_APP_LOG_E(format, ...) FURI_LOG_E(APP_NAME_TAG, format, ##__VA_ARGS__)
@@ -27,7 +27,7 @@
 #define WIFI_APP_LOG_E(format, ...)
 #endif // WIFI_APP_DEBUG
 
-#define ENABLE_MODULE_POWER 1
+#define ENABLE_MODULE_POWER     1
 #define ENABLE_MODULE_DETECTION 1
 
 #define ANIMATION_TIME 350
@@ -46,7 +46,8 @@ typedef enum EChunkArrayData {
 } EChunkArrayData;
 
 typedef enum EEventType // app internally defined event types
-{ EventTypeKey // flipper input.h type
+{
+    EventTypeKey // flipper input.h type
 } EEventType;
 
 typedef struct SPluginEvent {
@@ -636,8 +637,9 @@ static void wifi_module_render_callback(Canvas* const canvas, void* ctx) {
     furi_mutex_release(app->mutex);
 }
 
-static void wifi_module_input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void wifi_module_input_callback(InputEvent* input_event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     SPluginEvent event = {.m_type = EventTypeKey, .m_input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
@@ -1028,6 +1030,9 @@ int32_t wifi_scanner_app(void* p) {
     }
 
     WIFI_APP_LOG_I("Start exit app");
+    furi_hal_serial_async_rx_stop(app->serial_handle);
+    furi_hal_serial_deinit(app->serial_handle);
+    furi_hal_serial_control_release(app->serial_handle);
 
     furi_thread_flags_set(furi_thread_get_id(app->m_worker_thread), WorkerEventStop);
     furi_thread_join(app->m_worker_thread);
@@ -1037,9 +1042,6 @@ int32_t wifi_scanner_app(void* p) {
 
     // Reset GPIO pins to default state
     furi_hal_gpio_init(&gpio_ext_pc0, GpioModeAnalog, GpioPullNo, GpioSpeedLow);
-
-    furi_hal_serial_deinit(app->serial_handle);
-    furi_hal_serial_control_release(app->serial_handle);
 
     view_port_enabled_set(view_port, false);
 

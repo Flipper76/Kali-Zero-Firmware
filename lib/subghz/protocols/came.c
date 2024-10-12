@@ -13,12 +13,13 @@
  */
 
 #define TAG "SubGhzProtocolCame"
-#define CAME_12_COUNT_BIT 12
-#define CAME_24_COUNT_BIT 24
-#define PRASTEL_COUNT_BIT 25
-#define PRASTEL_NAME "Prastel"
+
+#define CAME_12_COUNT_BIT  12
+#define CAME_24_COUNT_BIT  24
+#define PRASTEL_COUNT_BIT  25
+#define PRASTEL_NAME       "Prastel"
 #define AIRFORCE_COUNT_BIT 18
-#define AIRFORCE_NAME "Airforce"
+#define AIRFORCE_NAME      "Airforce"
 
 static const SubGhzBlockConst subghz_protocol_came_const = {
     .te_short = 320,
@@ -55,10 +56,12 @@ const SubGhzProtocolDecoder subghz_protocol_came_decoder = {
     .feed = subghz_protocol_decoder_came_feed,
     .reset = subghz_protocol_decoder_came_reset,
 
-    .get_hash_data = subghz_protocol_decoder_came_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_came_get_hash_data,
     .serialize = subghz_protocol_decoder_came_serialize,
     .deserialize = subghz_protocol_decoder_came_deserialize,
     .get_string = subghz_protocol_decoder_came_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_came_encoder = {
@@ -173,7 +176,7 @@ SubGhzProtocolStatus
         if(ret != SubGhzProtocolStatusOk) {
             break;
         }
-        if((instance->generic.data_count_bit > PRASTEL_COUNT_BIT)) {
+        if(instance->generic.data_count_bit > PRASTEL_COUNT_BIT) {
             FURI_LOG_E(TAG, "Wrong number of bits in key");
             ret = SubGhzProtocolStatusErrorValueBitCount;
             break;
@@ -336,7 +339,7 @@ SubGhzProtocolStatus
         if(ret != SubGhzProtocolStatusOk) {
             break;
         }
-        if((instance->generic.data_count_bit > PRASTEL_COUNT_BIT)) {
+        if(instance->generic.data_count_bit > PRASTEL_COUNT_BIT) {
             FURI_LOG_E(TAG, "Wrong number of bits in key");
             ret = SubGhzProtocolStatusErrorValueBitCount;
             break;

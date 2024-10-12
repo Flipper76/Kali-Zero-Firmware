@@ -14,15 +14,13 @@
 #pragma once
 
 #include <m-core.h>
+#include "common_defines.h"
 
 #ifdef __cplusplus
 extern "C" {
-#define FURI_NORETURN [[noreturn]]
-#else
-#include <stdnoreturn.h>
-#define FURI_NORETURN noreturn
 #endif
 
+// When enabled will use file paths instead of "furi_check failed"
 #if !defined(FURI_RAM_EXEC) && !defined(FURI_DEBUG)
 #define __FURI_TRACE
 #endif
@@ -30,17 +28,17 @@ extern "C" {
 // Flags instead of pointers will save ~4 bytes on furi_assert and furi_check calls.
 #ifndef __FURI_TRACE
 #define __FURI_ASSERT_MESSAGE_FLAG (0x01)
-#define __FURI_CHECK_MESSAGE_FLAG (0x02)
+#define __FURI_CHECK_MESSAGE_FLAG  (0x02)
 #else
 #define __FURI_ASSERT_MESSAGE_FLAG __FILE__
-#define __FURI_CHECK_MESSAGE_FLAG __FILE__
+#define __FURI_CHECK_MESSAGE_FLAG  __FILE__
 #endif
 
 /** Crash system */
-FURI_NORETURN void __furi_crash_implementation();
+FURI_NORETURN void __furi_crash_implementation(void);
 
 /** Halt system */
-FURI_NORETURN void __furi_halt_implementation();
+FURI_NORETURN void __furi_halt_implementation(void);
 
 /** Crash system with message. Show message after reboot. */
 #define __furi_crash(message)                                 \

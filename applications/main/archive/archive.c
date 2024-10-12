@@ -18,19 +18,18 @@ static void archive_tick_event_callback(void* context) {
     scene_manager_handle_tick_event(archive->scene_manager);
 }
 
-static ArchiveApp* archive_alloc() {
+static ArchiveApp* archive_alloc(void) {
     ArchiveApp* archive = malloc(sizeof(ArchiveApp));
 
+    archive->gui = furi_record_open(RECORD_GUI);
+    archive->loader = furi_record_open(RECORD_LOADER);
     archive->fav_move_str = furi_string_alloc();
     archive->file_extension = furi_string_alloc();
 
     archive->scene_manager = scene_manager_alloc(&archive_scene_handlers, archive);
     archive->view_dispatcher = view_dispatcher_alloc();
 
-    archive->gui = furi_record_open(RECORD_GUI);
-
     ViewDispatcher* view_dispatcher = archive->view_dispatcher;
-    view_dispatcher_enable_queue(view_dispatcher);
     view_dispatcher_set_event_callback_context(view_dispatcher, archive);
     view_dispatcher_set_custom_event_callback(view_dispatcher, archive_custom_event_callback);
     view_dispatcher_set_navigation_event_callback(view_dispatcher, archive_back_event_callback);
@@ -108,6 +107,8 @@ void archive_free(ArchiveApp* archive) {
     furi_record_close(RECORD_DIALOGS);
     archive->dialogs = NULL;
 
+    furi_record_close(RECORD_LOADER);
+    archive->loader = NULL;
     furi_record_close(RECORD_GUI);
     archive->gui = NULL;
 

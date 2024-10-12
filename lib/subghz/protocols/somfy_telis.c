@@ -50,10 +50,12 @@ const SubGhzProtocolDecoder subghz_protocol_somfy_telis_decoder = {
     .feed = subghz_protocol_decoder_somfy_telis_feed,
     .reset = subghz_protocol_decoder_somfy_telis_reset,
 
-    .get_hash_data = subghz_protocol_decoder_somfy_telis_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_somfy_telis_get_hash_data,
     .serialize = subghz_protocol_decoder_somfy_telis_serialize,
     .deserialize = subghz_protocol_decoder_somfy_telis_deserialize,
     .get_string = subghz_protocol_decoder_somfy_telis_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_somfy_telis_encoder = {
@@ -102,7 +104,7 @@ void subghz_protocol_encoder_somfy_telis_free(void* context) {
  * Basic set | 0x1 | 0x2 | 0x4 | 0x8 |
  * @return Button code
  */
-static uint8_t subghz_protocol_somfy_telis_get_btn_code();
+static uint8_t subghz_protocol_somfy_telis_get_btn_code(void);
 
 static bool subghz_protocol_somfy_telis_gen_data(
     SubGhzProtocolEncoderSomfyTelis* instance,
@@ -668,7 +670,7 @@ SubGhzProtocolStatus
         subghz_protocol_somfy_telis_const.min_count_bit_for_found);
 }
 
-static uint8_t subghz_protocol_somfy_telis_get_btn_code() {
+static uint8_t subghz_protocol_somfy_telis_get_btn_code(void) {
     uint8_t custom_btn_id = subghz_custom_btn_get();
     uint8_t original_btn_code = subghz_custom_btn_get_original();
     uint8_t btn = original_btn_code;

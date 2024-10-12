@@ -1,9 +1,3 @@
-/**
- * @file plugin_interface.h
- * @brief Example plugin interface.
- *
- * Common interface between a plugin and host application
- */
 #pragma once
 
 #include <flipper_application/api_hashtable/api_hashtable.h>

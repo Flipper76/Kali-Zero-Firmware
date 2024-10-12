@@ -553,7 +553,7 @@ int mbedtls_mpi_core_fill_random(mbedtls_mpi_uint *X, size_t X_limbs,
  * This function generates a random number between \p min inclusive and
  * \p N exclusive.
  *
- * The procedure complies with RFC 6979 §3.3 (deterministic ECDSA)
+ * The procedure complies with RFC 6979 ยง3.3 (deterministic ECDSA)
  * when the RNG is a suitably parametrized instance of HMAC_DRBG
  * and \p min is \c 1.
  *

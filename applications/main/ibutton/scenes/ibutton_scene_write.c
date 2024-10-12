@@ -42,28 +42,26 @@ void ibutton_scene_write_on_enter(void* context) {
 
     furi_string_printf(
         tmp,
-        "[%s]\n%s ",
+        "[%s]\n%s",
         ibutton_protocols_get_name(ibutton->protocols, protocol_id),
-        ibutton->key_name);
+        furi_string_empty(ibutton->file_path) ? "Clé non enregistrée" : ibutton->key_name);
 
     widget_add_text_box_element(
-        widget, 52, 30, 75, 40, AlignCenter, AlignCenter, furi_string_get_cstr(tmp), true);
+        widget, 52, 24, 75, 40, AlignCenter, AlignTop, furi_string_get_cstr(tmp), true);
 
     ibutton_worker_write_set_callback(worker, ibutton_scene_write_callback, ibutton);
 
-    furi_string_set(tmp, "iButton\nen train d'écrire ");
-
-    if(ibutton->write_mode == iButtonWriteModeBlank) {
-        furi_string_cat(tmp, "Vide");
-        ibutton_worker_write_blank_start(worker, key);
+    if(ibutton->write_mode == iButtonWriteModeId) {
+        furi_string_set(tmp, "Ecriture ID");
+        ibutton_worker_write_id_start(worker, key);
 
     } else if(ibutton->write_mode == iButtonWriteModeCopy) {
-        furi_string_cat(tmp, "Copie");
+        furi_string_set(tmp, "Écriture complète");
         ibutton_worker_write_copy_start(worker, key);
     }
 
     widget_add_string_multiline_element(
-        widget, 88, 5, AlignCenter, AlignTop, FontPrimary, furi_string_get_cstr(tmp));
+        widget, 88, 10, AlignCenter, AlignTop, FontPrimary, furi_string_get_cstr(tmp));
 
     ibutton_notification_message(ibutton, iButtonNotificationMessageEmulateStart);
     view_dispatcher_switch_to_view(ibutton->view_dispatcher, iButtonViewWidget);

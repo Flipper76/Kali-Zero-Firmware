@@ -24,7 +24,7 @@ typedef enum {
  * 
  * @return SubGhzTxRx* pointer to SubGhzTxRx
  */
-SubGhzTxRx* subghz_txrx_alloc();
+SubGhzTxRx* subghz_txrx_alloc(void);
 
 /**
  * Free SubGhzTxRx
@@ -92,16 +92,20 @@ void subghz_txrx_get_frequency_and_modulation(
     bool long_name);
 
 /**
- * Get string latitude and longitude
- * 
+ * Get latitude value
+ *
  * @param instance Pointer to a SubGhzTxRx
- * @param latitude Pointer to a string latitude
- * @param longitude Pointer to a string longitude
+ * @return latitude
 */
-void subghz_txrx_get_latitude_and_longitude(
-    SubGhzTxRx* instance,
-    FuriString* latitude,
-    FuriString* longitude);
+float subghz_txrx_get_latitude(SubGhzTxRx* instance);
+
+/**
+ * Get longitude value
+ *
+ * @param instance Pointer to a SubGhzTxRx
+ * @return longitude
+*/
+float subghz_txrx_get_longitude(SubGhzTxRx* instance);
 
 /**
  * Start TX CC1101
@@ -137,8 +141,9 @@ void subghz_txrx_sleep(SubGhzTxRx* instance);
  * Update frequency CC1101 in automatic mode (hopper)
  * 
  * @param instance Pointer to a SubGhzTxRx
+ * @param stay_threshold RSSI theshold over which to stay before hopping
  */
-void subghz_txrx_hopper_update(SubGhzTxRx* instance);
+void subghz_txrx_hopper_update(SubGhzTxRx* instance, float stay_threshold);
 
 /**
  * Get state hopper
@@ -284,6 +289,16 @@ bool subghz_txrx_protocol_is_transmittable(SubGhzTxRx* instance, bool check_type
 void subghz_txrx_receiver_set_filter(SubGhzTxRx* instance, SubGhzProtocolFlag filter);
 
 /**
+ * Set ignore filter, what types of decoder to skip 
+ * 
+ * @param instance Pointer to a SubGhzTxRx
+ * @param ignore_filter Ignore filter
+ */
+void subghz_txrx_receiver_set_ignore_filter(
+    SubGhzTxRx* instance,
+    SubGhzProtocolFilter ignore_filter);
+
+/**
  * Set callback for receive data
  * 
  * @param instance Pointer to a SubGhzTxRx
@@ -352,7 +367,7 @@ const char* subghz_txrx_radio_device_get_name(SubGhzTxRx* instance);
 */
 bool subghz_txrx_radio_device_is_frequency_valid(SubGhzTxRx* instance, uint32_t frequency);
 
-bool subghz_txrx_radio_device_is_tx_allowed(SubGhzTxRx* instance, uint32_t frequency);
+SubGhzTx subghz_txrx_radio_device_check_tx(SubGhzTxRx* instance, uint32_t frequency);
 
 void subghz_txrx_set_debug_pin_state(SubGhzTxRx* instance, bool state);
 bool subghz_txrx_get_debug_pin_state(SubGhzTxRx* instance);

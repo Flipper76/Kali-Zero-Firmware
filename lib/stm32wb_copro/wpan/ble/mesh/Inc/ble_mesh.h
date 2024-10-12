@@ -22,7 +22,7 @@
 
 #include "types.h"
 //#include "hal_types.h"
-#define BLE_MESH_APPLICATION_VERSION "1.13.007" 
+#define BLE_MESH_APPLICATION_VERSION "1.13.009" 
 /**
 * \mainpage ST BLE-Mesh Solutions Bluetooth LE Mesh Library
 *
@@ -1364,7 +1364,7 @@ MOBLE_RESULT BLEMesh_GetNeighborState(neighbor_params_t* pNeighborTable,
                                       MOBLEUINT8* pNoOfNeighborPresent);
 
 /** \brief Set system faults. Will be used by Health Model. Supporting All Bluetooth assigned FaultValues. 
-* \param[in] pFaultArray FaultValue Array pointer. (FaultValue Range: 0x01–0x32)   
+* \param[in] pFaultArray FaultValue Array pointer. (FaultValue Range: 0x01â€“0x32)   
 * \param[in] faultArraySize Size of the fault array. Max supported array size is 5. 
 * \return MOBLE_RESULT_SUCCESS on success.
 */

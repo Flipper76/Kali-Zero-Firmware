@@ -18,14 +18,14 @@
 #include "digits.h"
 #include "array_utils.h"
 
-#define CELLS_COUNT 4
+#define CELLS_COUNT     4
 #define CELL_INNER_SIZE 14
-#define FRAME_LEFT 10
-#define FRAME_TOP 1
-#define FRAME_SIZE 61
+#define FRAME_LEFT      10
+#define FRAME_TOP       1
+#define FRAME_SIZE      61
 
 #define SAVING_DIRECTORY STORAGE_APP_DATA_PATH_PREFIX
-#define SAVING_FILENAME SAVING_DIRECTORY "/game_2048.save"
+#define SAVING_FILENAME  SAVING_DIRECTORY "/game_2048.save"
 
 typedef enum {
     GameStateMenu,
@@ -49,7 +49,7 @@ typedef struct {
 } MoveResult;
 
 #define MENU_ITEMS_COUNT 2
-static const char* popup_menu_strings[] = {"Reprendre", "Recommencer"};
+static const char* popup_menu_strings[] = {"Resume", "New Game"};
 
 static void input_callback(InputEvent* input_event, void* ctx) {
     furi_assert(ctx);
@@ -116,7 +116,7 @@ static void draw_callback(Canvas* const canvas, void* ctx) {
 
     canvas_set_font(canvas, FontPrimary);
     canvas_draw_str_aligned(canvas, 128, FRAME_TOP, AlignRight, AlignTop, "Score");
-    canvas_draw_str_aligned(canvas, 128, FRAME_TOP + 20, AlignRight, AlignTop, "Déplacé");
+    canvas_draw_str_aligned(canvas, 128, FRAME_TOP + 20, AlignRight, AlignTop, "Moves");
     canvas_draw_str_aligned(canvas, 128, FRAME_TOP + 40, AlignRight, AlignTop, "Top Score");
 
     int bufSize = 12;
@@ -172,9 +172,9 @@ static void draw_callback(Canvas* const canvas, void* ctx) {
 
         canvas_set_font(canvas, FontSecondary);
         if(record_broken) {
-            canvas_draw_str_aligned(canvas, 64, 29, AlignCenter, AlignTop, "Nouveau Top Score!!!");
+            canvas_draw_str_aligned(canvas, 64, 29, AlignCenter, AlignTop, "New Top Score!!!");
         } else {
-            canvas_draw_str_aligned(canvas, 64, 29, AlignCenter, AlignTop, "Ton Score");
+            canvas_draw_str_aligned(canvas, 64, 29, AlignCenter, AlignTop, "Your Score");
         }
 
         memset(buf, 0, bufSize);
@@ -194,7 +194,8 @@ void calculate_move_to_left(uint8_t arr[], MoveResult* const move_result) {
     while(index < CELLS_COUNT - 1) {
         // find offset from [index] to next non-empty value
         offset = 1;
-        while(index + offset < CELLS_COUNT && arr[index + offset] == 0) offset++;
+        while(index + offset < CELLS_COUNT && arr[index + offset] == 0)
+            offset++;
 
         // if all remaining values in this row are empty then go to next row
         if(index + offset >= CELLS_COUNT) break;
@@ -209,7 +210,8 @@ void calculate_move_to_left(uint8_t arr[], MoveResult* const move_result) {
         if(arr[next_index] == 0) {
             // find offset from [next_index] to next non-empty value
             offset = 1;
-            while(next_index + offset < CELLS_COUNT && arr[next_index + offset] == 0) offset++;
+            while(next_index + offset < CELLS_COUNT && arr[next_index + offset] == 0)
+                offset++;
 
             // if all remaining values in this row are empty then go to next row
             if(next_index + offset >= CELLS_COUNT) break;
@@ -330,18 +332,18 @@ void save_game(GameState* game_state) {
 }
 
 bool is_game_over(GameState* const game_state) {
-    FURI_LOG_I("is_game_over", "====vérification====");
+    FURI_LOG_I("is_game_over", "====check====");
 
     // check if table contains at least one empty cell
     for(uint8_t i = 0; i < CELLS_COUNT; i++) {
         for(uint8_t j = 0; j < CELLS_COUNT; j++) {
             if(game_state->table[i][j] == 0) {
-                FURI_LOG_I("is_game_over", "il y a des cellules vides");
+                FURI_LOG_I("is_game_over", "has empty cells");
                 return false;
             }
         }
     }
-    FURI_LOG_I("is_game_over", "aucune cellule vide");
+    FURI_LOG_I("is_game_over", "no empty cells");
 
     uint8_t tmp_table[CELLS_COUNT][CELLS_COUNT];
     MoveResult* tmp_move_result = malloc(sizeof(MoveResult));
@@ -350,22 +352,22 @@ bool is_game_over(GameState* const game_state) {
     memcpy(tmp_table, game_state->table, CELLS_COUNT * CELLS_COUNT * sizeof(uint8_t));
     move_left(tmp_table, tmp_move_result);
     if(tmp_move_result->is_table_updated) return false;
-    FURI_LOG_I("is_game_over", "je ne peux pas bouger à gauche");
+    FURI_LOG_I("is_game_over", "can't move left");
 
     memcpy(tmp_table, game_state->table, CELLS_COUNT * CELLS_COUNT * sizeof(uint8_t));
     move_right(tmp_table, tmp_move_result);
     if(tmp_move_result->is_table_updated) return false;
-    FURI_LOG_I("is_game_over", "je ne peux pas bouger à droite");
+    FURI_LOG_I("is_game_over", "can't move right");
 
     memcpy(tmp_table, game_state->table, CELLS_COUNT * CELLS_COUNT * sizeof(uint8_t));
     move_up(tmp_table, tmp_move_result);
     if(tmp_move_result->is_table_updated) return false;
-    FURI_LOG_I("is_game_over", "je ne peux pas bouger en haut");
+    FURI_LOG_I("is_game_over", "can't move up");
 
     memcpy(tmp_table, game_state->table, CELLS_COUNT * CELLS_COUNT * sizeof(uint8_t));
     move_down(tmp_table, tmp_move_result);
     if(tmp_move_result->is_table_updated) return false;
-    FURI_LOG_I("is_game_over", "je ne peux pas bouger en bas");
+    FURI_LOG_I("is_game_over", "can't move down");
 
     return true;
 }
@@ -380,7 +382,7 @@ int32_t game_2048_app() {
 
     game_state->mutex = furi_mutex_alloc(FuriMutexTypeNormal);
     if(!game_state->mutex) {
-        FURI_LOG_E("2048Game", "impossible de créer un mutex\r\n");
+        FURI_LOG_E("2048Game", "cannot create mutex\r\n");
         free(game_state);
         return 255;
     }

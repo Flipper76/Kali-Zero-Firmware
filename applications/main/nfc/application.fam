@@ -30,6 +30,15 @@ App(
 )
 
 App(
+    appid="smartrider_parser",
+    apptype=FlipperAppType.PLUGIN,
+    entry_point="smartrider_plugin_ep",
+    targets=["f7"],
+    requires=["nfc"],
+    sources=["plugins/supported_cards/smartrider.c"],
+)
+
+App(
     appid="ticketing_parser",
     apptype=FlipperAppType.PLUGIN,
     entry_point="ticketing_plugin_ep",
@@ -129,21 +138,21 @@ App(
 )
 
 App(
-    appid="charliecard_parser",
-    apptype=FlipperAppType.PLUGIN,
-    entry_point="charliecard_plugin_ep",
-    targets=["f7"],
-    requires=["nfc"],
-    sources=["plugins/supported_cards/charliecard.c"],
-)
-
-App(
     appid="metromoney_parser",
     apptype=FlipperAppType.PLUGIN,
     entry_point="metromoney_plugin_ep",
     targets=["f7"],
     requires=["nfc"],
     sources=["plugins/supported_cards/metromoney.c"],
+)
+
+App(
+    appid="charliecard_parser",
+    apptype=FlipperAppType.PLUGIN,
+    entry_point="charliecard_plugin_ep",
+    targets=["f7"],
+    requires=["nfc"],
+    sources=["plugins/supported_cards/charliecard.c"],
 )
 
 App(
@@ -273,6 +282,15 @@ App(
 )
 
 App(
+    appid="skylanders_parser",
+    apptype=FlipperAppType.PLUGIN,
+    entry_point="skylanders_plugin_ep",
+    targets=["f7"],
+    requires=["nfc"],
+    sources=["plugins/supported_cards/skylanders.c"],
+)
+
+App(
     appid="sonicare_parser",
     apptype=FlipperAppType.PLUGIN,
     entry_point="sonicare_plugin_ep",
@@ -282,10 +300,28 @@ App(
 )
 
 App(
+    appid="csc_parser",
+    apptype=FlipperAppType.PLUGIN,
+    entry_point="csc_plugin_ep",
+    targets=["f7"],
+    requires=["nfc"],
+    sources=["plugins/supported_cards/csc.c"],
+)
+
+App(
+    appid="nfc_cli",
+    targets=["f7"],
+    apptype=FlipperAppType.PLUGIN,
+    entry_point="nfc_cli_plugin_ep",
+    requires=["cli"],
+    sources=["nfc_cli.c"],
+)
+
+App(
     appid="nfc_start",
     targets=["f7"],
     apptype=FlipperAppType.STARTUP,
     entry_point="nfc_on_system_start",
-    sources=["nfc_cli.c"],
+    sources=["nfc_start.c"],
     order=30,
 )

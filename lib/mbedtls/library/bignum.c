@@ -2543,7 +2543,7 @@ int mbedtls_mpi_gen_prime(mbedtls_mpi *X, size_t nbits, int flags,
 
     while (1) {
         MBEDTLS_MPI_CHK(mbedtls_mpi_fill_random(X, n * ciL, f_rng, p_rng));
-        /* make sure generated number is at least (nbits-1)+0.5 bits (FIPS 186-4 §B.3.3 steps 4.4, 5.5) */
+        /* make sure generated number is at least (nbits-1)+0.5 bits (FIPS 186-4 Â§B.3.3 steps 4.4, 5.5) */
         if (X->p[n-1] < CEIL_MAXUINT_DIV_SQRT2) {
             continue;
         }

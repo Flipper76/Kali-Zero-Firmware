@@ -5,7 +5,6 @@ enum VarItemListIndex {
     VarItemListIndexAnimSpeed,
     VarItemListIndexCycleAnims,
     VarItemListIndexUnlockAnims,
-    VarItemListIndexCreditsAnim,
 };
 
 void kali_zero_app_scene_interface_graphics_var_item_list_callback(void* context, uint32_t index) {
@@ -17,15 +16,11 @@ static void kali_zero_app_scene_interface_graphics_asset_pack_changed(VariableIt
     KaliZeroApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
     variable_item_set_current_value_text(
-        item, index == 0 ? "défaut" : *CharList_get(app->asset_pack_names, index - 1));
-    variable_item_set_locked(
-        variable_item_list_get(app->var_item_list, VarItemListIndexCreditsAnim),
-        index != 0,
-        "Les crédits\nsont dans le\npack par \ndéfaut!");
+        item, index == 0 ? "Default" : *CharList_get(app->asset_pack_names, index - 1));
     strlcpy(
         kalizero_settings.asset_pack,
         index == 0 ? "" : *CharList_get(app->asset_pack_names, index - 1),
-        KALIZERO_ASSETS_PACK_NAME_LEN);
+        ASSET_PACKS_NAME_LEN);
     app->asset_pack_index = index;
     app->save_settings = true;
     app->apply_pack = true;
@@ -117,14 +112,6 @@ static void kali_zero_app_scene_interface_graphics_unlock_anims_changed(Variable
     app->save_settings = true;
 }
 
-static void kali_zero_app_scene_interface_graphics_credits_anim_changed(VariableItem* item) {
-    KaliZeroApp* app = variable_item_get_context(item);
-    bool value = variable_item_get_current_value_index(item);
-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
-    kalizero_settings.credits_anim = value;
-    app->save_settings = true;
-}
-
 void kali_zero_app_scene_interface_graphics_on_enter(void* context) {
     KaliZeroApp* app = context;
     VariableItemList* var_item_list = app->var_item_list;
@@ -175,16 +162,6 @@ void kali_zero_app_scene_interface_graphics_on_enter(void* context) {
     variable_item_set_current_value_index(item, kalizero_settings.unlock_anims);
     variable_item_set_current_value_text(item, kalizero_settings.unlock_anims ? "ON" : "OFF");
 
-    item = variable_item_list_add(
-        var_item_list,
-        "Crédits Anim",
-        2,
-        kali_zero_app_scene_interface_graphics_credits_anim_changed,
-        app);
-    variable_item_set_current_value_index(item, kalizero_settings.credits_anim);
-    variable_item_set_current_value_text(item, kalizero_settings.credits_anim ? "ON" : "OFF");
-    variable_item_set_locked(item, app->asset_pack_index != 0, "Les crédits\nsont dans le\npack par \ndéfaut!");
-
     variable_item_list_set_enter_callback(
         var_item_list, kali_zero_app_scene_interface_graphics_var_item_list_callback, app);
 
@@ -204,6 +181,8 @@ bool kali_zero_app_scene_interface_graphics_on_event(void* context, SceneManager
             app->scene_manager, KaliZeroAppSceneInterfaceGraphics, event.event);
         consumed = true;
         switch(event.event) {
+        case VarItemListIndexAssetPack:
+            scene_manager_next_scene(app->scene_manager, KaliZeroAppSceneInterfaceGraphicsPack);
         default:
             break;
         }

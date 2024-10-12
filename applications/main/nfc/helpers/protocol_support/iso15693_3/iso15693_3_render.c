@@ -31,14 +31,14 @@ void nfc_render_iso15693_3_brief(const Iso15693_3Data* data, FuriString* str) {
         const uint16_t block_count = iso15693_3_get_block_count(data);
         const uint8_t block_size = iso15693_3_get_block_size(data);
 
-        furi_string_cat_printf(str, "\nMémoire: %u bytes\n", block_count * block_size);
-        furi_string_cat_printf(str, "(%u blocs x %u bytes)", block_count, block_size);
+        furi_string_cat_printf(str, "\nMemory: %u bytes\n", block_count * block_size);
+        furi_string_cat_printf(str, "(%u blocks x %u bytes)", block_count, block_size);
     }
 }
 
 void nfc_render_iso15693_3_system_info(const Iso15693_3Data* data, FuriString* str) {
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_MEMORY) {
-        furi_string_cat(str, "\e#Données mémoire\n\e*--------------------\n");
+        furi_string_cat(str, "\e#Memory data\n\e*--------------------\n");
 
         const uint16_t block_count = iso15693_3_get_block_count(data);
         const uint8_t block_size = iso15693_3_get_block_size(data);
@@ -60,7 +60,7 @@ void nfc_render_iso15693_3_system_info(const Iso15693_3Data* data, FuriString* s
         if(block_count != display_block_count) {
             furi_string_cat_printf(
                 str,
-                "(Données volumineuses. Afficher les %u premiers octets.)",
+                "(Data is too big. Showing only the first %u bytes.)",
                 display_block_count * block_size);
         }
     } else {
@@ -69,9 +69,9 @@ void nfc_render_iso15693_3_system_info(const Iso15693_3Data* data, FuriString* s
 }
 
 void nfc_render_iso15693_3_extra(const Iso15693_3Data* data, FuriString* str) {
-    furi_string_cat(str, "\n::::::::::::::::[Infos générales]:::::::::::::::::\n");
+    furi_string_cat(str, "\n::::::::::::::::[General info]:::::::::::::::::\n");
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_DSFID) {
-        furi_string_cat_printf(str, "DSFID: %02X\n", data->system_info.ic_ref);
+        furi_string_cat_printf(str, "DSFID: %02X\n", data->system_info.dsfid);
     }
 
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_AFI) {
@@ -79,18 +79,18 @@ void nfc_render_iso15693_3_extra(const Iso15693_3Data* data, FuriString* str) {
     }
 
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_IC_REF) {
-        furi_string_cat_printf(str, "Référence IC: %02X\n", data->system_info.ic_ref);
+        furi_string_cat_printf(str, "IC Reference: %02X\n", data->system_info.ic_ref);
     }
 
     furi_string_cat(str, ":::::::::::::::::::[Lock bits]::::::::::::::::::::\n");
 
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_DSFID) {
         furi_string_cat_printf(
-            str, "DSFID: %s bloqué\n", data->settings.lock_bits.dsfid ? "" : "non");
+            str, "DSFID: %s locked\n", data->settings.lock_bits.dsfid ? "" : "not");
     }
 
     if(data->system_info.flags & ISO15693_3_SYSINFO_FLAG_AFI) {
         furi_string_cat_printf(
-            str, "AFI: %s bloqué\n", data->settings.lock_bits.dsfid ? "" : "non");
+            str, "AFI: %s locked\n", data->settings.lock_bits.dsfid ? "" : "not");
     }
 }

@@ -1,6 +1,6 @@
 /* This file is the part of the Lightweight USB device Stack for STM32 microcontrollers
  *
- * Copyright ©2016 Dmitry Filimonchuk <dmitrystu[at]gmail[dot]com>
+ * Copyright Â©2016 Dmitry Filimonchuk <dmitrystu[at]gmail[dot]com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

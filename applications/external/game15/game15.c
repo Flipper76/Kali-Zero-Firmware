@@ -7,13 +7,13 @@
 
 #include "sandbox.h"
 
-#define FPS 20
-#define CELL_WIDTH 10
-#define CELL_HEIGHT 8
-#define MOVE_TICKS 5
-#define KEY_STACK_SIZE 16
+#define FPS              20
+#define CELL_WIDTH       10
+#define CELL_HEIGHT      8
+#define MOVE_TICKS       5
+#define KEY_STACK_SIZE   16
 #define SAVING_DIRECTORY STORAGE_APP_DATA_PATH_PREFIX
-#define SAVING_FILENAME SAVING_DIRECTORY "/game15.save"
+#define SAVING_FILENAME  SAVING_DIRECTORY "/game15.save"
 #define POPUP_MENU_ITEMS 2
 
 typedef enum {
@@ -24,7 +24,11 @@ typedef enum {
     DirectionRight
 } direction_e;
 
-typedef enum { ScenePlay, SceneWin, ScenePopup } scene_e;
+typedef enum {
+    ScenePlay,
+    SceneWin,
+    ScenePopup
+} scene_e;
 
 typedef struct {
     uint8_t cell_index;

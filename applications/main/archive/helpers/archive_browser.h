@@ -3,8 +3,8 @@
 #include "../archive_i.h"
 #include <storage/storage.h>
 
-#define TAB_LEFT InputKeyLeft // Default tab switch direction
-#define TAB_DEFAULT ArchiveTabFavorites // Start tab
+#define TAB_LEFT          InputKeyLeft // Default tab switch direction
+#define TAB_DEFAULT       ArchiveTabFavorites // Start tab
 #define FILE_LIST_BUF_LEN 50
 
 static const char* tab_default_paths[] = {
@@ -24,6 +24,7 @@ static const char* tab_default_paths[] = {
 };
 
 static const char* known_ext[] = {
+    // clang-format off
     [ArchiveFileTypeIButton] = ".ibtn",
     [ArchiveFileTypeNFC] = ".nfc",
     [ArchiveFileTypeSubGhz] = ".sub",
@@ -33,6 +34,8 @@ static const char* known_ext[] = {
     [ArchiveFileTypeSubghzRemote] = ".txt",
     [ArchiveFileTypeInfraredRemote] = ".txt",
     [ArchiveFileTypeBadKb] = ".txt",
+    [ArchiveFileTypeWAV] = ".wav",
+    [ArchiveFileTypeMag] = ".mag",
     [ArchiveFileTypeU2f] = "?",
     [ArchiveFileTypeApplication] = ".fap",
     [ArchiveFileTypeJS] = ".js",
@@ -42,6 +45,7 @@ static const char* known_ext[] = {
     [ArchiveFileTypeFolder] = "?",
     [ArchiveFileTypeUnknown] = "*",
     [ArchiveFileTypeAppOrJs] = ".fap|.js",
+    // clang-format on
 };
 
 static const ArchiveFileTypeEnum known_type[] = {
@@ -73,7 +77,7 @@ static inline const char* archive_get_default_path(ArchiveTabEnum tab) {
 }
 
 inline bool archive_is_known_app(ArchiveFileTypeEnum type) {
-    return (type < ArchiveFileTypeUnknown);
+    return type < ArchiveFileTypeUnknown;
 }
 
 bool archive_is_item_in_array(ArchiveBrowserViewModel* model, uint32_t idx);

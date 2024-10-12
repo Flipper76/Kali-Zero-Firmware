@@ -19,9 +19,16 @@ struct DesktopLockMenuView {
     NotificationApp* notification;
     Bt* bt;
     bool save_notification;
-    bool save_xtreme;
+    bool save_kalizero;
     bool save_bt;
 };
+
+typedef enum {
+    DesktopLockMenuPopupIndexKeypad,
+    DesktopLockMenuPopupIndexPinCode,
+    DesktopLockMenuPopupIndexPinOff,
+    DesktopLockMenuPopupIndexMAX,
+} DesktopLockMenuPopupIndex;
 
 typedef struct {
     uint8_t idx;
@@ -29,8 +36,8 @@ typedef struct {
     bool stealth_mode;
 
     bool pin_is_set;
-    int pin_lock;
-    bool show_lock_menu;
+    bool show_lock_popup;
+    DesktopLockMenuPopupIndex lock_popup_index;
     DesktopLockMenuView* lock_menu;
 } DesktopLockMenuViewModel;
 
@@ -43,5 +50,5 @@ View* desktop_lock_menu_get_view(DesktopLockMenuView* lock_menu);
 void desktop_lock_menu_set_pin_state(DesktopLockMenuView* lock_menu, bool pin_is_set);
 void desktop_lock_menu_set_stealth_mode_state(DesktopLockMenuView* lock_menu, bool stealth_mode);
 void desktop_lock_menu_set_idx(DesktopLockMenuView* lock_menu, uint8_t idx);
-DesktopLockMenuView* desktop_lock_menu_alloc();
+DesktopLockMenuView* desktop_lock_menu_alloc(void);
 void desktop_lock_menu_free(DesktopLockMenuView* lock_menu);

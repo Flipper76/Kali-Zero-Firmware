@@ -117,7 +117,7 @@ enum ZbZclWncvServerAttrT {
 enum ZbZclWncvTypes {
     ZCL_WNCV_TYPE_ROLLERSHADE = 0x00, /**< Rollershade */
     ZCL_WNCV_TYPE_ROLLERSHADE_2_MOTOR, /**< Rollershade - 2 Motor */
-    ZCL_WNCV_TYPE_ROLLERSHADE_EXTERIOR, /**< Rollershade – Exterior */
+    ZCL_WNCV_TYPE_ROLLERSHADE_EXTERIOR, /**< Rollershade â€“ Exterior */
     ZCL_WNCV_TYPE_ROLLERSHADE_EXTERIOR_2_MOTOR, /**< Rollershade - Exterior - 2 Motor */
     ZCL_WNCV_TYPE_DRAPERY, /**< Drapery */
     ZCL_WNCV_TYPE_AWNING, /**< Awning */

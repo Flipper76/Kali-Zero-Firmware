@@ -151,7 +151,7 @@ Changes between FreeRTOS V10.4.6 and FreeRTOS V10.5.0 released September 16 2022
 
 Changes between FreeRTOS V10.4.5 and FreeRTOS V10.4.6 released November 12 2021
 
-	+ ARMv7-M and ARMv8-M MPU ports – prevent non-kernel code from calling the
+	+ ARMv7-M and ARMv8-M MPU ports â€“ prevent non-kernel code from calling the
 	  internal functions xPortRaisePrivilege and vPortResetPrivilege by changing
 	  them to macros.
 	+ Introduce a new config configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS which

@@ -14,20 +14,32 @@ void desktop_settings_scene_keybinds_key_on_enter(void* context) {
     submenu_reset(submenu);
 
     submenu_add_item(
-        submenu, "Haut", KeybindKeyUp, desktop_settings_scene_keybinds_key_submenu_callback, app);
-
-    submenu_add_item(
-        submenu, "Bas", KeybindKeyDown, desktop_settings_scene_keybinds_key_submenu_callback, app);
-
-    submenu_add_item(
         submenu,
-        "Droite",
-        KeybindKeyRight,
+        "Haut",
+        DesktopKeybindKeyUp,
         desktop_settings_scene_keybinds_key_submenu_callback,
         app);
 
     submenu_add_item(
-        submenu, "Gauche", KeybindKeyLeft, desktop_settings_scene_keybinds_key_submenu_callback, app);
+        submenu,
+        "Bas",
+        DesktopKeybindKeyDown,
+        desktop_settings_scene_keybinds_key_submenu_callback,
+        app);
+
+    submenu_add_item(
+        submenu,
+        "Droite",
+        DesktopKeybindKeyRight,
+        desktop_settings_scene_keybinds_key_submenu_callback,
+        app);
+
+    submenu_add_item(
+        submenu,
+        "Gauche",
+        DesktopKeybindKeyLeft,
+        desktop_settings_scene_keybinds_key_submenu_callback,
+        app);
 
     submenu_set_header(submenu, "raccourci clavier:");
 

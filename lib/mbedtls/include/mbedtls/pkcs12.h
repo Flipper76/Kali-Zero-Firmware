@@ -157,7 +157,7 @@ int mbedtls_pkcs12_pbe_ext(mbedtls_asn1_buf *pbe_params, int mode,
  *
  * \param data       buffer to store the derived data in
  * \param datalen    length of buffer to fill
- * \param pwd        The password to use. For compliance with PKCS#12 §B.1, this
+ * \param pwd        The password to use. For compliance with PKCS#12 Â§B.1, this
  *                   should be a BMPString, i.e. a Unicode string where each
  *                   character is encoded as 2 bytes in big-endian order, with
  *                   no byte order mark and with a null terminator (i.e. the

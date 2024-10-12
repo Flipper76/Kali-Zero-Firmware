@@ -47,10 +47,12 @@ const SubGhzProtocolDecoder subghz_protocol_hormann_decoder = {
     .feed = subghz_protocol_decoder_hormann_feed,
     .reset = subghz_protocol_decoder_hormann_reset,
 
-    .get_hash_data = subghz_protocol_decoder_hormann_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_hormann_get_hash_data,
     .serialize = subghz_protocol_decoder_hormann_serialize,
     .deserialize = subghz_protocol_decoder_hormann_deserialize,
     .get_string = subghz_protocol_decoder_hormann_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_hormann_encoder = {
@@ -285,7 +287,7 @@ void subghz_protocol_decoder_hormann_feed(void* context, bool level, uint32_t du
  * @param instance Pointer to a SubGhzBlockGeneric* instance
  */
 static void subghz_protocol_hormann_check_remote_controller(SubGhzBlockGeneric* instance) {
-    instance->btn = (instance->data >> 4) & 0xF;
+    instance->btn = (instance->data >> 8) & 0xF;
 }
 
 uint32_t subghz_protocol_decoder_hormann_get_hash_data(void* context) {

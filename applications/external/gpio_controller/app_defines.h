@@ -1,14 +1,17 @@
 #ifndef APP_DEFINES_H
 #define APP_DEFINES_H
 
-#define GPIO_PIN_COUNT 8
+#define GPIO_PIN_COUNT        8
 #define ANIMATE_FRAME_TIME_MS 133
-#define FRAME_TIME 66.666666
+#define FRAME_TIME            66.666666
 
 typedef void (*DrawView)(Canvas* canvas, void* ctx);
 typedef void (*HandleInput)(InputEvent* event, void* ctx);
 
-typedef enum { MAIN_VIEW, CONFIG_MENU_VIEW } enum_view;
+typedef enum {
+    MAIN_VIEW,
+    CONFIG_MENU_VIEW
+} enum_view;
 
 typedef enum {
     GPIO_MODE_INPUT,
@@ -24,7 +27,11 @@ typedef enum {
     GPIO_VALUE_NONE
 } GpioUserValue;
 
-typedef enum { CONFIG_MENU_MODE, CONFIG_MENU_VALUE, CONFIG_MENU_INPUT } ConfigMenuOptions;
+typedef enum {
+    CONFIG_MENU_MODE,
+    CONFIG_MENU_VALUE,
+    CONFIG_MENU_INPUT
+} ConfigMenuOptions;
 
 typedef struct {
     GpioUserMode mode;

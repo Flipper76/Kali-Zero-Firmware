@@ -110,8 +110,8 @@ static uint32_t RCON[10]; // AES round constants
  *  generation initialization code by collapsing
  *  repetitive common operations into logical pieces.
  */
-#define ROTL8(x) ((x << 8) & 0xFFFFFFFF) | (x >> 24)
-#define XTIME(x) ((x << 1) ^ ((x & 0x80) ? 0x1B : 0x00))
+#define ROTL8(x)  ((x << 8) & 0xFFFFFFFF) | (x >> 24)
+#define XTIME(x)  ((x << 1) ^ ((x & 0x80) ? 0x1B : 0x00))
 #define MUL(x, y) ((x && y) ? pow[(log[x] + log[y]) % 255] : 0)
 #define MIX(x, y)                         \
     {                                     \

@@ -46,7 +46,7 @@ static bool archive_favorites_read_line(File* file, FuriString* str_result) {
     return result;
 }
 
-uint16_t archive_favorites_count() {
+uint16_t archive_favorites_count(void) {
     Storage* fs_api = furi_record_open(RECORD_STORAGE);
     File* file = storage_file_alloc(fs_api);
 
@@ -74,7 +74,7 @@ uint16_t archive_favorites_count() {
     return lines;
 }
 
-static bool archive_favourites_rescan() {
+static bool archive_favourites_rescan(void) {
     FuriString* buffer;
     buffer = furi_string_alloc();
     Storage* storage = furi_record_open(RECORD_STORAGE);
@@ -193,7 +193,7 @@ bool archive_favorites_delete(const char* format, ...) {
                 continue;
             }
 
-            if(furi_string_search(buffer, filename)) {
+            if(!furi_string_equal(buffer, filename)) {
                 archive_file_append(ARCHIVE_FAV_TEMP_PATH, "%s\n", furi_string_get_cstr(buffer));
             }
         }
@@ -233,7 +233,7 @@ bool archive_is_favorite(const char* format, ...) {
             if(!furi_string_size(buffer)) {
                 continue;
             }
-            if(!furi_string_search(buffer, filename)) {
+            if(furi_string_equal(buffer, filename)) {
                 found = true;
                 break;
             }
@@ -274,7 +274,7 @@ bool archive_favorites_rename(const char* src, const char* dst) {
             archive_file_append(
                 ARCHIVE_FAV_TEMP_PATH,
                 "%s\n",
-                furi_string_search(buffer, path) ? furi_string_get_cstr(buffer) : dst);
+                !furi_string_equal(buffer, path) ? furi_string_get_cstr(buffer) : dst);
         }
     }
 

@@ -11,17 +11,17 @@ static void
 static void update_status_text(BleBeaconApp* ble_beacon) {
     DialogEx* dialog_ex = ble_beacon->dialog_ex;
 
-    dialog_ex_set_header(dialog_ex, "BLE Beacon Demo", 64, 0, AlignCenter, AlignTop);
+    dialog_ex_set_header(dialog_ex, "Démo balise BLE", 64, 0, AlignCenter, AlignTop);
 
     FuriString* status = ble_beacon->status_string;
 
     furi_string_reset(status);
 
-    furi_string_cat_str(status, "Status: ");
+    furi_string_cat_str(status, "Statut: ");
     if(ble_beacon->is_beacon_active) {
-        furi_string_cat_str(status, "Running\n");
+        furi_string_cat_str(status, "Lancé\n");
     } else {
-        furi_string_cat_str(status, "Stopped\n");
+        furi_string_cat_str(status, "Stoppé\n");
     }
 
     // Output MAC in reverse order
@@ -32,7 +32,7 @@ static void update_status_text(BleBeaconApp* ble_beacon) {
         }
     }
 
-    furi_string_cat_printf(status, "\nData length: %d", ble_beacon->beacon_data_len);
+    furi_string_cat_printf(status, "\nTailles des données: %d", ble_beacon->beacon_data_len);
 
     dialog_ex_set_text(dialog_ex, furi_string_get_cstr(status), 0, 29, AlignLeft, AlignCenter);
 

@@ -4,64 +4,67 @@
     <title>_htmresc\ReleaseNotes.html</title>
   </head>
   <body style="font-size: 10pt; font-family: Verdana;">
-    <h3 style="color: blue; text-decoration: underline;">STM32CubeWB Firmware Package V1.17.0 / 7-June-2023</h3>
+    <h3 style="color: blue; text-decoration: underline;">STM32CubeWB Firmware Package V1.20.0 / 05-June-2024</h3>
     <div style="margin-left: 18pt;">
       <p>
         <b><u>Main Changes</u></b>
       </p>
       <p>
-        <b>Maintenance Release for BLE, 802.15.4, Thread and Zigbee updates</b>
+        <b>Maintenance Release for BLE, 802.15.4, Concurrent, Thread and Zigbee updates</b>
       </p>
       <p>
-        <li> <strong>THREAD</strong> updates
-          <ul>
-            <li>SED role is now supported for FTD.</li>
-            <li>SSED role is now supported for FTD and MTD.</li>
-            <li>Improved global stability and robustness.</li>
-            <li>Improved security.</li>
-          </ul>
-        </li>
-        <li> <strong>Zigbee</strong> updates
-          <ul>
-            <li>- Robustness improvement in case of radio noisy environment</li>
-          </ul>
-        </li>
         <li>
           <strong>BLE</strong> updates
           <ul>
-            <li>Compliancy TCRL 2022-2.</li>
-            <li>ACI BLE primitives naming alignment to standard.</li>
-            <li>HCI_LE_ENHANCED_CONNECTION_COMPLETE_EVENT is now automatically used instead of HCI_LE_CONNECTION_COMPLETE_EVENT when advertising extensions are used.</li>
-            <li>Additional check on HSE Startup time.</li>
+            <li> A new command ACI_HAL_EAD_ENCRYPT_DECRYPT is added to ease implementation of Encrypted Advertising Data feature.</li>
           </ul>
         </li>
-		<li> <strong>MAC 802.15.4</strong> updates
+        <li>
+          <strong>MAC</strong> updates
           <ul>
-            <li>Improvement of radio robustness over heavy overloaded and noisy environment.</li>
+            <li> To reduce the ROM footprint, optional features have been excluded from the MAC RFD configuration.</li>
+            <li> Correct PANID conflict notification that might return wrong channel.</li>
           </ul>
         </li>
-		<li> <strong>BLE/MAC Static</strong> updates
+        <li>
+          <strong>Thread</strong> updates
           <ul>
-            <li>Improvement of radio robustness over heavy overloaded and noisy environment.</li>
+            <li> Increased speed of Thread commissioning and SRP key exchanges, using PKA HW accelerator when possible.</li>
+            <li> Increased Thread RCP stability, robustness and efficiency.</li>
           </ul>
         </li>
-		<li> <strong>BLE/Zigbee Dynamic</strong> updates
+        <li>
+          <strong>Zigbee</strong> updates
           <ul>
-            <li>Bug corrected in Dynamic Concurrent applications to prevent switching from 802.15.4 to BLE while radio is in an incorrect state.</li>
+            <li> Fix startup memory leak issue when using TouchLink.</li>
+            <li> Fixed zcl_send_response issue for loopback Default Response.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>BLE Thread</strong> updates
+          <ul>
+            <li> Corrected a low-power over consumption when BLE advertising is started or stopped during runtime.</li>
+            <li> Corrected a bug that prevented to erase flash during BLE activity.</li>
+          </ul>
+        </li>
+        <li> 
+          <strong>BLE Zigbee</strong> updates
+          <ul>
+            <li> Corrected a bug that prevented to erase flash during BLE activity.</li>
           </ul>
         </li>
       </p>
       <p>
-        <b>Maintenance Release for CMSIS, HAL/LL Drivers and Projects updates</b>
+        <b>Maintenance Release for HAL/LL Drivers and Projects updates</b>
       </p>
       <p>
         <li> <strong>HAL/LL Drivers</strong> updates
          <ul>
             <li>
-              Update HAL/LL drivers to include latest corrections
+               Update HAL/LL drivers to include latest corrections
                 <ul>
-                <li>- Update of HAL CRYP, Generic, I2C, SMBUS, TSC, UART, SPI drivers.</li>
-                <li>- Update of LL USB drivers</li>
+                  <li> Update of HAL  CRYP, I2C, QSPI, TIM, UART drivers.</li>
+                  <li> Update of LL LPUART, TIM drivers.</li>
                 </ul>
             </li>
             <li> Refer to <a href="../Drivers/STM32WBxx_HAL_Driver/Release_Notes.html">release notes</a> for further details </li>
@@ -73,22 +76,13 @@
          <ul>
             <li>
               Update of FW projects following changes in latest version of HAL/LL and Middlewares and alignments with CubeMx
-                <ul>
-                  <li>- /B-WB1M-WPAN1/Examples/BSP/BSP_Example</li>
-                  <li>- /STM32WB5MM-DK/Examples/BSP/BSP_Example</li>
-                  <li>- /NUCLEO-WB15CC/Examples/FLASH/FLASH_EraseProgram</li>
-                  <li>- /NUCLEO-WB15CC/Examples/CRYP/CRYP_DMA</li>
-                  <li>- /P-NUCLEO-WB55.Nucleo/Examples/CRYP/CRYP_DMA</li>
-                </ul>
+              <ul>
+                <li>P-NUCLEO-WB55.Nucleo/Examples_LL/TIM/TIM_PWMOutput.</li>
+              </ul>
             </li>
           </ul>
         </li>
-
-
       </p>
-
-
-
     </div>
   </body>
 </html>

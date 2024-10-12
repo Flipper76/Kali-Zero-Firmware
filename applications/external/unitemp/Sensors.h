@@ -22,9 +22,9 @@
 
 //Маски бит для определения типов возвращаемых значений
 #define UT_TEMPERATURE 0b00000001
-#define UT_HUMIDITY 0b00000010
-#define UT_PRESSURE 0b00000100
-#define UT_CO2 0b00001000
+#define UT_HUMIDITY    0b00000010
+#define UT_PRESSURE    0b00000100
+#define UT_CO2         0b00001000
 
 //Статусы опроса датчика
 typedef enum {

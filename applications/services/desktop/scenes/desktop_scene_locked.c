@@ -3,22 +3,21 @@
 #include <gui/scene_manager.h>
 #include <gui/view_stack.h>
 #include <stdint.h>
+#include <toolbox/run_parallel.h>
 
 #include "../desktop.h"
 #include "../desktop_i.h"
-#include "../helpers/pin.h"
+#include "../helpers/pin_code.h"
 #include "../animations/animation_manager.h"
 #include "../views/desktop_events.h"
-#include "../views/desktop_view_pin_input.h"
 #include "../views/desktop_view_locked.h"
 #include "desktop_scene.h"
-#include "desktop_scene_i.h"
-#include <xtreme/xtreme.h>
+#include "desktop_scene_locked.h"
 
-#define TAG "DesktopSrv"
+#include <kalizero/settings.h>
 
 #define WRONG_PIN_HEADER_TIMEOUT 3000
-#define INPUT_PIN_VIEW_TIMEOUT 15000
+#define INPUT_PIN_VIEW_TIMEOUT   15000
 
 static void desktop_scene_locked_callback(DesktopEvent event, void* context) {
     Desktop* desktop = (Desktop*)context;
@@ -46,14 +45,13 @@ void desktop_scene_locked_on_enter(void* context) {
 
     bool switch_to_timeout_scene = false;
     uint32_t state = scene_manager_get_scene_state(desktop->scene_manager, DesktopSceneLocked);
-    if(state == SCENE_LOCKED_FIRST_ENTER) {
-        bool pin_locked = furi_hal_rtc_is_flag_set(FuriHalRtcFlagLock);
+    if(state == DesktopSceneLockedStateFirstEnter) {
         view_port_enabled_set(desktop->lock_icon_viewport, true);
         Gui* gui = furi_record_open(RECORD_GUI);
         gui_set_lockdown(gui, true);
         furi_record_close(RECORD_GUI);
 
-        if(pin_locked) {
+        if(furi_hal_rtc_is_flag_set(FuriHalRtcFlagLock)) {
             desktop_view_locked_lock(desktop->locked_view, true);
             uint32_t pin_timeout = desktop_pin_lock_get_fail_timeout();
             if(pin_timeout > 0) {
@@ -68,7 +66,7 @@ void desktop_scene_locked_on_enter(void* context) {
             desktop_view_locked_close_cover(desktop->locked_view);
         }
         scene_manager_set_scene_state(
-            desktop->scene_manager, DesktopSceneLocked, SCENE_LOCKED_REPEAT_ENTER);
+            desktop->scene_manager, DesktopSceneLocked, DesktopSceneLockedStateRepeatEnter);
     }
 
     if(switch_to_timeout_scene) {
@@ -86,7 +84,8 @@ bool desktop_scene_locked_on_event(void* context, SceneManagerEvent event) {
         switch(event.event) {
         case DesktopLockedEventOpenPowerOff: {
             if(kalizero_settings.lockscreen_poweroff) {
-                loader_start_detached_with_gui_error(desktop->loader, "Alimentation", "off");
+                // Workaround for shutdown when app can't be opened
+                run_parallel(desktop_shutdown, desktop, 512);
             }
             consumed = true;
             break;

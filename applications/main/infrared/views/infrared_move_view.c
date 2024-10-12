@@ -7,10 +7,10 @@
 
 #include <toolbox/m_cstr_dup.h>
 
-#define LIST_ITEMS 4U
-#define LIST_LINE_H 13U
-#define HEADER_H 12U
-#define MOVE_X_OFFTSET 5U
+#define LIST_ITEMS    4U
+#define LIST_LINE_H   13U
+#define HEADER_H      12U
+#define MOVE_X_OFFSET 5U
 
 struct InfraredMoveView {
     View* view;
@@ -43,7 +43,7 @@ static void infrared_move_view_draw_callback(Canvas* canvas, void* _model) {
 
     for(uint32_t i = 0; i < MIN(btn_number, LIST_ITEMS); i++) {
         int32_t idx = CLAMP((uint32_t)(i + model->list_offset), btn_number, 0U);
-        uint8_t x_offset = (model->is_moving && model->current_idx == idx) ? MOVE_X_OFFTSET : 0;
+        uint8_t x_offset = (model->is_moving && model->current_idx == idx) ? MOVE_X_OFFSET : 0;
         uint8_t y_offset = HEADER_H + i * LIST_LINE_H;
         uint8_t box_end_x = canvas_width(canvas) - (show_scrollbar ? 6 : 1);
 
@@ -98,7 +98,7 @@ static bool infrared_move_view_input_callback(InputEvent* event, void* context) 
 
     bool consumed = false;
 
-    if(((event->type == InputTypeShort || event->type == InputTypeRepeat)) &&
+    if((event->type == InputTypeShort || event->type == InputTypeRepeat) &&
        ((event->key == InputKeyUp) || (event->key == InputKeyDown))) {
         with_view_model(
             move_view->view,

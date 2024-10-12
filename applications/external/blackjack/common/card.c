@@ -2,11 +2,11 @@
 #include "dml.h"
 #include "ui.h"
 
-#define CARD_DRAW_X_START 108
-#define CARD_DRAW_Y_START 38
-#define CARD_DRAW_X_SPACE 10
-#define CARD_DRAW_Y_SPACE 8
-#define CARD_DRAW_X_OFFSET 4
+#define CARD_DRAW_X_START          108
+#define CARD_DRAW_Y_START          38
+#define CARD_DRAW_X_SPACE          10
+#define CARD_DRAW_Y_SPACE          8
+#define CARD_DRAW_X_OFFSET         4
 #define CARD_DRAW_FIRST_ROW_LENGTH 7
 
 uint8_t pips[4][3] = {
@@ -220,7 +220,7 @@ void free_hand(Hand* hand_ptr) {
 }
 
 void add_to_hand(Hand* hand_ptr, Card card) {
-    FURI_LOG_D("CARD", "Ajouter Ã  la main");
+    FURI_LOG_D("CARD", "Ajouter à la main");
     if(hand_ptr->index < hand_ptr->max) {
         hand_ptr->cards[hand_ptr->index] = card;
         hand_ptr->index++;
@@ -334,7 +334,7 @@ Card remove_from_deck(uint16_t index, Deck* deck) {
 }
 
 void extract_hand_region(Hand* hand, Hand* to, uint8_t start_index) {
-    FURI_LOG_D("CARD", "Extraction de la rÃ©gion de la main");
+    FURI_LOG_D("CARD", "Extraction de la région de la main");
     if(start_index >= hand->index) return;
 
     for(uint8_t i = start_index; i < hand->index; i++) {
@@ -344,7 +344,7 @@ void extract_hand_region(Hand* hand, Hand* to, uint8_t start_index) {
 }
 
 void add_hand_region(Hand* to, Hand* from) {
-    FURI_LOG_D("CARD", "Ajouter Ã  la rÃ©gion de la main");
+    FURI_LOG_D("CARD", "Ajouter à la région de la main");
     if((to->index + from->index) <= to->max) {
         for(int i = 0; i < from->index; i++) {
             add_to_hand(to, from->cards[i]);

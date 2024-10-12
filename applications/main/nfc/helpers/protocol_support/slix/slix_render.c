@@ -6,7 +6,7 @@ void nfc_render_slix_info(const SlixData* data, NfcProtocolFormatType format_typ
     if(format_type != NfcProtocolFormatTypeFull) return;
     const SlixType slix_type = slix_get_type(data);
 
-    furi_string_cat(str, "\n::::::::::::::::[Mot de passe]:::::::::::::::\n");
+    furi_string_cat(str, "\n::::::::::::::::::[Passwords]:::::::::::::::::\n");
 
     static const char* slix_password_names[] = {
         "Read",
@@ -27,12 +27,12 @@ void nfc_render_slix_info(const SlixData* data, NfcProtocolFormatType format_typ
 
     if(slix_type_has_features(slix_type, SLIX_TYPE_FEATURE_EAS)) {
         furi_string_cat_printf(
-            str, "EAS: %s Bloqué\n", data->system_info.lock_bits.eas ? "" : "not");
+            str, "EAS: %s locked\n", data->system_info.lock_bits.eas ? "" : "not");
     }
 
     if(slix_type_has_features(slix_type, SLIX_TYPE_FEATURE_PROTECTION)) {
         furi_string_cat_printf(
-            str, "PPL: %s Bloqué\n", data->system_info.lock_bits.ppl ? "" : "not");
+            str, "PPL: %s locked\n", data->system_info.lock_bits.ppl ? "" : "not");
 
         const SlixProtection protection = data->system_info.protection;
 
@@ -50,8 +50,8 @@ void nfc_render_slix_info(const SlixData* data, NfcProtocolFormatType format_typ
     }
 
     if(slix_type_has_features(slix_type, SLIX_TYPE_FEATURE_PRIVACY)) {
-        furi_string_cat(str, "::::::::::::::::[Confidentialité]::::::::::::::::::\n");
-        furi_string_cat_printf(str, "Mode Confidentialité: %sactivé\n", data->privacy ? "" : "des");
+        furi_string_cat(str, "::::::::::::::::::::[Privacy]::::::::::::::::::::::\n");
+        furi_string_cat_printf(str, "Privacy mode: %sabled\n", data->privacy ? "en" : "dis");
     }
 
     if(slix_type_has_features(slix_type, SLIX_TYPE_FEATURE_SIGNATURE)) {

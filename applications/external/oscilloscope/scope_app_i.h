@@ -13,8 +13,8 @@
 #include <notification/notification_messages.h>
 
 #define ADC_CONVERTED_DATA_BUFFER_SIZE ((uint32_t)128)
-#define FLIPPERSCOPE_APP_EXTENSION ".dat"
-#define MAX_LEN_NAME 30
+#define FLIPPERSCOPE_APP_EXTENSION     ".dat"
+#define MAX_LEN_NAME                   30
 
 typedef struct ScopeApp ScopeApp;
 
@@ -26,7 +26,11 @@ typedef struct {
 static const timeperiod time_list[] =
     {{1.0, "1s"}, {0.1, "0.1s"}, {1e-3, "1ms"}, {0.1e-3, "0.1ms"}, {1e-6, "1us"}};
 
-enum measureenum { m_time, m_voltage, m_capture };
+enum measureenum {
+    m_time,
+    m_voltage,
+    m_capture
+};
 
 typedef struct {
     enum measureenum type;

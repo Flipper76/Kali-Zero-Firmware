@@ -14,8 +14,8 @@ void nfc_render_mf_classic_info(
     uint8_t sectors_read = 0;
     mf_classic_get_read_sectors_and_keys(data, &sectors_read, &keys_found);
 
-    furi_string_cat_printf(str, "\nClés trouvées: %u/%u", keys_found, keys_total);
-    furi_string_cat_printf(str, "\nSecteurs lus: %u/%u", sectors_read, sectors_total);
+    furi_string_cat_printf(str, "\nKeys Found: %u/%u", keys_found, keys_total);
+    furi_string_cat_printf(str, "\nSectors Read: %u/%u", sectors_read, sectors_total);
 }
 
 static void

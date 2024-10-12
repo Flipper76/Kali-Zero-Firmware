@@ -45,10 +45,12 @@ const SubGhzProtocolDecoder subghz_protocol_phoenix_v2_decoder = {
     .feed = subghz_protocol_decoder_phoenix_v2_feed,
     .reset = subghz_protocol_decoder_phoenix_v2_reset,
 
-    .get_hash_data = subghz_protocol_decoder_phoenix_v2_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = subghz_protocol_decoder_phoenix_v2_get_hash_data,
     .serialize = subghz_protocol_decoder_phoenix_v2_serialize,
     .deserialize = subghz_protocol_decoder_phoenix_v2_deserialize,
     .get_string = subghz_protocol_decoder_phoenix_v2_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder subghz_protocol_phoenix_v2_encoder = {
@@ -215,8 +217,8 @@ void subghz_protocol_decoder_phoenix_v2_feed(void* context, bool level, uint32_t
         }
         break;
     case Phoenix_V2DecoderStepFoundStartBit:
-        if(level && ((DURATION_DIFF(duration, (subghz_protocol_phoenix_v2_const.te_short * 6)) <
-                      subghz_protocol_phoenix_v2_const.te_delta * 4))) {
+        if(level && (DURATION_DIFF(duration, (subghz_protocol_phoenix_v2_const.te_short * 6)) <
+                     subghz_protocol_phoenix_v2_const.te_delta * 4)) {
             //Found start bit
             instance->decoder.parser_step = Phoenix_V2DecoderStepSaveDuration;
             instance->decoder.decode_data = 0;

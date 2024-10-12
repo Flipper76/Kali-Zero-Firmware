@@ -143,7 +143,7 @@ void settings_page(Canvas* const canvas, const GameState* gameState) {
     snprintf(drawChar, sizeof(drawChar), "%li", gameState->settings.starting_money);
     draw_menu(
         canvas,
-        "Argent dÃ©part",
+        "Argent départ",
         drawChar,
         0 * LINE_HEIGHT + startY,
         gameState->settings.starting_money > gameState->settings.round_price,
@@ -162,7 +162,7 @@ void settings_page(Canvas* const canvas, const GameState* gameState) {
     snprintf(drawChar, sizeof(drawChar), "%li", gameState->settings.animation_duration);
     draw_menu(
         canvas,
-        "Anim. durÃ©e",
+        "Anim. durée",
         drawChar,
         2 * LINE_HEIGHT + startY,
         gameState->settings.animation_duration > 0,
@@ -171,7 +171,7 @@ void settings_page(Canvas* const canvas, const GameState* gameState) {
     snprintf(drawChar, sizeof(drawChar), "%li", gameState->settings.message_duration);
     draw_menu(
         canvas,
-        "DurÃ©e PopUp",
+        "Durée PopUp",
         drawChar,
         3 * LINE_HEIGHT + startY,
         gameState->settings.message_duration > 0,

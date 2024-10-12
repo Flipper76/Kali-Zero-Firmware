@@ -1,3 +1,16 @@
+## 1.17
+ - CVE-2024-41566: When keys are unknown emulate with a dummy MAC and ignore reader MACs
+## 1.16
+ - Acknowledgements page
+ - Elite VB6 RNG keygen attack
+ - Bump plugin version
+## 1.15
+ - Add downgrade from iClass SR to iClass Legacy
+## 1.14
+ - Add plugin to parse some wiegand formats
+ - Store unknown blocks in picopass file with '??'
+## 1.13
+ - Rework loclass writer with datetime lib
 ## 1.12
  - Add support for non-secure Picopass
  - Change Read to use all dictionaries

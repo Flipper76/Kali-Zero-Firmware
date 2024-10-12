@@ -35,12 +35,12 @@
  * - Temperature and Humidity are sent in different messages bursts.
 */
 
-#define LACROSSE_TX_GAP 1000
-#define LACROSSE_TX_BIT_SIZE 44
-#define LACROSSE_TX_SUNC_PATTERN 0x0A000000000
-#define LACROSSE_TX_SUNC_MASK 0x0F000000000
+#define LACROSSE_TX_GAP           1000
+#define LACROSSE_TX_BIT_SIZE      44
+#define LACROSSE_TX_SUNC_PATTERN  0x0A000000000
+#define LACROSSE_TX_SUNC_MASK     0x0F000000000
 #define LACROSSE_TX_MSG_TYPE_TEMP 0x00
-#define LACROSSE_TX_MSG_TYPE_HUM 0x0E
+#define LACROSSE_TX_MSG_TYPE_HUM  0x0E
 
 static const SubGhzBlockConst ws_protocol_lacrosse_tx_const = {
     .te_short = 550,
@@ -79,10 +79,12 @@ const SubGhzProtocolDecoder ws_protocol_lacrosse_tx_decoder = {
     .feed = ws_protocol_decoder_lacrosse_tx_feed,
     .reset = ws_protocol_decoder_lacrosse_tx_reset,
 
-    .get_hash_data = ws_protocol_decoder_lacrosse_tx_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = ws_protocol_decoder_lacrosse_tx_get_hash_data,
     .serialize = ws_protocol_decoder_lacrosse_tx_serialize,
     .deserialize = ws_protocol_decoder_lacrosse_tx_deserialize,
     .get_string = ws_protocol_decoder_lacrosse_tx_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder ws_protocol_lacrosse_tx_encoder = {
@@ -304,22 +306,5 @@ SubGhzProtocolStatus
 void ws_protocol_decoder_lacrosse_tx_get_string(void* context, FuriString* output) {
     furi_assert(context);
     WSProtocolDecoderLaCrosse_TX* instance = context;
-    bool locale_is_metric = furi_hal_rtc_get_locale_units() == FuriHalRtcLocaleUnitsMetric;
-    furi_string_cat_printf(
-        output,
-        "%s\r\n%dbit\r\n"
-        "Key:0x%lX%08lX\r\n"
-        "Sn:0x%lX Ch:%d  Bat:%d\r\n"
-        "Temp:%3.1f %c Hum:%d%%",
-        instance->generic.protocol_name,
-        instance->generic.data_count_bit,
-        (uint32_t)(instance->generic.data >> 32),
-        (uint32_t)(instance->generic.data),
-        instance->generic.id,
-        instance->generic.channel,
-        instance->generic.battery_low,
-        (double)(locale_is_metric ? instance->generic.temp :
-                                    locale_celsius_to_fahrenheit(instance->generic.temp)),
-        locale_is_metric ? 'C' : 'F',
-        instance->generic.humidity);
+    ws_block_generic_get_string(&instance->generic, output);
 }

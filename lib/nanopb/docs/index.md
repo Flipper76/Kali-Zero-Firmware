@@ -46,8 +46,8 @@ Features and limitations
 **Features**
 
 1)  Pure C runtime
-2)  Small code size (5--10 kB depending on processor and compilation options, plus any message definitions)
-3)  Small ram usage (typically \~300 bytes stack, plus any message structs)
+2)  Small code size (5--20 kB depending on processor and compilation options, plus any message definitions)
+3)  Small ram usage (typically \~1 kB stack, plus any message structs)
 4)  Allows specifying maximum size for strings and arrays, so that they can be allocated statically.
 5)  No malloc needed: everything can be allocated statically or on the stack. Optional malloc support available.
 6)  You can use either encoder or decoder alone to cut the code size in half.
@@ -62,7 +62,7 @@ Features and limitations
 1)  Some speed has been sacrificed for code size.
 2)  Encoding is focused on writing to streams. For memory buffers only it could be made more efficient.
 3)  The deprecated Protocol Buffers feature called "groups" is not supported.
-4)  Fields in the generated structs are ordered by the tag number, instead of the natural ordering in .proto file.
+4)  Fields in the generated structs are ordered by the tag number, instead of the natural ordering in .proto file. (Since nanopb-0.4.2 this can be configured with `sort_by_tag` setting.)
 5)  Unknown fields are not preserved when decoding and re-encoding a message.
 6)  Reflection (runtime introspection) is not supported. E.g. you can't request a field by giving its name in a string.
 7)  Numeric arrays are always encoded as packed, even if not marked as packed in .proto.

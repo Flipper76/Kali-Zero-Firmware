@@ -12,7 +12,7 @@ KNOWN ISSUES:
 Support for "fpu64" is not added yet to the port. The examples should specify "fpu32" as option for floating point.
 
 TOOL CHAIN SUPPORT:
-Code Composer Studio™ IDE (CCS) v11.1.0 or newer
+Code Composer Studioâ„¢ IDE (CCS) v11.1.0 or newer
 C2000 Compiler v20.2.1.LTS or newer
 C2000Ware_3_01_00_00 or newer
 FreeRTOSv202112.00

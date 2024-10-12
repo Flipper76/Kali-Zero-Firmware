@@ -14,9 +14,9 @@
 
 #define FILE_BUFFER_SIZE 64
 
-#define SUBGHZ_KEYSTORE_FILE_TYPE "Flipper SubGhz Keystore File"
+#define SUBGHZ_KEYSTORE_FILE_TYPE     "Flipper SubGhz Keystore File"
 #define SUBGHZ_KEYSTORE_FILE_RAW_TYPE "Flipper SubGhz Keystore RAW File"
-#define SUBGHZ_KEYSTORE_FILE_VERSION 0
+#define SUBGHZ_KEYSTORE_FILE_VERSION  0
 
 #define SUBGHZ_KEYSTORE_FILE_ENCRYPTION_KEY_SLOT 1
 #define SUBGHZ_KEYSTORE_FILE_DECRYPTED_LINE_SIZE 512
@@ -27,7 +27,7 @@ typedef enum {
     SubGhzKeystoreEncryptionAES256,
 } SubGhzKeystoreEncryption;
 
-SubGhzKeystore* subghz_keystore_alloc() {
+SubGhzKeystore* subghz_keystore_alloc(void) {
     SubGhzKeystore* instance = malloc(sizeof(SubGhzKeystore));
 
     SubGhzKeyArray_init(instance->data);

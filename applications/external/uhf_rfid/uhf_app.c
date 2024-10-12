@@ -1,5 +1,5 @@
 #include "uhf_app_i.h"
-#include <expansion/expansion.h>
+#include "expansion/expansion.h"
 
 char* convertToHexString(uint8_t* array, size_t length) {
     if(array == NULL || length == 0) {
@@ -42,7 +42,6 @@ UHFApp* uhf_alloc() {
     UHFApp* uhf_app = (UHFApp*)malloc(sizeof(UHFApp));
     uhf_app->view_dispatcher = view_dispatcher_alloc();
     uhf_app->scene_manager = scene_manager_alloc(&uhf_scene_handlers, uhf_app);
-    view_dispatcher_enable_queue(uhf_app->view_dispatcher);
     view_dispatcher_set_event_callback_context(uhf_app->view_dispatcher, uhf_app);
     view_dispatcher_set_custom_event_callback(uhf_app->view_dispatcher, uhf_custom_event_callback);
     view_dispatcher_set_navigation_event_callback(
@@ -131,6 +130,10 @@ void uhf_free(UHFApp* uhf_app) {
     view_dispatcher_remove_view(uhf_app->view_dispatcher, UHFViewWidget);
     widget_free(uhf_app->widget);
 
+    // Variable Item List
+    view_dispatcher_remove_view(uhf_app->view_dispatcher, UHFViewVariableItemList);
+    variable_item_list_free(uhf_app->variable_item_list);
+
     // Tag
     uhf_tag_wrapper_free(uhf_app->worker->uhf_tag_wrapper);
 
@@ -150,9 +153,6 @@ void uhf_free(UHFApp* uhf_app) {
     // GUI
     furi_record_close(RECORD_GUI);
     uhf_app->gui = NULL;
-
-    // Variable Item List
-    variable_item_list_free(uhf_app->variable_item_list);
 
     // Notifications
     furi_record_close(RECORD_NOTIFICATION);
@@ -195,32 +195,25 @@ void uhf_show_loading_popup(void* ctx, bool show) {
 
 int32_t uhf_app_main(void* ctx) {
     UNUSED(ctx);
-
-    // Disable expansion protocol to avoid interference with UART Handle
     Expansion* expansion = furi_record_open(RECORD_EXPANSION);
     expansion_disable(expansion);
-
-    UHFApp* uhf_app = uhf_alloc();
-    // enable 5v pin
-    uint8_t attempts = 0;
-    bool otg_was_enabled = furi_hal_power_is_otg_enabled();
-    while(!furi_hal_power_is_otg_enabled() && attempts++ < 5) {
+    bool is_5v_enabled_by_app = false;
+    // enable 5v pin if not enabled
+    if(!furi_hal_power_is_otg_enabled()) {
         furi_hal_power_enable_otg();
-        furi_delay_ms(10);
+        is_5v_enabled_by_app = true;
     }
+    UHFApp* uhf_app = uhf_alloc();
     // enter app
     scene_manager_next_scene(uhf_app->scene_manager, UHFSceneModuleInfo);
     view_dispatcher_run(uhf_app->view_dispatcher);
-    // disable 5v pin
-    if(furi_hal_power_is_otg_enabled() && !otg_was_enabled) {
+    // disable 5v pin if enabled by app
+    if(is_5v_enabled_by_app) {
         furi_hal_power_disable_otg();
     }
     // exit app
     uhf_free(uhf_app);
-
-    // Return previous state of expansion
     expansion_enable(expansion);
     furi_record_close(RECORD_EXPANSION);
-
     return 0;
 }

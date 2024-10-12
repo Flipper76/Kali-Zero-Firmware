@@ -90,6 +90,7 @@ bool mifare_fuzzer_scene_start_on_event(void* context, SceneManagerEvent event) 
     if(event.type == SceneManagerEventTypeCustom) {
         //FURI_LOG_D(TAG, "mifare_fuzzer_scene_start_on_event() :: event.event = %ld", event.event);
         app->card_file_path = NULL;
+        app->nfc_device_parsed = false;
         if(event.event == MifareFuzzerEventClassic1k) {
             // save selected item
             scene_manager_set_scene_state(
@@ -135,8 +136,35 @@ bool mifare_fuzzer_scene_start_on_event(void* context, SceneManagerEvent event) 
                 app->dialogs, app->card_file_path, initial_path, &browser_options);
             furi_string_free(initial_path);
             if(wasFileSelected) {
-                // open next scene
-                scene_manager_next_scene(app->scene_manager, MifareFuzzerSceneAttack);
+                MifareFuzzerEmulator* emulator = app->emulator_view;
+                NfcDevice* nfc_device = app->worker->nfc_device;
+                const char* path = furi_string_get_cstr(app->card_file_path);
+                if(nfc_device_load(nfc_device, path)) {
+                    app->nfc_device_parsed = true;
+                    NfcProtocol protocol = nfc_device_get_protocol(nfc_device);
+                    if(protocol == NfcProtocolMfClassic) {
+                        const MfClassicData* mfc_data = nfc_device_get_data(nfc_device, protocol);
+                        if(mfc_data->type == MfClassicType1k) {
+                            app->card = MifareCardClassic1k;
+                        } else if(mfc_data->type == MfClassicType4k) {
+                            app->card = MifareCardClassic4k;
+                        } else {
+                            app->nfc_device_parsed = false;
+                        }
+                    } else if(protocol == NfcProtocolMfUltralight) {
+                        app->card = MifareCardUltralight;
+                    } else {
+                        app->nfc_device_parsed = false;
+                    }
+                    if(app->nfc_device_parsed) {
+                        mifare_fuzzer_emulator_set_card(emulator, app->card, app->card_file_path);
+                        scene_manager_next_scene(app->scene_manager, MifareFuzzerSceneAttack);
+                    } else {
+                        app->card = MifareCardUnsupported;
+                        mifare_fuzzer_emulator_set_card(emulator, MifareCardUnsupported, NULL);
+                        scene_manager_next_scene(app->scene_manager, MifareFuzzerSceneEmulator);
+                    }
+                }
                 consumed = true;
             }
         }

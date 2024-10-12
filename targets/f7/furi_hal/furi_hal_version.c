@@ -8,10 +8,13 @@
 #include <stdio.h>
 #include <ble/ble.h>
 
+#include <kalizero/kalizero.h>
+
 #define TAG "FuriHalVersion"
 
-#define FURI_HAL_VERSION_OTP_HEADER_MAGIC 0xBABE
-#define FURI_HAL_VERSION_OTP_ADDRESS OTP_AREA_BASE
+#define FURI_HAL_VERSION_OTP_HEADER_MAGIC (0xBABE)
+#define FURI_HAL_VERSION_OTP_ADDRESS      (OTP_AREA_BASE)
+#define FURI_HAL_VERSION_PLATFORM_ID      (0x0080e126)
 
 /** OTP V0 Structure: prototypes and early EVT */
 typedef struct {
@@ -106,31 +109,26 @@ void furi_hal_version_set_name(const char* name) {
             "x%s", // Someone tell me why that X is needed - it's for BLE adv name type (6 lines below)
             furi_hal_version.name);
     } else {
-        snprintf(furi_hal_version.device_name, FURI_HAL_VERSION_DEVICE_NAME_LENGTH, "xFlipper");
+        strlcpy(furi_hal_version.device_name, "xFlipper", FURI_HAL_VERSION_DEVICE_NAME_LENGTH);
     }
 
     furi_hal_version.device_name[0] = AD_TYPE_COMPLETE_LOCAL_NAME;
 
     // BLE Mac address
-    uint32_t company_id = LL_FLASH_GetSTCompanyID();
-    // uint32_t device_id = LL_FLASH_GetDeviceID();
-    // Some flippers return 0x27 (flippers with chip revision 2003 6495) instead of 0x26 (flippers with chip revision 2001 6495)
-    // Mobile apps expects it to return 0x26
-    // Hardcoded here temporarily until mobile apps is updated to handle 0x27
-    uint32_t device_id = 0x26;
-    furi_hal_version.ble_mac[0] = (uint8_t)(udn & 0x000000FF);
-    furi_hal_version.ble_mac[1] = (uint8_t)((udn & 0x0000FF00) >> 8);
-    furi_hal_version.ble_mac[2] = (uint8_t)((udn & 0x00FF0000) >> 16);
-    furi_hal_version.ble_mac[3] = (uint8_t)device_id;
-    furi_hal_version.ble_mac[4] = (uint8_t)(company_id & 0x000000FF);
-    furi_hal_version.ble_mac[5] = (uint8_t)((company_id & 0x0000FF00) >> 8);
+    uint32_t platform_id = FURI_HAL_VERSION_PLATFORM_ID;
+    furi_hal_version.ble_mac[0] = (uint8_t)((udn >> 0) & 0xFF);
+    furi_hal_version.ble_mac[1] = (uint8_t)((udn >> 8) & 0xFF);
+    furi_hal_version.ble_mac[2] = (uint8_t)((udn >> 16) & 0xFF);
+    furi_hal_version.ble_mac[3] = (uint8_t)((platform_id >> 0) & 0xFF);
+    furi_hal_version.ble_mac[4] = (uint8_t)((platform_id >> 8) & 0xFF);
+    furi_hal_version.ble_mac[5] = (uint8_t)((platform_id >> 16) & 0xFF);
 }
 
-static void furi_hal_version_load_otp_default() {
+static void furi_hal_version_load_otp_default(void) {
     furi_hal_version_set_name(NULL);
 }
 
-static void furi_hal_version_load_otp_v0() {
+static void furi_hal_version_load_otp_v0(void) {
     const FuriHalVersionOTPv0* otp = (FuriHalVersionOTPv0*)FURI_HAL_VERSION_OTP_ADDRESS;
 
     furi_hal_version.timestamp = otp->header_timestamp;
@@ -142,7 +140,7 @@ static void furi_hal_version_load_otp_v0() {
     furi_hal_version_set_name(otp->name);
 }
 
-static void furi_hal_version_load_otp_v1() {
+static void furi_hal_version_load_otp_v1(void) {
     const FuriHalVersionOTPv1* otp = (FuriHalVersionOTPv1*)FURI_HAL_VERSION_OTP_ADDRESS;
 
     furi_hal_version.timestamp = otp->header_timestamp;
@@ -156,7 +154,7 @@ static void furi_hal_version_load_otp_v1() {
     furi_hal_version_set_name(otp->name);
 }
 
-static void furi_hal_version_load_otp_v2() {
+static void furi_hal_version_load_otp_v2(void) {
     const FuriHalVersionOTPv2* otp = (FuriHalVersionOTPv2*)FURI_HAL_VERSION_OTP_ADDRESS;
 
     // 1st block, programmed afer baking
@@ -181,7 +179,7 @@ static void furi_hal_version_load_otp_v2() {
     }
 }
 
-void furi_hal_version_init() {
+void furi_hal_version_init(void) {
     switch(furi_hal_version_get_otp_version()) {
     case FuriHalVersionOtpVersionUnknown:
     case FuriHalVersionOtpVersionEmpty:
@@ -205,7 +203,7 @@ void furi_hal_version_init() {
     FURI_LOG_I(TAG, "Init OK");
 }
 
-FuriHalVersionOtpVersion furi_hal_version_get_otp_version() {
+FuriHalVersionOtpVersion furi_hal_version_get_otp_version(void) {
     if(*(uint64_t*)FURI_HAL_VERSION_OTP_ADDRESS == 0xFFFFFFFF) {
         return FuriHalVersionOtpVersionEmpty;
     } else {
@@ -228,40 +226,39 @@ FuriHalVersionOtpVersion furi_hal_version_get_otp_version() {
     }
 }
 
-uint8_t furi_hal_version_get_hw_version() {
+uint8_t furi_hal_version_get_hw_version(void) {
     return furi_hal_version.board_version;
 }
 
-uint8_t furi_hal_version_get_hw_target() {
+uint8_t furi_hal_version_get_hw_target(void) {
     return furi_hal_version.board_target;
 }
 
-uint8_t furi_hal_version_get_hw_body() {
+uint8_t furi_hal_version_get_hw_body(void) {
     return furi_hal_version.board_body;
 }
 
-FuriHalVersionColor furi_hal_version_get_hw_color() {
-    return furi_hal_version.board_color;
+FuriHalVersionColor furi_hal_version_get_hw_color(void) {
+    if(kalizero_settings.spoof_color == FuriHalVersionColorUnknown) {
+        return furi_hal_version.board_color;
+    }
+    return kalizero_settings.spoof_color;
 }
 
-uint8_t furi_hal_version_get_hw_connect() {
+uint8_t furi_hal_version_get_hw_connect(void) {
     return furi_hal_version.board_connect;
 }
 
-FuriHalVersionRegion furi_hal_version_get_hw_region() {
-    return FuriHalVersionRegionUnknown;
-}
-
-FuriHalVersionRegion furi_hal_version_get_hw_region_otp() {
+FuriHalVersionRegion furi_hal_version_get_hw_region(void) {
     return furi_hal_version.board_region;
 }
 
-const char* furi_hal_version_get_hw_region_name() {
-    return "R00";
+FuriHalVersionRegion furi_hal_version_get_hw_region_otp(void) {
+    return furi_hal_version_get_hw_region();
 }
 
-const char* furi_hal_version_get_hw_region_name_otp() {
-    switch(furi_hal_version_get_hw_region_otp()) {
+const char* furi_hal_version_get_hw_region_name(void) {
+    switch(furi_hal_version_get_hw_region()) {
     case FuriHalVersionRegionUnknown:
         return "R00";
     case FuriHalVersionRegionEuRu:
@@ -276,27 +273,31 @@ const char* furi_hal_version_get_hw_region_name_otp() {
     return "R??";
 }
 
-FuriHalVersionDisplay furi_hal_version_get_hw_display() {
+const char* furi_hal_version_get_hw_region_name_otp(void) {
+    return furi_hal_version_get_hw_region_name();
+}
+
+FuriHalVersionDisplay furi_hal_version_get_hw_display(void) {
     return furi_hal_version.board_display;
 }
 
-uint32_t furi_hal_version_get_hw_timestamp() {
+uint32_t furi_hal_version_get_hw_timestamp(void) {
     return furi_hal_version.timestamp;
 }
 
-const char* furi_hal_version_get_name_ptr() {
+const char* furi_hal_version_get_name_ptr(void) {
     return *furi_hal_version.name == 0x00 ? NULL : furi_hal_version.name;
 }
 
-const char* furi_hal_version_get_device_name_ptr() {
+const char* furi_hal_version_get_device_name_ptr(void) {
     return furi_hal_version.device_name + 1;
 }
 
-const char* furi_hal_version_get_ble_local_device_name_ptr() {
+const char* furi_hal_version_get_ble_local_device_name_ptr(void) {
     return furi_hal_version.device_name;
 }
 
-const uint8_t* furi_hal_version_get_ble_mac() {
+const uint8_t* furi_hal_version_get_ble_mac(void) {
     return furi_hal_version.ble_mac;
 }
 
@@ -304,17 +305,17 @@ const struct Version* furi_hal_version_get_firmware_version(void) {
     return version_get();
 }
 
-size_t furi_hal_version_uid_size() {
+size_t furi_hal_version_uid_size(void) {
     return 64 / 8;
 }
 
-const uint8_t* furi_hal_version_uid_default() {
+const uint8_t* furi_hal_version_uid_default(void) {
     return (const uint8_t*)UID64_BASE;
 }
 
-const uint8_t* furi_hal_version_uid() {
+const uint8_t* furi_hal_version_uid(void) {
     if(version_get_custom_name(NULL) != NULL) {
         return (const uint8_t*)&(*((uint32_t*)version_get_custom_name(NULL)));
     }
-    return (const uint8_t*)UID64_BASE;
+    return furi_hal_version_uid_default();
 }

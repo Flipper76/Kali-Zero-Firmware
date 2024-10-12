@@ -286,7 +286,7 @@ def prepare_app_metadata(target, source, env):
 def _validate_app_imports(target, source, env):
     sdk_cache = SdkCache(env["SDK_DEFINITION"].path, load_version_only=False)
     app_syms = set()
-    with open(target[0].path, "rt") as f:
+    with open(target[0].path, "rt", encoding="utf-8") as f:
         for line in f:
             app_syms.add(line.split()[0])
     unresolved_syms = app_syms - sdk_cache.get_valid_names()
@@ -308,6 +308,8 @@ def _validate_app_imports(target, source, env):
                 "totp_",
                 "token_info_",
                 "memset_s",
+                # troika
+                "mosgortrans_parse_transport_block",
             )
         )
         and any(
@@ -317,6 +319,7 @@ def _validate_app_imports(target, source, env):
                 "gallagher",
                 "js_",
                 "totp_",
+                "troika",
             ]
         )
     ]
@@ -494,7 +497,8 @@ def _gather_app_components(env, appname) -> AppDeploymentComponents:
             else:
                 # host app is a built-in app
                 components.add_app(artifacts_app_to_run)
-                components.extra_launch_args = f"-a {host_app.name}"
+                if host_app.name:
+                    components.extra_launch_args = f"-a {host_app.name}"
         else:
             raise UserError("Host app is unknown")
     else:

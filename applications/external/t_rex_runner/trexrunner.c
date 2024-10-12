@@ -17,13 +17,13 @@
 
 #define DINO_RUNNING_MS_PER_FRAME 500
 
-#define GRAVITY 60
+#define GRAVITY    60
 #define JUMP_SPEED 30
 
-#define CACTUS_W 10
-#define CACTUS_H 10
+#define CACTUS_W      10
+#define CACTUS_H      10
 #define START_x_speed 35
-#define X_INCREASE 3
+#define X_INCREASE    3
 
 #define BACKGROUND_W 128
 #define BACKGROUND_H 12
@@ -136,8 +136,9 @@ static void timer_callback(void* ctx) {
     furi_mutex_release(game_state->mutex);
 }
 
-static void input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void input_callback(InputEvent* input_event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     PluginEvent event = {.type = EventTypeKey, .input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);

@@ -18,48 +18,36 @@ void avr_isp_scene_about_on_enter(void* context) {
     furi_string_printf(temp_str, "\e#%s\n", "Information");
 
     furi_string_cat_printf(temp_str, "Version: %s\n", AVR_ISP_VERSION_APP);
-    furi_string_cat_printf(temp_str, "Développé par: %s\n", AVR_ISP_DEVELOPED);
+    furi_string_cat_printf(temp_str, "Developed by: %s\n", AVR_ISP_DEVELOPED);
     furi_string_cat_printf(temp_str, "Github: %s\n\n", AVR_ISP_GITHUB);
 
     furi_string_cat_printf(temp_str, "\e#%s\n", "Description");
     furi_string_cat_printf(
         temp_str,
-		"Cette application est un \n"
-		"programmeur intégré au \n"
-		"système AVR basé sur \n"
-		"stk500mk1.\n"
-		"Elle est compatible avec les \n"
-		"microcontrôleurs basés \n"
-		"sur AVR, y compris Arduino.\n"
-		"Vous pouvez également \n"
-		"l'utiliser pour réparer \n"
-		"la puce si vous corrompez \n"
-		"accidentellement le chargeur\n"
-		"de démarrage.\n\n");
+        "This application is an AVR in-system programmer based on stk500mk1. It is compatible with AVR-based"
+        " microcontrollers including Arduino. You can also use it to repair the chip if you accidentally"
+        " corrupt the bootloader.\n\n");
 
-    furi_string_cat_printf(temp_str, "\e#%s\n", "Ce qu'il peut faire:");
-    furi_string_cat_printf(temp_str, "- Créez un dump de \nvotre puce sur une carte SD\n");
-    furi_string_cat_printf(temp_str, "- Flashez le firmware de \nla puce depuis la carte SD\n");
-    furi_string_cat_printf(temp_str, "- Agir en tant que ISP USB \nfilaire à l'aide du logiciel \navrdude\n\n");
+    furi_string_cat_printf(temp_str, "\e#%s\n", "What it can do:");
+    furi_string_cat_printf(temp_str, "- Create a dump of your chip on an SD card\n");
+    furi_string_cat_printf(temp_str, "- Flash your chip firmware from the SD card\n");
+    furi_string_cat_printf(temp_str, "- Act as a wired USB ISP using avrdude software\n\n");
 
-    furi_string_cat_printf(temp_str, "\e#%s\n", "Série de puces prises en charge:");
+    furi_string_cat_printf(temp_str, "\e#%s\n", "Supported chip series:");
     furi_string_cat_printf(
         temp_str,
-        "Exemple de commande pour \nflash avrdude : \navrdude.exe -p m328p -c stk500v1 -P COMxx -U flash:r:"
+        "Example command for avrdude flashing: avrdude.exe -p m328p -c stk500v1 -P COMxx -U flash:r:"
         "X:\\sketch_sample.hex"
         ":i\n");
     furi_string_cat_printf(
         temp_str,
-        "Où: \n"
+        "Where: "
         "-p m328p"
-        " marque de votre puce, "
+        " brand of your chip, "
         "-P COMxx"
-		" numéro de port com dans le système "
-		" lorsque le "
-		"programmeur ISP"
-		" est activé\n\n");
-		
-
+        " com port number in the system when "
+        "ISP Programmer"
+        " is enabled\n\n");
 
     furi_string_cat_printf(temp_str, "\e#%s\n", "Info");
     furi_string_cat_printf(
@@ -68,7 +56,7 @@ void avr_isp_scene_about_on_enter(void* context) {
         "ATAxxxxx\nATA664251\nM3000\nLGT8F88P\nLGT8F168P\nLGT8F328P\n");
 
     furi_string_cat_printf(
-        temp_str, "Pour une liste détaillée \ndes puces prises en charge, \nconsultez l'aide d'AVRDude\n");
+        temp_str, "For a more detailed list of supported chips, see AVRDude help\n");
 
     widget_add_text_box_element(
         app->widget,
@@ -88,7 +76,7 @@ void avr_isp_scene_about_on_enter(void* context) {
         14,
         AlignCenter,
         AlignBottom,
-        "\e#\e!       Programmeur ISP      \e!\n",
+        "\e#\e!        ISP Programmer       \e!\n",
         false);
     widget_add_text_scroll_element(app->widget, 0, 16, 128, 50, furi_string_get_cstr(temp_str));
     furi_string_free(temp_str);

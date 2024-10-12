@@ -89,8 +89,9 @@ static void render_callback(Canvas* const canvas, void* ctx) {
     furi_mutex_release(plugin_state->mutex);
 }
 
-static void input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void input_callback(InputEvent* input_event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     PluginEvent event = {.type = EventTypeKey, .input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
@@ -113,7 +114,7 @@ static void hc_sr04_state_init(PluginState* const plugin_state) {
 }
 
 float hc_sr04_us_to_m(uint32_t us) {
-    //speed of sound for 20°C, 50% relative humidity
+    //speed of sound for 20Â°C, 50% relative humidity
     //331.3 + 20 * 0.606 + 50 * 0.0124 = 0.034404
     const float speed_sound_m_per_s = 344.04f;
     const float time_s = us / 1e6f;

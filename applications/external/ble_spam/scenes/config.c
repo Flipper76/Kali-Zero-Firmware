@@ -30,7 +30,7 @@ static void config_callback(void* _ctx, uint32_t index) {
         break;
     case ConfigLockKeyboard:
         ctx->lock_keyboard = true;
-        scene_manager_previous_scene(ctx->scene_manager);
+        view_dispatcher_send_custom_event(ctx->view_dispatcher, 0);
         notification_message_block(ctx->notification, &sequence_display_backlight_off);
         break;
     default:
@@ -43,19 +43,19 @@ void scene_config_on_enter(void* _ctx) {
 
     variable_item_list_set_header(list, ctx->attack->title);
 
-    config_bool(list, "MAC aléatoire", &ctx->attack->payload.random_mac);
+    config_bool(list, "Random MAC", &ctx->attack->payload.random_mac);
 
     variable_item_list_set_enter_callback(list, config_callback, ctx);
     if(!ctx->attack->protocol) {
-        variable_item_list_add(list, "Personne n'y échappe", 0, NULL, NULL);
+        variable_item_list_add(list, "None shall escape the SINK", 0, NULL, NULL);
     } else if(ctx->attack->protocol->extra_config) {
         ctx->fallback_config_enter = config_callback;
         ctx->attack->protocol->extra_config(ctx);
     }
 
-    config_bool(list, "Indicateur LED", &ctx->led_indicator);
+    config_bool(list, "LED Indicator", &ctx->led_indicator);
 
-    variable_item_list_add(list, "Verrou clavier", 0, NULL, NULL);
+    variable_item_list_add(list, "Lock Keyboard", 0, NULL, NULL);
 
     variable_item_list_set_selected_item(
         list, scene_manager_get_scene_state(ctx->scene_manager, SceneConfig));
@@ -64,8 +64,11 @@ void scene_config_on_enter(void* _ctx) {
 }
 
 bool scene_config_on_event(void* _ctx, SceneManagerEvent event) {
-    UNUSED(_ctx);
-    UNUSED(event);
+    Ctx* ctx = _ctx;
+    if(event.type == SceneManagerEventTypeCustom) {
+        scene_manager_previous_scene(ctx->scene_manager);
+        return true;
+    }
     return false;
 }
 

@@ -1,4 +1,4 @@
-#include "subghz_txrx_i.h"
+#include "subghz_txrx_i.h" // IWYU pragma: keep
 #include "subghz_txrx_create_protocol_key.h"
 #include <lib/subghz/transmitter.h>
 #include <lib/subghz/protocols/protocol_items.h>
@@ -25,7 +25,7 @@ bool subghz_txrx_gen_data_protocol(
 
     bool res = false;
 
-    subghz_txrx_set_preset(instance, preset_name, frequency, 0, 0, NULL, 0);
+    subghz_txrx_set_preset(instance, preset_name, frequency, NAN, NAN, NULL, 0);
     instance->decoder_result =
         subghz_receiver_search_decoder_base_by_name(instance->receiver, protocol_name);
 
@@ -81,6 +81,14 @@ bool subghz_txrx_gen_data_protocol_and_te(
             ret = true;
         }
     }
+    if(ret) {
+        uint32_t guard_time = 30;
+        if(!flipper_format_update_uint32(
+               instance->fff_data, "Guard_time", (uint32_t*)&guard_time, 1)) {
+            ret = false;
+            FURI_LOG_E(TAG, "Unable to update Guard_time");
+        }
+    }
     return ret;
 }
 
@@ -98,7 +106,7 @@ bool subghz_txrx_gen_keeloq_protocol( //TODO lead to a general appearance
 
     instance->transmitter =
         subghz_transmitter_alloc_init(instance->environment, SUBGHZ_PROTOCOL_KEELOQ_NAME);
-    subghz_txrx_set_preset(instance, preset_name, frequency, 0, 0, NULL, 0);
+    subghz_txrx_set_preset(instance, preset_name, frequency, NAN, NAN, NULL, 0);
 
     if(instance->transmitter &&
        subghz_protocol_keeloq_create_data(
@@ -131,7 +139,7 @@ bool subghz_txrx_gen_keeloq_bft_protocol(
 
     txrx->transmitter =
         subghz_transmitter_alloc_init(txrx->environment, SUBGHZ_PROTOCOL_KEELOQ_NAME);
-    subghz_txrx_set_preset(txrx, preset_name, frequency, 0, 0, NULL, 0);
+    subghz_txrx_set_preset(txrx, preset_name, frequency, NAN, NAN, NULL, 0);
 
     if(txrx->transmitter && subghz_protocol_keeloq_bft_create_data(
                                 subghz_transmitter_get_protocol_instance(txrx->transmitter),
@@ -175,7 +183,7 @@ bool subghz_txrx_gen_nice_flor_s_protocol(
 
     txrx->transmitter =
         subghz_transmitter_alloc_init(txrx->environment, SUBGHZ_PROTOCOL_NICE_FLOR_S_NAME);
-    subghz_txrx_set_preset(txrx, preset_name, frequency, 0, 0, NULL, 0);
+    subghz_txrx_set_preset(txrx, preset_name, frequency, NAN, NAN, NULL, 0);
 
     if(txrx->transmitter && subghz_protocol_nice_flor_s_create_data(
                                 subghz_transmitter_get_protocol_instance(txrx->transmitter),
@@ -208,7 +216,7 @@ bool subghz_txrx_gen_faac_slh_protocol(
 
     txrx->transmitter =
         subghz_transmitter_alloc_init(txrx->environment, SUBGHZ_PROTOCOL_FAAC_SLH_NAME);
-    subghz_txrx_set_preset(txrx, preset_name, frequency, 0, 0, NULL, 0);
+    subghz_txrx_set_preset(txrx, preset_name, frequency, NAN, NAN, NULL, 0);
 
     if(txrx->transmitter && subghz_protocol_faac_slh_create_data(
                                 subghz_transmitter_get_protocol_instance(txrx->transmitter),
@@ -251,7 +259,7 @@ bool subghz_txrx_gen_alutech_at_4n_protocol(
 
     txrx->transmitter =
         subghz_transmitter_alloc_init(txrx->environment, SUBGHZ_PROTOCOL_ALUTECH_AT_4N_NAME);
-    subghz_txrx_set_preset(txrx, preset_name, frequency, 0, 0, NULL, 0);
+    subghz_txrx_set_preset(txrx, preset_name, frequency, NAN, NAN, NULL, 0);
 
     if(txrx->transmitter && subghz_protocol_alutech_at_4n_create_data(
                                 subghz_transmitter_get_protocol_instance(txrx->transmitter),
@@ -280,7 +288,7 @@ bool subghz_txrx_gen_came_atomo_protocol(
 
     txrx->transmitter =
         subghz_transmitter_alloc_init(txrx->environment, SUBGHZ_PROTOCOL_CAME_ATOMO_NAME);
-    subghz_txrx_set_preset(txrx, preset_name, frequency, 0, 0, NULL, 0);
+    subghz_txrx_set_preset(txrx, preset_name, frequency, NAN, NAN, NULL, 0);
 
     if(txrx->transmitter && subghz_protocol_came_atomo_create_data(
                                 subghz_transmitter_get_protocol_instance(txrx->transmitter),
@@ -309,7 +317,7 @@ bool subghz_txrx_gen_somfy_telis_protocol(
 
     txrx->transmitter =
         subghz_transmitter_alloc_init(txrx->environment, SUBGHZ_PROTOCOL_SOMFY_TELIS_NAME);
-    subghz_txrx_set_preset(txrx, preset_name, frequency, 0, 0, NULL, 0);
+    subghz_txrx_set_preset(txrx, preset_name, frequency, NAN, NAN, NULL, 0);
 
     if(txrx->transmitter && subghz_protocol_somfy_telis_create_data(
                                 subghz_transmitter_get_protocol_instance(txrx->transmitter),
@@ -338,7 +346,7 @@ bool subghz_txrx_gen_secplus_v2_protocol(
     bool ret = false;
     instance->transmitter =
         subghz_transmitter_alloc_init(instance->environment, SUBGHZ_PROTOCOL_SECPLUS_V2_NAME);
-    subghz_txrx_set_preset(instance, name_preset, frequency, 0, 0, NULL, 0);
+    subghz_txrx_set_preset(instance, name_preset, frequency, NAN, NAN, NULL, 0);
     if(instance->transmitter) {
         subghz_protocol_secplus_v2_create_data(
             subghz_transmitter_get_protocol_instance(instance->transmitter),
@@ -373,4 +381,36 @@ bool subghz_txrx_gen_secplus_v1_protocol(
         ret = true;
     }
     return ret;
+}
+
+void subghz_txrx_gen_serial_gangqi(uint64_t* result_key) {
+    uint64_t randkey;
+    uint64_t only_required_bytes;
+    uint16_t sum_of_3bytes;
+    uint8_t xorbytes;
+
+    do {
+        randkey = (uint64_t)rand();
+        only_required_bytes = (randkey & 0x0FFFF0000) | 0x200000000;
+        sum_of_3bytes = ((only_required_bytes >> 32) & 0xFF) +
+                        ((only_required_bytes >> 24) & 0xFF) +
+                        ((only_required_bytes >> 16) & 0xFF);
+        xorbytes = ((only_required_bytes >> 32) & 0xFF) ^ ((only_required_bytes >> 24) & 0xFF) ^
+                   ((only_required_bytes >> 16) & 0xFF);
+    } while(
+        !((((!(sum_of_3bytes & 0x3)) && ((0xB < sum_of_3bytes) && (sum_of_3bytes < 0x141))) &&
+           ((((only_required_bytes >> 32) & 0xFF) == 0x2) ||
+            (((only_required_bytes >> 32) & 0xFF) == 0x3))) &&
+          ((((xorbytes == 0xBA) || (xorbytes == 0xE2)) ||
+            ((xorbytes == 0x3A) || (xorbytes == 0xF2))) ||
+           (xorbytes == 0xB2))));
+
+    //                       Serial             01             button          01
+    uint64_t new_key = only_required_bytes | (0b01 << 14) | (0xD << 10) | (0b01 << 8);
+
+    uint8_t crc = -0xD7 - ((new_key >> 32) & 0xFF) - ((new_key >> 24) & 0xFF) -
+                  ((new_key >> 16) & 0xFF) - ((new_key >> 8) & 0xFF);
+
+    // Add crc sum to the end
+    *result_key = (new_key | crc);
 }

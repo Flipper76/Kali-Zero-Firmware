@@ -4337,7 +4337,7 @@ It uses designated initializers to set the right fields.
 
 Usage:
 
-        struct mystruct variable = { ISHARED_PTR_STATIC_DESIGNATED_INIT(ishared_double, struct mystruct) };
+        struct mystruct variable = {Â ISHARED_PTR_STATIC_DESIGNATED_INIT(ishared_double, struct mystruct) };
 
 #### ISHARED\_PTR\_DEF(name, type[, oplist])
 

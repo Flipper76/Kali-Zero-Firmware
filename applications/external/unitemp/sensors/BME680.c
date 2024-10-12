@@ -37,43 +37,43 @@ const SensorType BME680 = {
 #define BME680_I2C_ADDR_MIN (0x76 << 1)
 #define BME680_I2C_ADDR_MAX (0x77 << 1)
 
-#define BME680_REG_STATUS 0x1D
-#define BME680_REG_CTRL_MEAS 0x74
-#define BME680_REG_CONFIG 0x75
-#define BME680_REG_CTRL_HUM 0x72
+#define BME680_REG_STATUS              0x1D
+#define BME680_REG_CTRL_MEAS           0x74
+#define BME680_REG_CONFIG              0x75
+#define BME680_REG_CTRL_HUM            0x72
 //Преддескретизация температуры
-#define BME680_TEMP_OVERSAMPLING_SKIP 0b00000000
-#define BME680_TEMP_OVERSAMPLING_1 0b00100000
-#define BME680_TEMP_OVERSAMPLING_2 0b01000000
-#define BME680_TEMP_OVERSAMPLING_4 0b01100000
-#define BME680_TEMP_OVERSAMPLING_8 0b10000000
-#define BME680_TEMP_OVERSAMPLING_16 0b10100000
+#define BME680_TEMP_OVERSAMPLING_SKIP  0b00000000
+#define BME680_TEMP_OVERSAMPLING_1     0b00100000
+#define BME680_TEMP_OVERSAMPLING_2     0b01000000
+#define BME680_TEMP_OVERSAMPLING_4     0b01100000
+#define BME680_TEMP_OVERSAMPLING_8     0b10000000
+#define BME680_TEMP_OVERSAMPLING_16    0b10100000
 //Преддескретизация давления
 #define BME680_PRESS_OVERSAMPLING_SKIP 0b00000000
-#define BME680_PRESS_OVERSAMPLING_1 0b00000100
-#define BME680_PRESS_OVERSAMPLING_2 0b00001000
-#define BME680_PRESS_OVERSAMPLING_4 0b00001100
-#define BME680_PRESS_OVERSAMPLING_8 0b00010000
-#define BME680_PRESS_OVERSAMPLING_16 0b00010100
+#define BME680_PRESS_OVERSAMPLING_1    0b00000100
+#define BME680_PRESS_OVERSAMPLING_2    0b00001000
+#define BME680_PRESS_OVERSAMPLING_4    0b00001100
+#define BME680_PRESS_OVERSAMPLING_8    0b00010000
+#define BME680_PRESS_OVERSAMPLING_16   0b00010100
 //Преддескретизация влажности
-#define BME680_HUM_OVERSAMPLING_SKIP 0b00000000
-#define BME680_HUM_OVERSAMPLING_1 0b00000001
-#define BME680_HUM_OVERSAMPLING_2 0b00000010
-#define BME680_HUM_OVERSAMPLING_4 0b00000011
-#define BME680_HUM_OVERSAMPLING_8 0b00000100
-#define BME680_HUM_OVERSAMPLING_16 0b00000101
+#define BME680_HUM_OVERSAMPLING_SKIP   0b00000000
+#define BME680_HUM_OVERSAMPLING_1      0b00000001
+#define BME680_HUM_OVERSAMPLING_2      0b00000010
+#define BME680_HUM_OVERSAMPLING_4      0b00000011
+#define BME680_HUM_OVERSAMPLING_8      0b00000100
+#define BME680_HUM_OVERSAMPLING_16     0b00000101
 //Режимы работы датчика
-#define BME680_MODE_SLEEP 0b00000000 //Наелся и спит
-#define BME680_MODE_FORCED 0b00000001 //Обновляет значения 1 раз, после чего уходит в сон
+#define BME680_MODE_SLEEP              0b00000000 //Наелся и спит
+#define BME680_MODE_FORCED             0b00000001 //Обновляет значения 1 раз, после чего уходит в сон
 //Коэффициент фильтрации значений
-#define BME680_FILTER_COEFF_1 0b00000000
-#define BME680_FILTER_COEFF_2 0b00000100
-#define BME680_FILTER_COEFF_4 0b00001000
-#define BME680_FILTER_COEFF_8 0b00001100
-#define BME680_FILTER_COEFF_16 0b00010000
+#define BME680_FILTER_COEFF_1          0b00000000
+#define BME680_FILTER_COEFF_2          0b00000100
+#define BME680_FILTER_COEFF_4          0b00001000
+#define BME680_FILTER_COEFF_8          0b00001100
+#define BME680_FILTER_COEFF_16         0b00010000
 //Разрешить работу по SPI
-#define BME680_SPI_3W_ENABLE 0b00000001
-#define BME680_SPI_3W_DISABLE 0b00000000
+#define BME680_SPI_3W_ENABLE           0b00000001
+#define BME680_SPI_3W_DISABLE          0b00000000
 
 /* https://github.com/boschsensortec/BME680_driver/blob/master/bme680.c or
    https://github.com/boschsensortec/BME68x-Sensor-API */
@@ -173,48 +173,48 @@ static float BME680_compensate_humidity(I2CSensor* i2c_sensor, int32_t hum_adc) 
 }
 
 /* https://github.com/boschsensortec/BME680_driver/blob/master/bme680_defs.h */
-#define BME680_COEFF_SIZE UINT8_C(41)
-#define BME680_COEFF_ADDR1_LEN UINT8_C(25)
-#define BME680_COEFF_ADDR2_LEN UINT8_C(16)
-#define BME680_COEFF_ADDR1 UINT8_C(0x89)
-#define BME680_COEFF_ADDR2 UINT8_C(0xe1)
+#define BME680_COEFF_SIZE             UINT8_C(41)
+#define BME680_COEFF_ADDR1_LEN        UINT8_C(25)
+#define BME680_COEFF_ADDR2_LEN        UINT8_C(16)
+#define BME680_COEFF_ADDR1            UINT8_C(0x89)
+#define BME680_COEFF_ADDR2            UINT8_C(0xe1)
 #define BME680_CONCAT_BYTES(msb, lsb) (((uint16_t)msb << 8) | (uint16_t)lsb)
-#define BME680_T2_LSB_REG (1)
-#define BME680_T2_MSB_REG (2)
-#define BME680_T3_REG (3)
-#define BME680_P1_LSB_REG (5)
-#define BME680_P1_MSB_REG (6)
-#define BME680_P2_LSB_REG (7)
-#define BME680_P2_MSB_REG (8)
-#define BME680_P3_REG (9)
-#define BME680_P4_LSB_REG (11)
-#define BME680_P4_MSB_REG (12)
-#define BME680_P5_LSB_REG (13)
-#define BME680_P5_MSB_REG (14)
-#define BME680_P7_REG (15)
-#define BME680_P6_REG (16)
-#define BME680_P8_LSB_REG (19)
-#define BME680_P8_MSB_REG (20)
-#define BME680_P9_LSB_REG (21)
-#define BME680_P9_MSB_REG (22)
-#define BME680_P10_REG (23)
-#define BME680_H2_MSB_REG (25)
-#define BME680_H2_LSB_REG (26)
-#define BME680_H1_LSB_REG (26)
-#define BME680_H1_MSB_REG (27)
-#define BME680_H3_REG (28)
-#define BME680_H4_REG (29)
-#define BME680_H5_REG (30)
-#define BME680_H6_REG (31)
-#define BME680_H7_REG (32)
-#define BME680_T1_LSB_REG (33)
-#define BME680_T1_MSB_REG (34)
-#define BME680_GH2_LSB_REG (35)
-#define BME680_GH2_MSB_REG (36)
-#define BME680_GH1_REG (37)
-#define BME680_GH3_REG (38)
-#define BME680_HUM_REG_SHIFT_VAL UINT8_C(4)
-#define BME680_BIT_H1_DATA_MSK UINT8_C(0x0F)
+#define BME680_T2_LSB_REG             (1)
+#define BME680_T2_MSB_REG             (2)
+#define BME680_T3_REG                 (3)
+#define BME680_P1_LSB_REG             (5)
+#define BME680_P1_MSB_REG             (6)
+#define BME680_P2_LSB_REG             (7)
+#define BME680_P2_MSB_REG             (8)
+#define BME680_P3_REG                 (9)
+#define BME680_P4_LSB_REG             (11)
+#define BME680_P4_MSB_REG             (12)
+#define BME680_P5_LSB_REG             (13)
+#define BME680_P5_MSB_REG             (14)
+#define BME680_P7_REG                 (15)
+#define BME680_P6_REG                 (16)
+#define BME680_P8_LSB_REG             (19)
+#define BME680_P8_MSB_REG             (20)
+#define BME680_P9_LSB_REG             (21)
+#define BME680_P9_MSB_REG             (22)
+#define BME680_P10_REG                (23)
+#define BME680_H2_MSB_REG             (25)
+#define BME680_H2_LSB_REG             (26)
+#define BME680_H1_LSB_REG             (26)
+#define BME680_H1_MSB_REG             (27)
+#define BME680_H3_REG                 (28)
+#define BME680_H4_REG                 (29)
+#define BME680_H5_REG                 (30)
+#define BME680_H6_REG                 (31)
+#define BME680_H7_REG                 (32)
+#define BME680_T1_LSB_REG             (33)
+#define BME680_T1_MSB_REG             (34)
+#define BME680_GH2_LSB_REG            (35)
+#define BME680_GH2_MSB_REG            (36)
+#define BME680_GH1_REG                (37)
+#define BME680_GH3_REG                (38)
+#define BME680_HUM_REG_SHIFT_VAL      UINT8_C(4)
+#define BME680_BIT_H1_DATA_MSK        UINT8_C(0x0F)
 
 static bool BME680_readCalValues(I2CSensor* i2c_sensor) {
     BME680_instance* bme680_instance = (BME680_instance*)i2c_sensor->sensorInstance;

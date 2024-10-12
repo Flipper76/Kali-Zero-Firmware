@@ -13,10 +13,10 @@
 
 #define BORDER_OFFSET 1
 #define MARGIN_OFFSET 3
-#define BLOCK_HEIGHT 6
-#define BLOCK_WIDTH 6
+#define BLOCK_HEIGHT  6
+#define BLOCK_WIDTH   6
 
-#define FIELD_WIDTH 10
+#define FIELD_WIDTH  10
 #define FIELD_HEIGHT 20
 
 #define FIELD_X_OFFSET 3
@@ -32,7 +32,11 @@ typedef struct Point {
 
 // Rotation logic taken from
 // https://www.youtube.com/watch?v=yIpk5TJ_uaI
-typedef enum { OffsetTypeCommon, OffsetTypeI, OffsetTypeO } OffsetType;
+typedef enum {
+    OffsetTypeCommon,
+    OffsetTypeI,
+    OffsetTypeO
+} OffsetType;
 
 // Since we only support rotating clockwise, these are actual translation values,
 // not values to be subtracted to get translation values
@@ -68,7 +72,11 @@ static Piece shapes[] = {
     {.p = {{5, 1}, {5, 0}, {6, 0}, {6, 1}}, .rotIdx = 0, .offsetType = OffsetTypeO} // O
 };
 
-typedef enum { GameStatePlaying, GameStateGameOver, GameStatePaused } GameState;
+typedef enum {
+    GameStatePlaying,
+    GameStateGameOver,
+    GameStatePaused
+} GameState;
 
 typedef struct {
     bool playField[FIELD_HEIGHT][FIELD_WIDTH];
@@ -231,8 +239,9 @@ static void tetris_game_render_callback(Canvas* const canvas, void* ctx) {
     furi_mutex_release(tetris_state->mutex);
 }
 
-static void tetris_game_input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void tetris_game_input_callback(InputEvent* input_event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     TetrisEvent event = {.type = EventTypeKey, .input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
@@ -384,8 +393,9 @@ static bool tetris_game_piece_at_bottom(TetrisState* tetris_state, Piece* newPie
     return false;
 }
 
-static void tetris_game_update_timer_callback(FuriMessageQueue* event_queue) {
-    furi_assert(event_queue);
+static void tetris_game_update_timer_callback(void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* event_queue = ctx;
 
     TetrisEvent event = {.type = EventTypeTick};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);

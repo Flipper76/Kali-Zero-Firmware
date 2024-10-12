@@ -10,12 +10,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BASE_X 18
-#define BASE_Y 44
+#define BASE_X      18
+#define BASE_Y      44
 #define DICE_OFFSET 12
-#define HOLD "*"
-#define MAX_DICE 5
-#define NUM_SCORES 13
+#define HOLD        "*"
+#define MAX_DICE    5
+#define NUM_SCORES  13
 
 bool new_game = true;
 bool game_over = false;

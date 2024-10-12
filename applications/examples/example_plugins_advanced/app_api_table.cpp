@@ -8,7 +8,7 @@
  */
 #include "app_api_table_i.h"
 
-static_assert(!has_hash_collisions(app_api_table), "Detected API method hash collision!");
+static_assert(!has_hash_collisions(app_api_table), "Collision de hachage de méthode API détectée!");
 
 constexpr HashtableApiInterface applicaton_hashtable_api_interface{
     {

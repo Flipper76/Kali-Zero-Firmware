@@ -8,18 +8,15 @@ static bool kali_zero_app_custom_event_callback(void* context, uint32_t event) {
 
 void callback_reboot(void* context) {
     UNUSED(context);
-    power_reboot(PowerBootModeNormal);
+    Power* power = furi_record_open(RECORD_POWER);
+    power_reboot(power, PowerBootModeNormal);
 }
 
 bool kali_zero_app_apply(KaliZeroApp* app) {
-    Storage* storage = furi_record_open(RECORD_STORAGE);
-
     if(app->save_mainmenu_apps) {
-        Stream* stream = file_stream_alloc(storage);
-        if(file_stream_open(stream, KALIZERO_MENU_PATH, FSAM_READ_WRITE, FSOM_CREATE_ALWAYS)) {
-            stream_write_format(stream, "MenuAppList Version %u\n", 0);
-            CharList_it_t it;
-            CharList_it(it, app->mainmenu_app_exes);
+        Stream* stream = file_stream_alloc(app->storage);
+        if(file_stream_open(stream, MAINMENU_APPS_PATH, FSAM_READ_WRITE, FSOM_CREATE_ALWAYS)) {
+            stream_write_format(stream, "MenuAppList Version %u\n", 1);
             for(size_t i = 0; i < CharList_size(app->mainmenu_app_exes); i++) {
                 stream_write_format(stream, "%s\n", *CharList_get(app->mainmenu_app_exes, i));
             }
@@ -28,8 +25,12 @@ bool kali_zero_app_apply(KaliZeroApp* app) {
         stream_free(stream);
     }
 
+    if(app->save_desktop) {
+        desktop_api_set_settings(app->desktop, &app->desktop_settings);
+    }
+
     if(app->save_subghz_freqs) {
-        FlipperFormat* file = flipper_format_file_alloc(storage);
+        FlipperFormat* file = flipper_format_file_alloc(app->storage);
         do {
             FrequencyList_it_t it;
             if(!flipper_format_file_open_always(file, EXT_PATH("subghz/assets/setting_user")))
@@ -65,7 +66,7 @@ bool kali_zero_app_apply(KaliZeroApp* app) {
     }
 
     if(app->save_subghz) {
-        FlipperFormat* file = flipper_format_file_alloc(storage);
+        FlipperFormat* file = flipper_format_file_alloc(app->storage);
         do {
             if(!flipper_format_file_open_always(file, "/ext/subghz/assets/extend_range.txt"))
                 break;
@@ -76,15 +77,17 @@ bool kali_zero_app_apply(KaliZeroApp* app) {
             if(!flipper_format_write_bool(
                    file, "use_ext_range_at_own_risk", &app->subghz_extend, 1))
                 break;
+            if(!flipper_format_write_bool(file, "ignore_default_tx_region", &app->subghz_bypass, 1))
+                break;
         } while(0);
         flipper_format_free(file);
     }
 
     if(app->save_name) {
         if(strcmp(app->device_name, "") == 0) {
-            storage_simply_remove(storage, NAMESPOOF_PATH);
+            storage_simply_remove(app->storage, NAMESPOOF_PATH);
         } else {
-            FlipperFormat* file = flipper_format_file_alloc(storage);
+            FlipperFormat* file = flipper_format_file_alloc(app->storage);
 
             do {
                 if(!flipper_format_file_open_always(file, NAMESPOOF_PATH)) break;
@@ -97,18 +100,16 @@ bool kali_zero_app_apply(KaliZeroApp* app) {
         }
     }
 
-    if(app->save_level || app->save_angry) {
-        Dolphin* dolphin = furi_record_open(RECORD_DOLPHIN);
-        if(app->save_level) {
-            int32_t xp = app->dolphin_level > 1 ? DOLPHIN_LEVELS[app->dolphin_level - 2] : 0;
-            dolphin->state->data.icounter = xp + 1;
+    if(app->save_dolphin) {
+        if(app->save_xp) {
+            app->dolphin->state->data.icounter = app->dolphin_xp;
         }
         if(app->save_angry) {
-            dolphin->state->data.butthurt = app->dolphin_angry;
+            app->dolphin->state->data.butthurt = app->dolphin_angry;
         }
-        dolphin->state->dirty = true;
-        dolphin_state_save(dolphin->state);
-        furi_record_close(RECORD_DOLPHIN);
+        app->dolphin->state->dirty = true;
+        dolphin_flush(app->dolphin);
+        dolphin_reload_state(app->dolphin);
     }
 
     if(app->save_backlight) {
@@ -131,7 +132,7 @@ bool kali_zero_app_apply(KaliZeroApp* app) {
         view_dispatcher_switch_to_view(app->view_dispatcher, KaliZeroAppViewPopup);
         return true;
     } else if(app->apply_pack) {
-        kalizero_assets_free();
+        asset_packs_free();
         popup_set_header(app->popup, "Rechargement...", 64, 26, AlignCenter, AlignCenter);
         popup_set_text(app->popup, "Application du pack d'actifs...", 64, 40, AlignCenter, AlignCenter);
         popup_set_callback(app->popup, NULL);
@@ -139,10 +140,8 @@ bool kali_zero_app_apply(KaliZeroApp* app) {
         popup_set_timeout(app->popup, 0);
         popup_disable_timeout(app->popup);
         view_dispatcher_switch_to_view(app->view_dispatcher, KaliZeroAppViewPopup);
-        kalizero_assets_init();
+        asset_packs_init();
     }
-
-    furi_record_close(RECORD_STORAGE);
     return false;
 }
 
@@ -159,16 +158,119 @@ static bool kali_zero_app_back_event_callback(void* context) {
     return scene_manager_handle_back_event(app->scene_manager);
 }
 
+static void kali_zero_app_push_mainmenu_app(KaliZeroApp* app, FuriString* label, FuriString* exe) {
+    CharList_push_back(app->mainmenu_app_exes, strdup(furi_string_get_cstr(exe)));
+    // Display logic mimics applications/services/gui/modules/menu.c
+    if(furi_string_equal(label, "KaliZero")) {
+        furi_string_set(label, "MNTM");
+    } else if(furi_string_equal(label, "125 kHz RFID")) {
+        furi_string_set(label, "RFID");
+    } else if(furi_string_equal(label, "Sub-GHz")) {
+        furi_string_set(label, "SubGHz");
+    } else if(furi_string_start_with_str(label, "[")) {
+        size_t trim = furi_string_search_str(label, "] ", 1);
+        if(trim != FURI_STRING_FAILURE) {
+            furi_string_right(label, trim + 2);
+        }
+    }
+    CharList_push_back(app->mainmenu_app_labels, strdup(furi_string_get_cstr(label)));
+}
+
+void kali_zero_app_load_mainmenu_apps(KaliZeroApp* app) {
+    // Loading logic mimics applications/services/loader/loader_menu.c
+    Stream* stream = file_stream_alloc(app->storage);
+    FuriString* line = furi_string_alloc();
+    FuriString* label = furi_string_alloc();
+    uint32_t version;
+    uint8_t* unused_icon = malloc(FAP_MANIFEST_MAX_ICON_SIZE);
+    if(file_stream_open(stream, MAINMENU_APPS_PATH, FSAM_READ, FSOM_OPEN_EXISTING) &&
+       stream_read_line(stream, line) &&
+       sscanf(furi_string_get_cstr(line), "MenuAppList Version %lu", &version) == 1 &&
+       version <= 1) {
+        while(stream_read_line(stream, line)) {
+            furi_string_trim(line);
+            if(version == 0) {
+                if(furi_string_equal(line, "RFID")) {
+                    furi_string_set(line, "125 kHz RFID");
+                } else if(furi_string_equal(line, "SubGHz")) {
+                    furi_string_set(line, "Sub-GHz");
+                } else if(furi_string_equal(line, "Xtreme")) {
+                    furi_string_set(line, "KaliZero");
+                }
+            }
+            if(furi_string_start_with(line, "/")) {
+                if(!flipper_application_load_name_and_icon(
+                       line, app->storage, &unused_icon, label)) {
+                    furi_string_reset(label);
+                }
+            } else {
+                furi_string_reset(label);
+                bool found = false;
+                for(size_t i = 0; !found && i < FLIPPER_APPS_COUNT; i++) {
+                    if(!strcmp(furi_string_get_cstr(line), FLIPPER_APPS[i].name)) {
+                        furi_string_set(label, FLIPPER_APPS[i].name);
+                        found = true;
+                    }
+                }
+                for(size_t i = 0; !found && i < FLIPPER_EXTERNAL_APPS_COUNT; i++) {
+                    if(!strcmp(furi_string_get_cstr(line), FLIPPER_EXTERNAL_APPS[i].name)) {
+                        furi_string_set(label, FLIPPER_EXTERNAL_APPS[i].name);
+                        found = true;
+                    }
+                }
+            }
+            if(furi_string_empty(label)) {
+                // Ignore unknown apps just like in main menu, prevents "ghost" apps when saving
+                continue;
+            }
+            kali_zero_app_push_mainmenu_app(app, label, line);
+        }
+    } else {
+        for(size_t i = 0; i < FLIPPER_APPS_COUNT; i++) {
+            furi_string_set(label, FLIPPER_APPS[i].name);
+            furi_string_set(line, FLIPPER_APPS[i].name);
+            kali_zero_app_push_mainmenu_app(app, label, line);
+        }
+        // Until count - 1 because last app is hardcoded below
+        for(size_t i = 0; i < FLIPPER_EXTERNAL_APPS_COUNT - 1; i++) {
+            furi_string_set(label, FLIPPER_EXTERNAL_APPS[i].name);
+            furi_string_set(line, FLIPPER_EXTERNAL_APPS[i].name);
+            kali_zero_app_push_mainmenu_app(app, label, line);
+        }
+    }
+    free(unused_icon);
+    furi_string_free(label);
+    furi_string_free(line);
+    file_stream_close(stream);
+    stream_free(stream);
+}
+
+void kali_zero_app_empty_mainmenu_apps(KaliZeroApp* app) {
+    CharList_it_t it;
+    for(CharList_it(it, app->mainmenu_app_labels); !CharList_end_p(it); CharList_next(it)) {
+        free(*CharList_cref(it));
+    }
+    CharList_reset(app->mainmenu_app_labels);
+    for(CharList_it(it, app->mainmenu_app_exes); !CharList_end_p(it); CharList_next(it)) {
+        free(*CharList_cref(it));
+    }
+    CharList_reset(app->mainmenu_app_exes);
+}
+
 KaliZeroApp* kali_zero_app_alloc() {
     KaliZeroApp* app = malloc(sizeof(KaliZeroApp));
     app->gui = furi_record_open(RECORD_GUI);
+    app->storage = furi_record_open(RECORD_STORAGE);
+    app->desktop = furi_record_open(RECORD_DESKTOP);
+    app->dolphin = furi_record_open(RECORD_DOLPHIN);
     app->dialogs = furi_record_open(RECORD_DIALOGS);
+    app->expansion = furi_record_open(RECORD_EXPANSION);
     app->notification = furi_record_open(RECORD_NOTIFICATION);
 
     // View Dispatcher and Scene Manager
     app->view_dispatcher = view_dispatcher_alloc();
     app->scene_manager = scene_manager_alloc(&kali_zero_app_scene_handlers, app);
-    view_dispatcher_enable_queue(app->view_dispatcher);
+
     view_dispatcher_set_event_callback_context(app->view_dispatcher, app);
 
     view_dispatcher_set_custom_event_callback(
@@ -197,8 +299,15 @@ KaliZeroApp* kali_zero_app_alloc() {
     view_dispatcher_add_view(
         app->view_dispatcher, KaliZeroAppViewByteInput, byte_input_get_view(app->byte_input));
 
+    app->number_input = number_input_alloc();
+    view_dispatcher_add_view(
+        app->view_dispatcher,
+        KaliZeroAppViewNumberInput,
+        number_input_get_view(app->number_input));
+
     app->popup = popup_alloc();
-    view_dispatcher_add_view(app->view_dispatcher, KaliZeroAppViewPopup, popup_get_view(app->popup));
+    view_dispatcher_add_view(
+        app->view_dispatcher, KaliZeroAppViewPopup, popup_get_view(app->popup));
 
     app->dialog_ex = dialog_ex_alloc();
     view_dispatcher_add_view(
@@ -208,13 +317,12 @@ KaliZeroApp* kali_zero_app_alloc() {
 
     app->asset_pack_index = 0;
     CharList_init(app->asset_pack_names);
-    Storage* storage = furi_record_open(RECORD_STORAGE);
-    File* folder = storage_file_alloc(storage);
+    File* folder = storage_file_alloc(app->storage);
     FileInfo info;
-    char* name = malloc(KALIZERO_ASSETS_PACK_NAME_LEN);
-    if(storage_dir_open(folder, KALIZERO_ASSETS_PATH)) {
-        while(storage_dir_read(folder, &info, name, KALIZERO_ASSETS_PACK_NAME_LEN)) {
-            if(info.flags & FSF_DIRECTORY) {
+    char* name = malloc(ASSET_PACKS_NAME_LEN);
+    if(storage_dir_open(folder, ASSET_PACKS_PATH)) {
+        while(storage_dir_read(folder, &info, name, ASSET_PACKS_NAME_LEN)) {
+            if(info.flags & FSF_DIRECTORY && name[0] != '.') {
                 char* copy = strdup(name);
                 size_t idx = 0;
                 for(; idx < CharList_size(app->asset_pack_names); idx++) {
@@ -238,29 +346,11 @@ KaliZeroApp* kali_zero_app_alloc() {
 
     CharList_init(app->mainmenu_app_labels);
     CharList_init(app->mainmenu_app_exes);
-    Stream* stream = file_stream_alloc(storage);
-    FuriString* line = furi_string_alloc();
-    if(file_stream_open(stream, KALIZERO_MENU_PATH, FSAM_READ, FSOM_OPEN_EXISTING)) {
-        stream_read_line(stream, line);
-        while(stream_read_line(stream, line)) {
-            furi_string_replace_all(line, "\r", "");
-            furi_string_replace_all(line, "\n", "");
-            CharList_push_back(app->mainmenu_app_exes, strdup(furi_string_get_cstr(line)));
-            flipper_application_load_name_and_icon(line, storage, NULL, line);
-            if(furi_string_start_with_str(line, "[")) {
-                size_t trim = furi_string_search_str(line, "] ", 1);
-                if(trim != FURI_STRING_FAILURE) {
-                    furi_string_right(line, trim + 2);
-                }
-            }
-            CharList_push_back(app->mainmenu_app_labels, strdup(furi_string_get_cstr(line)));
-        }
-    }
-    furi_string_free(line);
-    file_stream_close(stream);
-    stream_free(stream);
+    kali_zero_app_load_mainmenu_apps(app);
 
-    FlipperFormat* file = flipper_format_file_alloc(storage);
+    desktop_api_get_settings(app->desktop, &app->desktop_settings);
+
+    FlipperFormat* file = flipper_format_file_alloc(app->storage);
     FrequencyList_init(app->subghz_static_freqs);
     FrequencyList_init(app->subghz_hopper_freqs);
     app->subghz_use_defaults = true;
@@ -286,23 +376,49 @@ KaliZeroApp* kali_zero_app_alloc() {
     } while(false);
     flipper_format_free(file);
 
-    file = flipper_format_file_alloc(storage);
+    file = flipper_format_file_alloc(app->storage);
     if(flipper_format_file_open_existing(file, "/ext/subghz/assets/extend_range.txt")) {
         flipper_format_read_bool(file, "use_ext_range_at_own_risk", &app->subghz_extend, 1);
+        flipper_format_read_bool(file, "ignore_default_tx_region", &app->subghz_bypass, 1);
     }
     flipper_format_free(file);
-    furi_record_close(RECORD_STORAGE);
 
     strlcpy(app->device_name, furi_hal_version_get_name_ptr(), FURI_HAL_VERSION_ARRAY_NAME_LENGTH);
 
-    Dolphin* dolphin = furi_record_open(RECORD_DOLPHIN);
-    DolphinStats stats = dolphin_stats(dolphin);
-    app->dolphin_level = stats.level;
+    DolphinStats stats = dolphin_stats(app->dolphin);
+    app->dolphin_xp = stats.icounter;
     app->dolphin_angry = stats.butthurt;
-    furi_record_close(RECORD_DOLPHIN);
 
-    app->version_tag =
-        furi_string_alloc_printf("%s  %s", version_get_version(NULL), version_get_builddate(NULL));
+    // Will be "(version) (commit or date)"
+    app->version_tag = furi_string_alloc_set(version_get_version(NULL));
+    size_t separator = furi_string_size(app->version_tag);
+    // Need canvas to calculate text length
+    Canvas* canvas = gui_direct_draw_acquire(app->gui);
+    canvas_set_font(canvas, FontPrimary);
+    if(furi_string_equal(app->version_tag, "KZFW-dev")) {
+        // Add space, add commit sha
+        furi_string_cat_printf(app->version_tag, " %s", version_get_githash(NULL));
+        // Make uppercase
+        for(size_t i = 0; i < furi_string_size(app->version_tag); ++i) {
+            furi_string_set_char(
+                app->version_tag, i, toupper(furi_string_get_char(app->version_tag, i)));
+        }
+        // Remove sha digits if necessary
+        while(canvas_string_width(canvas, furi_string_get_cstr(app->version_tag)) >=
+              canvas_width(canvas) - 8) {
+            furi_string_left(app->version_tag, furi_string_size(app->version_tag) - 1);
+        }
+    } else {
+        // Make uppercase, add space, add build date
+        furi_string_replace(app->version_tag, "mntm", "MNTM");
+        furi_string_cat_printf(app->version_tag, " %s", version_get_builddate(NULL));
+    }
+    // Add spaces to align right
+    while(canvas_string_width(canvas, furi_string_get_cstr(app->version_tag)) <=
+          canvas_width(canvas) - 13) {
+        furi_string_replace_at(app->version_tag, separator, 0, " ");
+    }
+    gui_direct_draw_release(app->gui);
 
     return app;
 }
@@ -319,6 +435,8 @@ void kali_zero_app_free(KaliZeroApp* app) {
     text_input_free(app->text_input);
     view_dispatcher_remove_view(app->view_dispatcher, KaliZeroAppViewByteInput);
     byte_input_free(app->byte_input);
+    view_dispatcher_remove_view(app->view_dispatcher, KaliZeroAppViewNumberInput);
+    number_input_free(app->number_input);
     view_dispatcher_remove_view(app->view_dispatcher, KaliZeroAppViewPopup);
     popup_free(app->popup);
     view_dispatcher_remove_view(app->view_dispatcher, KaliZeroAppViewDialogEx);
@@ -336,13 +454,8 @@ void kali_zero_app_free(KaliZeroApp* app) {
     }
     CharList_clear(app->asset_pack_names);
 
-    for(CharList_it(it, app->mainmenu_app_labels); !CharList_end_p(it); CharList_next(it)) {
-        free(*CharList_cref(it));
-    }
+    kali_zero_app_empty_mainmenu_apps(app);
     CharList_clear(app->mainmenu_app_labels);
-    for(CharList_it(it, app->mainmenu_app_exes); !CharList_end_p(it); CharList_next(it)) {
-        free(*CharList_cref(it));
-    }
     CharList_clear(app->mainmenu_app_exes);
 
     FrequencyList_clear(app->subghz_static_freqs);
@@ -352,7 +465,11 @@ void kali_zero_app_free(KaliZeroApp* app) {
 
     // Records
     furi_record_close(RECORD_NOTIFICATION);
+    furi_record_close(RECORD_EXPANSION);
     furi_record_close(RECORD_DIALOGS);
+    furi_record_close(RECORD_DOLPHIN);
+    furi_record_close(RECORD_DESKTOP);
+    furi_record_close(RECORD_STORAGE);
     furi_record_close(RECORD_GUI);
     free(app);
 }

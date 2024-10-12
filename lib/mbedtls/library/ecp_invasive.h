@@ -58,7 +58,7 @@ mbedtls_ecp_variant mbedtls_ecp_get_variant(void);
  *                  254 for Curve25519 or 447 for Curve448.
  * \param d         The randomly generated key. This is a number of size
  *                  exactly \p high_bit + 1 bits, with the least significant bits
- *                  masked as specified in [Curve25519] and in [RFC7748] §5.
+ *                  masked as specified in [Curve25519] and in [RFC7748] ยง5.
  * \param f_rng     The RNG function.
  * \param p_rng     The RNG context to be passed to \p f_rng.
  *

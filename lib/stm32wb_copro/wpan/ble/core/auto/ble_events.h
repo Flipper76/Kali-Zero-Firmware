@@ -1,12 +1,11 @@
 /*****************************************************************************
  * @file    ble_events.h
- * @author  MDG
  * @brief   STM32WB BLE API (event callbacks)
  *          Auto-generated file: do not edit!
  *****************************************************************************
  * @attention
  *
- * Copyright (c) 2018-2023 STMicroelectronics.
+ * Copyright (c) 2018-2024 STMicroelectronics.
  * All rights reserved.
  *
  * This software is licensed under terms that can be found in the LICENSE file
@@ -1395,10 +1394,15 @@ void aci_gatt_read_multi_permit_req_event( uint16_t Connection_Handle,
 
 /**
  * @brief ACI_GATT_TX_POOL_AVAILABLE_EVENT
- * Each time BLE stack raises the error code BLE_STATUS_INSUFFICIENT_RESOURCES
- * (0x64), the ACI_GATT_TX_POOL_AVAILABLE_EVENT event is generated as soon as
- * there are at least two buffers available for notifications or write
- * commands.
+ * Each time one of the following GATT commands raises the error code
+ * BLE_STATUS_INSUFFICIENT_RESOURCES, the ACI_GATT_TX_POOL_AVAILABLE_EVENT
+ * event is generated as soon as there is at least one buffer (with a size of
+ * ATT_MTU) available in the TX pool:
+ * - ACI_GATT_UPDATE_CHAR_VALUE,
+ * - ACI_GATT_UPDATE_CHAR_VALUE_EXT,
+ * - ACI_GATT_SEND_MULT_NOTIFICATION,
+ * - ACI_GATT_WRITE_WITHOUT_RESP,
+ * - ACI_GATT_SIGNED_WRITE_WITHOUT_RESP.
  * 
  * @param Connection_Handle Not used.
  * @param Available_Buffers Number of buffers available.
@@ -1871,9 +1875,9 @@ void aci_l2cap_coc_rx_data_event( uint8_t Channel_Index,
 /**
  * @brief ACI_L2CAP_COC_TX_POOL_AVAILABLE_EVENT
  * Each time ACI_L2CAP_COC_TX_DATA raises the error code
- * BLE_STATUS_INSUFFICIENT_RESOURCES (0x64), the
- * ACI_L2CAP_COC_TX_POOL_AVAILABLE_EVENT event is generated as soon as there is
- * a free buffer available for sending K-frames.
+ * BLE_STATUS_INSUFFICIENT_RESOURCES, the ACI_L2CAP_COC_TX_POOL_AVAILABLE_EVENT
+ * event is generated as soon as there is a free buffer available for sending
+ * K-frames.
  * 
  * @return None
  */
@@ -1986,6 +1990,7 @@ void aci_hal_scan_req_report_event( uint8_t RSSI,
  *        - 0x02: GATT unexpected peer message
  *        - 0x03: NVM level warning
  *        - 0x04: COC RX data length too large
+ *        - 0x05: ECOC already assigned DCID
  * @param Data_Length Length of Data in octets
  * @param Data The error event info
  * @return None

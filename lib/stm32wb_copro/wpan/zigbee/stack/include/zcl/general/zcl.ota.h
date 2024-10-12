@@ -210,7 +210,7 @@ enum ZbZclOtaQueryFldCtrlHwVer {
 
 /** OTA Upgrade Image Block Request Field Control Bitmask enumerations */
 enum ZbZclOtaImageBlkReqFldCtrl {
-    ZCL_OTA_IMAGE_BLOCK_FC_IEEE = 0x01, /**< Request node’s IEEE address Present */
+    ZCL_OTA_IMAGE_BLOCK_FC_IEEE = 0x01, /**< Request nodeâ€™s IEEE address Present */
     ZCL_OTA_IMAGE_BLOCK_FC_MAX_BLOCK = 0x02 /**< MinimumBlockPeriod present */
 };
 

@@ -13,7 +13,8 @@
 #include <gui/icon.h>
 #include <infrared_transmit.h>
 
-#include <infrared/infrared_last_settings.h>
+#include <infrared/infrared_app.h>
+#include <toolbox/saved_struct.h>
 
 #include <input/input.h>
 
@@ -183,8 +184,8 @@ static struct flipvalo_trigger* flipvalo_get_trigger(enum flipvalo_trigger_varia
     return NULL;
 }
 
-#define ITEM_H 64 / 3
-#define ITEM_W 128
+#define ITEM_H  64 / 3
+#define ITEM_W  128
 #define VALUE_X 100
 #define VALUE_W 45
 static void flipvalo_config_edit_draw(Canvas* canvas, struct flipvalo_config_edit_view* view) {
@@ -477,7 +478,8 @@ static void flipvalo_run_state_init(struct flipvalo_run_state* fv_run_state) {
     fv_run_state->tick_cur = 0;
 }
 
-static void input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
+static void input_callback(InputEvent* input_event, void* event_queue_void) {
+    FuriMessageQueue* event_queue = (FuriMessageQueue*)event_queue_void;
     furi_assert(event_queue);
     struct plugin_event event = {.type = EventTypeKey, .input = *input_event};
     furi_message_queue_put(event_queue, &event, FuriWaitForever);
@@ -630,9 +632,30 @@ int32_t flipvalo_app() {
 
     flipvalo_priv_init(fv_priv);
 
-    InfraredLastSettings* last_settings = infrared_last_settings_alloc();
-    infrared_last_settings_load(last_settings);
-    infrared_last_settings_apply(last_settings);
+    bool otg_was_enabled = furi_hal_power_is_otg_enabled();
+    InfraredSettings settings = {0};
+    saved_struct_load(
+        INFRARED_SETTINGS_PATH,
+        &settings,
+        sizeof(InfraredSettings),
+        INFRARED_SETTINGS_MAGIC,
+        INFRARED_SETTINGS_VERSION);
+    if(settings.tx_pin < FuriHalInfraredTxPinMax) {
+        furi_hal_infrared_set_tx_output(settings.tx_pin);
+        if(settings.otg_enabled != otg_was_enabled) {
+            if(settings.otg_enabled) {
+                furi_hal_power_enable_otg();
+            } else {
+                furi_hal_power_disable_otg();
+            }
+        }
+    } else {
+        FuriHalInfraredTxPin tx_pin_detected = furi_hal_infrared_detect_tx_output();
+        furi_hal_infrared_set_tx_output(tx_pin_detected);
+        if(tx_pin_detected != FuriHalInfraredTxPinInternal) {
+            furi_hal_power_enable_otg();
+        }
+    }
 
     if(!fv_priv->mutex) {
         FURI_LOG_E("Flipvalo", "Cannot create mutex\r\n");
@@ -730,8 +753,14 @@ cleanup:
         }
         view_port_free(view_port);
     }
-    infrared_last_settings_reset(last_settings);
-    infrared_last_settings_free(last_settings);
+    furi_hal_infrared_set_tx_output(FuriHalInfraredTxPinInternal);
+    if(furi_hal_power_is_otg_enabled() != otg_was_enabled) {
+        if(otg_was_enabled) {
+            furi_hal_power_enable_otg();
+        } else {
+            furi_hal_power_disable_otg();
+        }
+    }
     if(event_queue) {
         furi_message_queue_free(event_queue);
     }

@@ -36,17 +36,36 @@ static void kali_zero_app_scene_misc_screen_hand_orient_changed(VariableItem* it
     }
 }
 
+static void kali_zero_app_scene_misc_screen_rgb_backlight_changed(VariableItem* item) {
+    KaliZeroApp* app = variable_item_get_context(item);
+    view_dispatcher_send_custom_event(app->view_dispatcher, VarItemListIndexRgbBacklight);
+}
+
 static const struct {
     char* name;
     RgbColor color;
 } lcd_colors[] = {
-    {"Off", {0, 0, 0}},         {"Orange", {255, 69, 0}},  {"Red", {255, 0, 0}},
-    {"Maroon", {128, 0, 0}},    {"Yellow", {255, 255, 0}}, {"Olive", {128, 128, 0}},
-    {"Lime", {0, 255, 0}},      {"Green", {0, 128, 0}},    {"Aqua", {0, 255, 127}},
-    {"Cyan", {0, 210, 210}},    {"Azure", {0, 127, 255}},  {"Teal", {0, 128, 128}},
-    {"Blue", {0, 0, 255}},      {"Navy", {0, 0, 128}},     {"Purple", {128, 0, 128}},
-    {"Fuchsia", {255, 0, 255}}, {"Pink", {173, 31, 173}},  {"Brown", {165, 42, 42}},
-    {"White", {255, 192, 203}},
+    // clang-format off
+    {"Off", {{0, 0, 0}}},
+    {"Orange", {{255, 69, 0}}},
+    {"Rouge", {{255, 0, 0}}},
+    {"Marron", {{128, 0, 0}}},
+    {"Jaune", {{255, 255, 0}}},
+    {"Olive", {{128, 128, 0}}},
+    {"Citron vert", {{0, 255, 0}}},
+    {"Vert", {{0, 128, 0}}},
+    {"Aqua", {{0, 255, 127}}},
+    {"Cyan", {{0, 210, 210}}},
+    {"Azur", {{0, 127, 255}}},
+    {"Sarcelle", {{0, 128, 128}}},
+    {"Bleu", {{0, 0, 255}}},
+    {"Marine", {{0, 0, 128}}},
+    {"Violet", {{128, 0, 128}}},
+    {"Fuchsia", {{255, 0, 255}}},
+    {"Rose", {{173, 31, 173}}},
+    {"Brun", {{165, 42, 42}}},
+    {"Blanc", {{255, 192, 203}}},
+    // clang-format on
 };
 static const size_t lcd_sz = COUNT_OF(lcd_colors);
 static void kali_zero_app_scene_misc_screen_lcd_color_changed(VariableItem* item, uint8_t led) {
@@ -159,13 +178,20 @@ void kali_zero_app_scene_misc_screen_on_enter(void* context) {
     variable_item_set_current_value_text(item, kalizero_settings.dark_mode ? "ON" : "OFF");
 
     item = variable_item_list_add(
-        var_item_list, "Gaucher", 2, kali_zero_app_scene_misc_screen_hand_orient_changed, app);
-    bool value = furi_hal_rtc_is_flag_set(FuriHalRtcFlagHandOrient);
-    variable_item_set_current_value_index(item, value);
-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
+        var_item_list, "Mode Gaucher", 2, kali_zero_app_scene_misc_screen_hand_orient_changed, app);
+    value_index = furi_hal_rtc_is_flag_set(FuriHalRtcFlagHandOrient);
+    variable_item_set_current_value_index(item, value_index);
+    variable_item_set_current_value_text(item, value_index ? "ON" : "OFF");
 
-    item = variable_item_list_add(var_item_list, "Rétroéclairage RVB", 1, NULL, app);
-    variable_item_set_current_value_text(item, kalizero_settings.rgb_backlight ? "ON" : "OFF");
+    item = variable_item_list_add(
+        var_item_list,
+        "Rétroéclairage RVB",
+        2,
+        kali_zero_app_scene_misc_screen_rgb_backlight_changed,
+        app);
+    value_index = kalizero_settings.rgb_backlight;
+    variable_item_set_current_value_index(item, value_index);
+    variable_item_set_current_value_text(item, value_index ? "ON" : "OFF");
 
     RgbColor color;
     for(size_t i = 0; i < COUNT_OF(lcd_cols); i++) {
@@ -261,8 +287,12 @@ bool kali_zero_app_scene_misc_screen_on_event(void* context, SceneManagerEvent e
         consumed = true;
         switch(event.event) {
         case VarItemListIndexRgbBacklight: {
-            bool change = kalizero_settings.rgb_backlight;
-            if(!change) {
+            VariableItem* item =
+                variable_item_list_get(app->var_item_list, VarItemListIndexRgbBacklight);
+            bool value = variable_item_get_current_value_index(item);
+            if(value == kalizero_settings.rgb_backlight) value = !value; // Invoked via click
+            bool change = !value; // Change without confirm if going from ON to OFF
+            if(value) {
                 DialogMessage* msg = dialog_message_alloc();
                 dialog_message_set_header(msg, "Rétroéclairage RVB", 64, 0, AlignCenter, AlignTop);
                 dialog_message_set_buttons(msg, "Non", NULL, "Oui");
@@ -279,37 +309,39 @@ bool kali_zero_app_scene_misc_screen_on_event(void* context, SceneManagerEvent e
                 dialog_message_free(msg);
             }
             if(change) {
-                kalizero_settings.rgb_backlight = !kalizero_settings.rgb_backlight;
+                kalizero_settings.rgb_backlight = value;
                 app->save_settings = true;
                 app->save_backlight = true;
                 notification_message(app->notification, &sequence_display_backlight_on);
-                rgb_backlight_reconfigure(kalizero_settings.rgb_backlight);
-                variable_item_set_current_value_text(
-                    variable_item_list_get(app->var_item_list, VarItemListIndexRgbBacklight),
-                    kalizero_settings.rgb_backlight ? "ON" : "OFF");
+                rgb_backlight_reconfigure(value);
+
                 for(size_t i = 0; i < COUNT_OF(lcd_cols); i++) {
                     variable_item_set_locked(
                         variable_item_list_get(app->var_item_list, VarItemListIndexLcdColor0 + i),
-                        !kalizero_settings.rgb_backlight,
+                        !value,
                         "Nécessite un \nrétroéclairage \nRVB!");
                 }
                 variable_item_set_locked(
                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowLcd),
-                    !kalizero_settings.rgb_backlight,
+                    !value,
                     "Nécessite un \nrétroéclairage \nRVB!");
                 variable_item_set_locked(
                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowSpeed),
-                    !kalizero_settings.rgb_backlight,
+                    !value,
                     "Nécessite un \nrétroéclairage \nRVB!");
                 variable_item_set_locked(
                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowInterval),
-                    !kalizero_settings.rgb_backlight,
+                    !value,
                     "Nécessite un \nrétroéclairage \nRVB!");
                 variable_item_set_locked(
                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowSaturation),
-                    !kalizero_settings.rgb_backlight,
+                    !value,
                     "Nécessite un \nrétroéclairage \nRVB!");
+            } else {
+                value = !value;
             }
+            variable_item_set_current_value_index(item, value);
+            variable_item_set_current_value_text(item, value ? "ON" : "OFF");
             break;
         }
         case VarItemListIndexLcdColor0:

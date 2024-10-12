@@ -689,7 +689,7 @@ psa_status_t psa_import_key(const psa_key_attributes_t *attributes,
  *   and `PSA_ECC_FAMILY_BRAINPOOL_PXXX`).
  *   For Weierstrass curves, this is the content of the `privateKey` field of
  *   the `ECPrivateKey` format defined by RFC 5915.  For Montgomery curves,
- *   the format is defined by RFC 7748, and output is masked according to §5.
+ *   the format is defined by RFC 7748, and output is masked according to ยง5.
  *   For twisted Edwards curves, the private key is as defined by RFC 8032
  *   (a 32-byte string for Edwards25519, a 57-byte string for Edwards448).
  * - For Diffie-Hellman key exchange key pairs (key types for which

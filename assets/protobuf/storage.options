@@ -13,6 +13,8 @@ PB_Storage.RenameRequest.old_path             type:FT_POINTER
 PB_Storage.RenameRequest.new_path             type:FT_POINTER
 PB_Storage.BackupCreateRequest.archive_path   type:FT_POINTER
 PB_Storage.BackupRestoreRequest.archive_path  type:FT_POINTER
+PB_Storage.TarExtractRequest.tar_path         type:FT_POINTER
+PB_Storage.TarExtractRequest.out_path         type:FT_POINTER
 
 PB_Storage.ListResponse.file                  max_count:8
 

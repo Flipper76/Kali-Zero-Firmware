@@ -25,11 +25,11 @@ const GpioPin TX_13 = {.pin = LL_GPIO_PIN_6, .port = GPIOB};
 const GpioPin RX_14 = {.pin = LL_GPIO_PIN_7, .port = GPIOB};
 
 //Количество доступных портов ввода/вывода
-#define GPIO_ITEMS (sizeof(GPIOList) / sizeof(GPIO))
+#define GPIO_ITEMS             (sizeof(GPIOList) / sizeof(GPIO))
 //Количество интерфейсов
 #define INTERFACES_TYPES_COUNT (int)(sizeof(interfaces) / sizeof(const Interface*))
 //Количество типов датчиков
-#define SENSOR_TYPES_COUNT (int)(sizeof(sensorTypes) / sizeof(const SensorType*))
+#define SENSOR_TYPES_COUNT     (int)(sizeof(sensorTypes) / sizeof(const SensorType*))
 
 //Перечень достуных портов ввода/вывода
 static const GPIO GPIOList[] = {
@@ -196,13 +196,15 @@ const GPIO*
             return NULL;
         }
     }
-    if(interface == &SPI) {
+
+    // This check is incorrect and not working anymore
+    /*if(interface == &SPI) {
         if(!((gpio_interfaces_list[0] == NULL || gpio_interfaces_list[0] == &SPI) &&
              (gpio_interfaces_list[1] == NULL || gpio_interfaces_list[1] == &SPI) &&
              (gpio_interfaces_list[3] == NULL || gpio_interfaces_list[3] == &SPI))) {
             return NULL;
         }
-    }
+    }*/
 
     uint8_t aviable_index = 0;
     for(uint8_t i = 0; i < GPIO_ITEMS; i++) {

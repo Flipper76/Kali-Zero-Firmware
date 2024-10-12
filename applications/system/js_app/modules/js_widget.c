@@ -1,6 +1,5 @@
 #include <assets_icons.h>
-#include <gui/view_dispatcher.h>
-#include <gui/view.h>
+#include <gui/view_holder.h>
 #include <m-array.h>
 #include <m-list.h>
 #include <string.h>
@@ -113,8 +112,8 @@ typedef struct {
 
 typedef struct {
     View* view;
-    ViewDispatcher* view_dispatcher;
-    FuriThread* thread;
+    ViewHolder* view_holder;
+    bool is_shown;
 } JsWidgetInst;
 
 static JsWidgetInst* get_this_ctx(struct mjs* mjs) {
@@ -478,6 +477,72 @@ static void js_widget_add_glyph(struct mjs* mjs) {
     mjs_return(mjs, mjs_mk_number(mjs, component->id));
 }
 
+static void widget_icon_draw(Canvas* canvas, void* model) {
+    IconElement* element = model;
+    canvas_draw_icon(canvas, element->x, element->y, element->icon);
+}
+
+static void widget_icon_free(WidgetComponent* component) {
+    IconElement* element = component->model;
+    free(element);
+    free(component);
+}
+
+static void js_widget_add_icon(struct mjs* mjs) {
+    JsWidgetInst* widget = get_this_ctx(mjs);
+    if(!check_arg_count(mjs, 3)) {
+        return;
+    }
+
+    int32_t x = mjs_get_int32(mjs, mjs_arg(mjs, 0));
+    int32_t y = mjs_get_int32(mjs, mjs_arg(mjs, 1));
+    mjs_val_t icon_arg = mjs_arg(mjs, 2);
+    size_t icon_len = 0;
+    const char* icon_name = mjs_get_string(mjs, &icon_arg, &icon_len);
+    if(!icon_name) {
+        ret_bad_args(mjs, "Icon name must be a string");
+        return;
+    }
+
+    const Icon* icon = NULL;
+    for(size_t i = 0; i < ICON_PATHS_COUNT; i++) {
+        if(ICON_PATHS[i].path == NULL) continue;
+        const char* iter_name = strrchr(ICON_PATHS[i].path, '/');
+        if(iter_name++ == NULL) continue;
+        if(strnlen(iter_name, icon_len + 1) == icon_len &&
+           strncmp(iter_name, icon_name, icon_len) == 0) {
+            icon = ICON_PATHS[i].icon;
+            break;
+        }
+    }
+
+    if(icon == NULL) {
+        ret_bad_args(mjs, "Unknown icon name");
+        return;
+    }
+
+    WidgetComponent* component = malloc(sizeof(WidgetComponent));
+    component->draw = widget_icon_draw;
+    component->free = widget_icon_free;
+    component->model = malloc(sizeof(IconElement));
+    IconElement* element = component->model;
+    element->x = x;
+    element->y = y;
+    element->icon = icon;
+
+    with_view_model(
+        widget->view,
+        WidgetModel * model,
+        {
+            ++model->max_assigned_id;
+            component->id = model->max_assigned_id;
+            ComponentArray_push_back(model->component, component);
+        },
+        true);
+
+    mjs_return(mjs, mjs_mk_number(mjs, component->id));
+}
+
 static void widget_line_draw(Canvas* canvas, void* model) {
     LineElement* element = model;
     canvas_draw_line(canvas, element->x1, element->y1, element->x2, element->y2);
@@ -754,60 +819,34 @@ static void js_widget_is_open(struct mjs* mjs) {
     JsWidgetInst* widget = get_this_ctx(mjs);
     if(!check_arg_count(mjs, 0)) return;
 
-    mjs_return(mjs, mjs_mk_boolean(mjs, !!widget->thread));
-}
-
-static void widget_deinit(void* context) {
-    JsWidgetInst* widget = context;
-    if(widget->thread) {
-        furi_thread_join(widget->thread);
-        furi_thread_free(widget->thread);
-        widget->thread = NULL;
-
-        furi_assert(widget->view_dispatcher);
-        view_dispatcher_remove_view(widget->view_dispatcher, 0);
-        view_dispatcher_free(widget->view_dispatcher);
-        widget->view_dispatcher = NULL;
-
-        furi_record_close(RECORD_GUI);
-    }
+    mjs_return(mjs, mjs_mk_boolean(mjs, widget->is_shown));
 }
 
 static void widget_callback(void* context, uint32_t arg) {
     UNUSED(arg);
-    widget_deinit(context);
-}
-
-static bool widget_exit(void* context) {
     JsWidgetInst* widget = context;
-    view_dispatcher_stop(widget->view_dispatcher);
-    furi_timer_pending_callback(widget_callback, widget, 0);
-    return true;
+    view_holder_set_view(widget->view_holder, NULL);
+    widget->is_shown = false;
 }
 
-static int32_t widget_thread(void* context) {
-    ViewDispatcher* view_dispatcher = context;
-    view_dispatcher_run(view_dispatcher);
-    return 0;
+static void widget_exit(void* context) {
+    JsWidgetInst* widget = context;
+    // Using timer to schedule view_holder stop, will not work under high CPU load
+    furi_timer_pending_callback(widget_callback, widget, 0);
 }
 
 static void js_widget_show(struct mjs* mjs) {
     JsWidgetInst* widget = get_this_ctx(mjs);
     if(!check_arg_count(mjs, 0)) return;
 
-    Gui* gui = furi_record_open(RECORD_GUI);
+    if(widget->is_shown) {
+        mjs_prepend_errorf(mjs, MJS_INTERNAL_ERROR, "Widget is already shown");
+        mjs_return(mjs, MJS_UNDEFINED);
+        return;
+    }
 
-    widget->view_dispatcher = view_dispatcher_alloc();
-    view_dispatcher_enable_queue(widget->view_dispatcher);
-    view_dispatcher_add_view(widget->view_dispatcher, 0, widget->view);
-    view_dispatcher_set_event_callback_context(widget->view_dispatcher, widget);
-    view_dispatcher_set_navigation_event_callback(widget->view_dispatcher, widget_exit);
-    view_dispatcher_attach_to_gui(widget->view_dispatcher, gui, ViewDispatcherTypeFullscreen);
-    view_dispatcher_switch_to_view(widget->view_dispatcher, 0);
-
-    widget->thread =
-        furi_thread_alloc_ex("JsWidget", 1024, widget_thread, widget->view_dispatcher);
-    furi_thread_start(widget->thread);
+    view_holder_set_view(widget->view_holder, widget->view);
+    widget->is_shown = true;
 
     mjs_return(mjs, MJS_UNDEFINED);
 }
@@ -816,10 +855,8 @@ static void js_widget_close(struct mjs* mjs) {
     JsWidgetInst* widget = get_this_ctx(mjs);
     if(!check_arg_count(mjs, 0)) return;
 
-    if(widget->thread) {
-        view_dispatcher_stop(widget->view_dispatcher);
-        widget_deinit(widget);
-    }
+    view_holder_set_view(widget->view_holder, NULL);
+    widget->is_shown = false;
 
     mjs_return(mjs, MJS_UNDEFINED);
 }
@@ -839,58 +876,9 @@ static void widget_draw_callback(Canvas* canvas, void* model) {
     }
 }
 
-static void widget_remove_view(void* context) {
-    JsWidgetInst* widget = context;
-
-    if(widget->view) {
-        with_view_model(
-            widget->view,
-            WidgetModel * model,
-            {
-                ComponentArray_it_t it;
-                ComponentArray_it(it, model->component);
-                while(!ComponentArray_end_p(it)) {
-                    WidgetComponent* component = *ComponentArray_ref(it);
-                    if(component->free) {
-                        component->free(component);
-                        component->free = NULL;
-                    }
-                    ComponentArray_next(it);
-                }
-                ComponentArray_reset(model->component);
-                ComponentArray_clear(model->component);
-            },
-            false);
-        with_view_model(
-            widget->view, WidgetModel * model, { XbmImageList_clear(model->image); }, false);
-        view_free(widget->view);
-        widget->view = NULL;
-    }
-}
-
-static JsWidgetInst* widget_alloc(void) {
-    JsWidgetInst* widget = malloc(sizeof(JsWidgetInst));
-    widget->thread = NULL;
-    widget->view_dispatcher = NULL;
-
-    widget->view = view_alloc();
-    view_allocate_model(widget->view, ViewModelTypeLockFree, sizeof(WidgetModel));
-    view_set_draw_callback(widget->view, widget_draw_callback);
-    with_view_model(
-        widget->view,
-        WidgetModel * model,
-        {
-            ComponentArray_init(model->component);
-            XbmImageList_init(model->image);
-            model->max_assigned_id = 0;
-        },
-        true);
-
-    return widget;
-}
-
 static void* js_widget_create(struct mjs* mjs, mjs_val_t* object) {
-    JsWidgetInst* widget = widget_alloc();
+    JsWidgetInst* widget = malloc(sizeof(JsWidgetInst));
+
     mjs_val_t widget_obj = mjs_mk_object(mjs);
     mjs_set(mjs, widget_obj, INST_PROP_NAME, ~0, mjs_mk_foreign(mjs, widget));
     // addBox(x: number, y: number, w: number, h: number): number (returns id of the added component)
@@ -905,6 +893,8 @@ static void* js_widget_create(struct mjs* mjs, mjs_val_t* object) {
     mjs_set(mjs, widget_obj, "addFrame", ~0, MJS_MK_FN(js_widget_add_frame));
     // addGlyph(x: number, y: number, ch: number): number (returns id of the added component)
     mjs_set(mjs, widget_obj, "addGlyph", ~0, MJS_MK_FN(js_widget_add_glyph));
+    // addIcon(x: number, y: number, icon: string): number (returns id of the added component)
+    mjs_set(mjs, widget_obj, "addIcon", ~0, MJS_MK_FN(js_widget_add_icon));
     // addLine(x1: number, y1: number, x2: number, y2: number): number (returns id of the added component)
     mjs_set(mjs, widget_obj, "addLine", ~0, MJS_MK_FN(js_widget_add_line));
     // addRbox(x: number, y: number, w: number, h: number, r: number): number (returns id of the added component)
@@ -925,17 +915,59 @@ static void* js_widget_create(struct mjs* mjs, mjs_val_t* object) {
     mjs_set(mjs, widget_obj, "show", ~0, MJS_MK_FN(js_widget_show));
     // close(): void (closes the widget)
     mjs_set(mjs, widget_obj, "close", ~0, MJS_MK_FN(js_widget_close));
+
+    widget->view = view_alloc();
+    view_allocate_model(widget->view, ViewModelTypeLockFree, sizeof(WidgetModel));
+    view_set_draw_callback(widget->view, widget_draw_callback);
+    with_view_model(
+        widget->view,
+        WidgetModel * model,
+        {
+            ComponentArray_init(model->component);
+            XbmImageList_init(model->image);
+            model->max_assigned_id = 0;
+        },
+        true);
+
+    Gui* gui = furi_record_open(RECORD_GUI);
+    widget->view_holder = view_holder_alloc();
+    view_holder_attach_to_gui(widget->view_holder, gui);
+    view_holder_set_back_callback(widget->view_holder, widget_exit, widget);
+
     *object = widget_obj;
     return widget;
 }
 
 static void js_widget_destroy(void* inst) {
     JsWidgetInst* widget = inst;
-    if(widget->thread) {
-        view_dispatcher_stop(widget->view_dispatcher);
-        widget_deinit(widget);
-    }
-    widget_remove_view(widget);
+
+    view_holder_set_view(widget->view_holder, NULL);
+    view_holder_free(widget->view_holder);
+    widget->view_holder = NULL;
+
+    furi_record_close(RECORD_GUI);
+
+    with_view_model(
+        widget->view,
+        WidgetModel * model,
+        {
+            ComponentArray_it_t it;
+            ComponentArray_it(it, model->component);
+            while(!ComponentArray_end_p(it)) {
+                WidgetComponent* component = *ComponentArray_ref(it);
+                if(component && component->free) {
+                    component->free(component);
+                }
+                ComponentArray_next(it);
+            }
+            ComponentArray_reset(model->component);
+            ComponentArray_clear(model->component);
+            XbmImageList_clear(model->image);
+        },
+        false);
+    view_free(widget->view);
+    widget->view = NULL;
+
     free(widget);
 }
 

@@ -4,11 +4,11 @@
 extern "C" {
 #endif
 
-#define RUN_ID_BYTES (sizeof(uint64_t))
+#define RUN_ID_BYTES  (sizeof(uint64_t))
 #define COUNTER_BYTES (sizeof(uint32_t))
-#define KEY_BITS 256
-#define IV_BYTES 12
-#define TAG_BYTES 16
+#define KEY_BITS      256
+#define IV_BYTES      12
+#define TAG_BYTES     16
 
 #define MSG_OVERHEAD (RUN_ID_BYTES + COUNTER_BYTES + IV_BYTES + TAG_BYTES)
 

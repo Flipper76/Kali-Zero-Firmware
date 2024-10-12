@@ -8,7 +8,7 @@
  *
  *     0110 0100 | 1010 1011 | 0110 0010 | 0000 0000 | 0111 0110
  *     tttt tttt | IIII IIII | iiii iiii | nbuu uuuu | cccc cccc
- * - t: temperature in °F
+ * - t: temperature in Â°F
  * - I: identification (high byte)
  * - i: identification (low byte)
  * - n: sensor number
@@ -57,10 +57,12 @@ const SubGhzProtocolDecoder ws_protocol_acurite_986_decoder = {
     .feed = ws_protocol_decoder_acurite_986_feed,
     .reset = ws_protocol_decoder_acurite_986_reset,
 
-    .get_hash_data = ws_protocol_decoder_acurite_986_get_hash_data,
+    .get_hash_data = NULL,
+    .get_hash_data_long = ws_protocol_decoder_acurite_986_get_hash_data,
     .serialize = ws_protocol_decoder_acurite_986_serialize,
     .deserialize = ws_protocol_decoder_acurite_986_deserialize,
     .get_string = ws_protocol_decoder_acurite_986_get_string,
+    .get_string_brief = NULL,
 };
 
 const SubGhzProtocolEncoder ws_protocol_acurite_986_encoder = {
@@ -134,7 +136,7 @@ static void ws_protocol_acurite_986_remote_controller(WSBlockGeneric* instance) 
     if(temp & 0x80) {
         temp = -(temp & 0x7F);
     }
-    instance->temp = (float)temp;
+    instance->temp = locale_fahrenheit_to_celsius((float)temp);
     instance->btn = WS_NO_BTN;
     instance->humidity = WS_NO_HUMIDITY;
 }
@@ -256,22 +258,5 @@ SubGhzProtocolStatus
 void ws_protocol_decoder_acurite_986_get_string(void* context, FuriString* output) {
     furi_assert(context);
     WSProtocolDecoderAcurite_986* instance = context;
-    bool locale_is_metric = furi_hal_rtc_get_locale_units() == FuriHalRtcLocaleUnitsMetric;
-    furi_string_cat_printf(
-        output,
-        "%s\r\n%dbit\r\n"
-        "Key:0x%lX%08lX\r\n"
-        "Sn:0x%lX Ch:%d  Bat:%d\r\n"
-        "Temp:%3.1f %c Hum:%d%%",
-        instance->generic.protocol_name,
-        instance->generic.data_count_bit,
-        (uint32_t)(instance->generic.data >> 32),
-        (uint32_t)(instance->generic.data),
-        instance->generic.id,
-        instance->generic.channel,
-        instance->generic.battery_low,
-        (double)(locale_is_metric ? locale_fahrenheit_to_celsius(instance->generic.temp) :
-                                    instance->generic.temp),
-        locale_is_metric ? 'C' : 'F',
-        instance->generic.humidity);
+    ws_block_generic_get_string(&instance->generic, output);
 }

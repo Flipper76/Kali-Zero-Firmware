@@ -15,7 +15,7 @@ ICONS_TEMPLATE_H_HEADER = """#pragma once
 #include <gui/icon.h>
 
 """
-ICONS_TEMPLATE_H_ICON_NAME = "extern Icon {name};\n"
+ICONS_TEMPLATE_H_ICON_NAME = "extern const Icon {name};\n"
 
 ICONS_TEMPLATE_C_HEADER = """#include "{assets_filename}.h"
 
@@ -24,10 +24,10 @@ ICONS_TEMPLATE_C_HEADER = """#include "{assets_filename}.h"
 """
 ICONS_TEMPLATE_C_FRAME = "const uint8_t {name}[] = {data};\n"
 ICONS_TEMPLATE_C_DATA = "const uint8_t* const {name}[] = {data};\n"
-ICONS_TEMPLATE_C_ICONS = "Icon {name} = {{.width={width},.height={height},.frame_count={frame_count},.frame_rate={frame_rate},.frames=_{name}}};\n"
+ICONS_TEMPLATE_C_ICONS = "const Icon {name} = {{.width={width},.height={height},.frame_count={frame_count},.frame_rate={frame_rate},.frames=_{name}}};\n"
 
-MAX_IMAGE_WIDTH = 128
-MAX_IMAGE_HEIGHT = 64
+MAX_IMAGE_WIDTH = 2**16 - 1
+MAX_IMAGE_HEIGHT = 2**16 - 1
 
 
 class Main(App):
@@ -138,12 +138,12 @@ class Main(App):
         )
         icons = []
         paths = []
-        if self.args.filename == "assets_icons":
-            symbols = ""
-        else:
-            symbols = (
-                pathlib.Path(__file__).parent / "../targets/f7/api_symbols.csv"
-            ).read_text()
+        is_main_assets = self.args.filename == "assets_icons"
+        symbols = pathlib.Path(__file__).parent.parent
+        if "UFBT_HOME" in os.environ:
+            symbols /= "sdk_headers/f7_sdk"
+        symbols = (symbols / "targets/f7/api_symbols.csv").read_text()
+        api_has_icon = lambda name: f"Variable,+,{name},const Icon," in symbols
         # Traverse icons tree, append image data to source file
         for dirpath, dirnames, filenames in os.walk(self.args.input_directory):
             self.logger.debug(f"Processing directory {dirpath}")
@@ -154,8 +154,8 @@ class Main(App):
             if "frame_rate" in filenames:
                 self.logger.debug("Folder contains animation")
                 icon_name = "A_" + os.path.split(dirpath)[1].replace("-", "_")
-                if f"Variable,+,{icon_name},Icon," in symbols:
-                    self.logger.warning(
+                if not is_main_assets and api_has_icon(icon_name):
+                    self.logger.info(
                         f"{self.args.filename}: ignoring duplicate icon {icon_name}"
                     )
                     continue
@@ -204,8 +204,8 @@ class Main(App):
                     icon_name = "I_" + "_".join(filename.split(".")[:-1]).replace(
                         "-", "_"
                     )
-                    if f"Variable,+,{icon_name},Icon," in symbols:
-                        self.logger.warning(
+                    if not is_main_assets and api_has_icon(icon_name):
+                        self.logger.info(
                             f"{self.args.filename}: ignoring duplicate icon {icon_name}"
                         )
                         continue
@@ -236,7 +236,7 @@ class Main(App):
                     frame_count=frame_count,
                 )
             )
-        if self.args.filename == "assets_icons":
+        if is_main_assets:
             icons_c.write(
                 """
 const IconPath ICON_PATHS[] = {
@@ -263,7 +263,7 @@ const size_t ICON_PATHS_COUNT = COUNT_OF(ICON_PATHS);
         icons_h.write(ICONS_TEMPLATE_H_HEADER)
         for name, width, height, frame_rate, frame_count in icons:
             icons_h.write(ICONS_TEMPLATE_H_ICON_NAME.format(name=name))
-        if self.args.filename == "assets_icons":
+        if is_main_assets:
             icons_h.write(
                 """
 typedef struct {

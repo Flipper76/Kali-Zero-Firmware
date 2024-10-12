@@ -1,6 +1,4 @@
 #include "../bad_kb_app_i.h"
-#include <furi_hal_power.h>
-#include <furi_hal_usb.h>
 #include <storage/storage.h>
 
 static bool bad_kb_file_select(BadKbApp* bad_kb) {
@@ -16,7 +14,8 @@ static bool bad_kb_file_select(BadKbApp* bad_kb) {
             message,
             "Dossier badusb pésent!\n"
             "KZFW utilise le dossier badkb.\n"
-            "Vous souhaitez transférer les fichiers?",
+            "Vous souhaitez transférer\n"
+            "les fichiers?",
             64,
             32,
             AlignCenter,

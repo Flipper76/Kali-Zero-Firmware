@@ -35,15 +35,25 @@ class ElfManifestV1:
     icon: bytes = field(default=b"")
 
     def as_bytes(self):
-        encoded_string = self.name.encode('latin-1', errors='replace')
-  
+        # Encoder la chaîne en UTF-8 sans remplacer les caractères non supportés
+        encoded_string = self.name.encode('utf-8')
+        
+        # S'assurer que la chaîne fait exactement 32 octets
+        if len(encoded_string) > 32:
+            # Si elle dépasse 32 octets, on la tronque
+            encoded_string = encoded_string[:32]
+        else:
+            # Si elle fait moins de 32 octets, on la complète avec des octets nuls
+            encoded_string = encoded_string.ljust(32, b'\x00')
+        
+        # Pack the data, ensuring the string is properly packed to 32 bytes
         return struct.pack(
             "<hI32s?32s",
             self.stack_size,
             self.app_version,
             encoded_string,
             bool(self.icon),
-            self.icon,
+            self.icon.ljust(32, b'\x00')  # Compléter aussi l'icône si nécessaire
         )
 
 

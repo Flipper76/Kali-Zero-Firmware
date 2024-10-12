@@ -1,6 +1,8 @@
 #include "rpc_i.h"
 #include <gui/gui_i.h>
 #include <assets_icons.h>
+#include <kalizero/kalizero.h>
+#include <rgb_backlight.h>
 
 #include <flipper.pb.h>
 #include <gui.pb.h>
@@ -55,6 +57,7 @@ typedef struct {
     RpcSession* session;
     Gui* gui;
     const Icon* icon;
+    FuriPubSub* input_events;
 
     // Receive part
     ViewPort* virtual_display_view_port;
@@ -96,6 +99,34 @@ static void rpc_system_gui_screen_stream_frame_callback(
     memcpy(buffer, data, size);
     rpc_gui->transmit_frame->content.gui_screen_frame.orientation =
         rpc_system_gui_screen_orientation_map[orientation];
+
+    if(kalizero_settings.rpc_color_fg.mode == ScreenColorModeRgbBacklight) {
+        ScreenFrameColor fg_color;
+        if(rgb_backlight_get_rainbow_mode() == RGBBacklightRainbowModeOff) {
+            fg_color.mode = ScreenColorModeCustom;
+            rgb_backlight_get_color(0, &fg_color.rgb);
+        } else {
+            fg_color.mode = ScreenColorModeRainbow;
+        }
+        rpc_gui->transmit_frame->content.gui_screen_frame.fg_color = fg_color.value;
+    } else {
+        rpc_gui->transmit_frame->content.gui_screen_frame.fg_color =
+            kalizero_settings.rpc_color_fg.value;
+    }
+
+    if(kalizero_settings.rpc_color_bg.mode == ScreenColorModeRgbBacklight) {
+        ScreenFrameColor bg_color;
+        if(rgb_backlight_get_rainbow_mode() == RGBBacklightRainbowModeOff) {
+            bg_color.mode = ScreenColorModeCustom;
+            rgb_backlight_get_color(0, &bg_color.rgb);
+        } else {
+            bg_color.mode = ScreenColorModeRainbow;
+        }
+        rpc_gui->transmit_frame->content.gui_screen_frame.bg_color = bg_color.value;
+    } else {
+        rpc_gui->transmit_frame->content.gui_screen_frame.bg_color =
+            kalizero_settings.rpc_color_bg.value;
+    }
 
     furi_thread_flags_set(furi_thread_get_id(rpc_gui->transmit_thread), RpcGuiWorkerFlagTransmit);
 }
@@ -234,10 +265,7 @@ static void
     }
 
     // Submit event
-    FuriPubSub* input_events = furi_record_open(RECORD_INPUT_EVENTS);
-    furi_check(input_events);
-    furi_pubsub_publish(input_events, &event);
-    furi_record_close(RECORD_INPUT_EVENTS);
+    furi_pubsub_publish(rpc_gui->input_events, &event);
     rpc_send_and_release_empty(session, request->command_id, PB_CommandStatus_OK);
 }
 
@@ -401,6 +429,7 @@ void* rpc_system_gui_alloc(RpcSession* session) {
 
     RpcGuiSystem* rpc_gui = malloc(sizeof(RpcGuiSystem));
     rpc_gui->gui = furi_record_open(RECORD_GUI);
+    rpc_gui->input_events = furi_record_open(RECORD_INPUT_EVENTS);
     rpc_gui->session = session;
 
     // Active session icon
@@ -447,6 +476,19 @@ void rpc_system_gui_free(void* context) {
     RpcGuiSystem* rpc_gui = context;
     furi_assert(rpc_gui->gui);
 
+    // Release ongoing inputs to avoid lockup
+    for(InputKey key = 0; key < InputKeyMAX; key++) {
+        if(rpc_gui->input_key_counter[key] != RPC_GUI_INPUT_RESET) {
+            InputEvent event = {
+                .key = key,
+                .type = InputTypeRelease,
+                .sequence_source = INPUT_SEQUENCE_SOURCE_SOFTWARE,
+                .sequence_counter = rpc_gui->input_key_counter[key],
+            };
+            furi_pubsub_publish(rpc_gui->input_events, &event);
+        }
+    }
+
     if(rpc_gui->virtual_display_view_port) {
         gui_remove_view_port(rpc_gui->gui, rpc_gui->virtual_display_view_port);
         view_port_free(rpc_gui->virtual_display_view_port);
@@ -474,6 +516,7 @@ void rpc_system_gui_free(void* context) {
         free(rpc_gui->transmit_frame);
         rpc_gui->transmit_frame = NULL;
     }
+    furi_record_close(RECORD_INPUT_EVENTS);
     furi_record_close(RECORD_GUI);
     free(rpc_gui);
 }

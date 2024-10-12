@@ -25,9 +25,10 @@
 #include <assets_icons.h>
 
 #define TAG "SPIMem"
-#define SPI_MEM_FILE_EXTENSION ".bin"
-#define SPI_MEM_FILE_PREFIX "SPIMem"
-#define SPI_MEM_FILE_NAME_SIZE 100
+
+#define SPI_MEM_FILE_EXTENSION   ".bin"
+#define SPI_MEM_FILE_PREFIX      "SPIMem"
+#define SPI_MEM_FILE_NAME_SIZE   100
 #define SPI_MEM_TEXT_BUFFER_SIZE 128
 
 typedef enum {

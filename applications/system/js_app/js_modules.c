@@ -8,7 +8,6 @@
 // Absolute path is used to make possible plugin load from CLI
 #define MODULES_PATH "/ext/apps_data/js_app/plugins"
 
-
 typedef struct {
     JsModeConstructor create;
     JsModeDestructor destroy;

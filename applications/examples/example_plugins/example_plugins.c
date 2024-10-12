@@ -1,5 +1,7 @@
-/* 
- * An example of a plugin host application.
+/**
+ * @file example_plugins.c
+ * @brief Plugin host application example.
+ *
  * Loads a single plugin and calls its methods.
  */
 
@@ -16,7 +18,7 @@
 int32_t example_plugins_app(void* p) {
     UNUSED(p);
 
-    FURI_LOG_I(TAG, "Starting");
+    FURI_LOG_I(TAG, "Démarrage");
 
     Storage* storage = furi_record_open(RECORD_STORAGE);
 
@@ -27,18 +29,18 @@ int32_t example_plugins_app(void* p) {
             flipper_application_preload(app, APP_DATA_PATH("plugins/example_plugin1.fal"));
 
         if(preload_res != FlipperApplicationPreloadStatusSuccess) {
-            FURI_LOG_E(TAG, "Failed to preload plugin");
+            FURI_LOG_E(TAG, "Échec du préchargement du plugin");
             break;
         }
 
         if(!flipper_application_is_plugin(app)) {
-            FURI_LOG_E(TAG, "Plugin file is not a library");
+            FURI_LOG_E(TAG, "Le fichier de plugin n'est pas une bibliothèque");
             break;
         }
 
         FlipperApplicationLoadStatus load_status = flipper_application_map_to_memory(app);
         if(load_status != FlipperApplicationLoadStatusSuccess) {
-            FURI_LOG_E(TAG, "Failed to load plugin file");
+            FURI_LOG_E(TAG, "Impossible de charger le fichier du plug-in");
             break;
         }
 
@@ -47,7 +49,7 @@ int32_t example_plugins_app(void* p) {
 
         FURI_LOG_I(
             TAG,
-            "Loaded plugin for appid '%s', API %lu",
+            "Plugin chargé pour appid '%s', API %lu",
             app_descriptor->appid,
             app_descriptor->ep_api_version);
 
@@ -56,15 +58,15 @@ int32_t example_plugins_app(void* p) {
 
         const ExamplePlugin* plugin = app_descriptor->entry_point;
 
-        FURI_LOG_I(TAG, "Plugin name: %s", plugin->name);
-        FURI_LOG_I(TAG, "Plugin method1: %d", plugin->method1());
-        FURI_LOG_I(TAG, "Plugin method2(7,8): %d", plugin->method2(7, 8));
-        FURI_LOG_I(TAG, "Plugin method2(1337,228): %d", plugin->method2(1337, 228));
+        FURI_LOG_I(TAG, "Nom du plugin: %s", plugin->name);
+        FURI_LOG_I(TAG, "Méthode1 du plugin: %d", plugin->method1());
+        FURI_LOG_I(TAG, "Méthode2 du plugin(7,8): %d", plugin->method2(7, 8));
+        FURI_LOG_I(TAG, "Méthode2 du plugin(1337,228): %d", plugin->method2(1337, 228));
     } while(false);
     flipper_application_free(app);
 
     furi_record_close(RECORD_STORAGE);
-    FURI_LOG_I(TAG, "Goodbye!");
+    FURI_LOG_I(TAG, "Au revoir!");
 
     return 0;
 }

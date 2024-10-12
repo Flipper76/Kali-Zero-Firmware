@@ -3,6 +3,8 @@ enum SubmenuIndex {
     SubmenuIndexRead,
     SubmenuIndexSaved,
     SubmenuIndexLoclass,
+    SubmenuIndexAcknowledgements,
+    SubmenuIndexKeygenAttack,
 };
 
 void picopass_scene_start_submenu_callback(void* context, uint32_t index) {
@@ -17,9 +19,20 @@ void picopass_scene_start_on_enter(void* context) {
         submenu, "Read Card", SubmenuIndexRead, picopass_scene_start_submenu_callback, picopass);
     submenu_add_item(
         submenu, "Saved", SubmenuIndexSaved, picopass_scene_start_submenu_callback, picopass);
-
     submenu_add_item(
         submenu, "Loclass", SubmenuIndexLoclass, picopass_scene_start_submenu_callback, picopass);
+    submenu_add_item(
+        submenu,
+        "Acknowledgements",
+        SubmenuIndexAcknowledgements,
+        picopass_scene_start_submenu_callback,
+        picopass);
+    submenu_add_item(
+        submenu,
+        "Elite Keygen Attack",
+        SubmenuIndexKeygenAttack,
+        picopass_scene_start_submenu_callback,
+        picopass);
 
     submenu_set_selected_item(
         submenu, scene_manager_get_scene_state(picopass->scene_manager, PicopassSceneStart));
@@ -48,6 +61,16 @@ bool picopass_scene_start_on_event(void* context, SceneManagerEvent event) {
             scene_manager_set_scene_state(
                 picopass->scene_manager, PicopassSceneStart, PicopassSceneLoclass);
             scene_manager_next_scene(picopass->scene_manager, PicopassSceneLoclass);
+            consumed = true;
+        } else if(event.event == SubmenuIndexAcknowledgements) {
+            scene_manager_set_scene_state(
+                picopass->scene_manager, PicopassSceneStart, PicopassSceneAcknowledgements);
+            scene_manager_next_scene(picopass->scene_manager, PicopassSceneAcknowledgements);
+            consumed = true;
+        } else if(event.event == SubmenuIndexKeygenAttack) {
+            scene_manager_set_scene_state(
+                picopass->scene_manager, PicopassSceneStart, SubmenuIndexKeygenAttack);
+            scene_manager_next_scene(picopass->scene_manager, PicopassSceneEliteKeygenAttack);
             consumed = true;
         }
     }
